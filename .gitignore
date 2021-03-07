@@ -1,0 +1,41 @@
+
+# =============== #
+# Unity generated #
+# =============== #
+WasteWar/Temp/
+WasteWar/Library/
+
+# ===================================== #
+# Visual Studio / MonoDevelop generated #
+# ===================================== #
+ExportedObj/
+obj/
+*.svd
+*.userprefs
+/*.csproj
+*.pidb
+*.suo
+/*.sln
+*.user
+*.unityproj
+*.booproj
+
+# ============ #
+# OS generated #
+# ============ #
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+WasteWar/Assembly-CSharp.csproj
+WasteWar/WasteWar.sln
+WasteWar/.idea/
+
+WasteWar/.vs/WasteWar/v16/
+WasteWar/Assembly-CSharp-Editor.csproj
+WasteWar/EditMode.csproj
+WasteWar/GameAssembly.csproj
+WasteWar/PlayMode.csproj
