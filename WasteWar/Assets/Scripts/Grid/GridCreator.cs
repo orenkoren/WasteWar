@@ -2,16 +2,10 @@
 
 public class GridCreator : MonoBehaviour
 {
-    public Transform gridLocation;
-    public LayerMask ground;
-  //  private BuildingGrid grid;
-    private Ray ray;
-    private RaycastHit rayHit;
-    private GameObject terrain;
-
     void Start()
     {
-        GameLogicGrid grid = new GameLogicGrid();
+        GameLogicGrid gameGrid = new GameLogicGrid();
+        Debug.Log(gameGrid.elements.Length);
     }
 
     void Update()

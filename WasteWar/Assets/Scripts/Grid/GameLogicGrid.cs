@@ -3,14 +3,20 @@
 public class GameLogicGrid
 {
     private readonly GameObject terrain;
+    private Mesh cells = new Mesh();
     private readonly float cellSize=1f;
-    private Vector3 gridSize;
+    private int width;
+    private int height;
+    public int[,] elements { get; set; }
 
     public GameLogicGrid()
     {
         terrain = GameObject.FindWithTag("Terrain");
         Vector3 terrainPos = terrain.transform.position;
         Vector3 terrainSize = terrain.GetComponent<Terrain>().terrainData.size;
+
+       elements = new int[(int)(terrainSize.x/cellSize),(int) (terrainSize.z/cellSize)];
+        cells.SetIndices(, MeshTopology.Lines);
 
         
     }
