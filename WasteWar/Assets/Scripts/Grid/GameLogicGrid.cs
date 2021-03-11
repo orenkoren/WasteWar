@@ -1,35 +1,38 @@
 ﻿using UnityEngine;
 
+
 public class GameLogicGrid
 {
-    private readonly GameObject terrain;
+    private readonly Terrain terrain;
     private Mesh cells = new Mesh();
-    private readonly float cellSize=1f;
-    private int width;
-    private int height;
-    public int[,] elements { get; set; }
+    public float CellSize { get; } = 1f;
+    public int[,] Elements { get; set; }
+    Vector3 terrainPos;
+    Vector3 terrainSize;
 
-    public GameLogicGrid()
+    public GameLogicGrid(Terrain terrain)
     {
-        terrain = GameObject.FindWithTag("Terrain");
-        Vector3 terrainPos = terrain.transform.position;
-        Vector3 terrainSize = terrain.GetComponent<Terrain>().terrainData.size;
+        this.terrain = terrain;
+        terrainPos = terrain.transform.position;
+        terrainSize = terrain.GetComponent<Terrain>().terrainData.size;
+        Elements = new int[(int)(terrainSize.x / CellSize), (int)(terrainSize.z / CellSize)];
+    }
 
-       elements = new int[(int)(terrainSize.x/cellSize),(int) (terrainSize.z/cellSize)];
-        cells.SetIndices(, MeshTopology.Lines);
+      
+    //    cells.SetIndices(, MeshTopology.Lines);
 
         
-    }
-    public Vector3 GetNearestPointOnGrid(Vector3 position)
-    {
-        int xCount = Mathf.RoundToInt(position.x / cellSize);
-        int yCount = Mathf.RoundToInt(position.y / cellSize);
-        int zCount = Mathf.RoundToInt(position.z / cellSize);
+    //}
+    //public Vector3 GetNearestPointOnGrid(Vector3 position)
+    //{
+    //    int xCount = Mathf.RoundToInt(position.x / CellSize);
+    //    int yCount = Mathf.RoundToInt(position.y / CellSize);
+    //    int zCount = Mathf.RoundToInt(position.z / CellSize);
 
-        return new Vector3((float)xCount * cellSize, (float)yCount * cellSize, (float)zCount * cellSize);
+    //    return new Vector3((float)xCount * CellSize, (float)yCount * CellSize, (float)zCount * CellSize);
 
-    }
-    public Vector3 GridSize { get; set; }
-    public float CellSize { get; }
+    //}
+    //public Vector3 GridSize { get; set; }
+
 
 }

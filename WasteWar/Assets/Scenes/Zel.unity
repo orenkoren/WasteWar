@@ -471,6 +471,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2aca3e84fe623b5408ccb7ec70f9d070, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  terrain: {fileID: 1321402549}
 --- !u!4 &1676778736
 Transform:
   m_ObjectHideFlags: 0
@@ -499,7 +500,7 @@ GameObject:
   - component: {fileID: 1690183743}
   m_Layer: 0
   m_Name: Player Camera
-  m_TagString: Player
+  m_TagString: MainCamera
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -582,6 +583,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   route: {fileID: 1934224683}
+  cam: {fileID: 1690183742}
   rotationRoute: {fileID: 1090026153}
   t: 0
 --- !u!1 &1829927812
@@ -743,8 +745,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7cbef11d462adb244bbe010e27ed4796, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  terrain: {fileID: 1321402550}
-  playerCamera: {fileID: 1690183742}
+  terrain: {fileID: 1321402549}
 --- !u!114 &1966433311
 MonoBehaviour:
   m_ObjectHideFlags: 0
