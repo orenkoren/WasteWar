@@ -19,10 +19,10 @@ public class CameraConstants : MonoBehaviour
     public bool DECREMENT_T { get; } = false;
 
     public static CameraConstants Instance { get; private set; }
+    
     //????????
     private void Awake()
     {
-        Debug.Log("lemao");
         if (Instance == null)
         {
             //what's this here?
