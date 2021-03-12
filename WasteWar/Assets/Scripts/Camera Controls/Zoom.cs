@@ -75,7 +75,7 @@ public class Zoom : MonoBehaviour
             t += Time.deltaTime * CameraConstants.Instance.ZOOM_SPEED;
         else
             t -= Time.deltaTime * CameraConstants.Instance.ZOOM_SPEED;
-
+       // t = t * t * t * (t * (6f * t - 15f) + 10f);
     }
     private void ZoomInstructionSequence(bool isToBeIncremented)
     {

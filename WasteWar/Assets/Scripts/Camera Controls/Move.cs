@@ -24,7 +24,6 @@ public class Move : MonoBehaviour
 
     void Update()
     {
-        //Debug.Log(CameraConstants.Instance);
         TryToMoveForward();
         TryToMoveBack();
         TryToMoveRight();
@@ -61,12 +60,12 @@ public class Move : MonoBehaviour
         terrainSize = terrain.terrainData.size;
         cam.position = new Vector3(terrainSize.x / 2, CameraConstants.Instance.DEFAULT_HEIGHT, terrainSize.z / 2);
     }
-    private Vector3 MoveXZ(Vector3 pos,Vector3 forwVec)
+    private Vector3 MoveXZ(Vector3 pos,Vector3 directionVec)
     {
-        pos.x += forwVec.x * CameraConstants.Instance.MOVE_SPEED * Time.deltaTime;
+        pos.x += directionVec.x * CameraConstants.Instance.MOVE_SPEED * Time.deltaTime;
         pos.x = Mathf.Clamp(pos.x, ScreenAndMapValues.BOTTOM_MAP_EDGE, ScreenAndMapValues.TOP_MAP_EDGE);
-        pos.y += forwVec.y * CameraConstants.Instance.MOVE_SPEED * Time.deltaTime;
-        pos.z += forwVec.z * CameraConstants.Instance.MOVE_SPEED * Time.deltaTime;
+        pos.y += directionVec.y * CameraConstants.Instance.MOVE_SPEED * Time.deltaTime;
+        pos.z += directionVec.z * CameraConstants.Instance.MOVE_SPEED * Time.deltaTime;
         pos.z = Mathf.Clamp(pos.z, ScreenAndMapValues.BOTTOM_MAP_EDGE, ScreenAndMapValues.TOP_MAP_EDGE);
 
         return new Vector3(pos.x, pos.y, pos.z);
