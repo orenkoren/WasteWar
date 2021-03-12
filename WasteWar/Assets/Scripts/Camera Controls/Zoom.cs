@@ -8,6 +8,9 @@ public class Zoom : MonoBehaviour
     private Transform cam;
     [SerializeField]
     private Transform rotationRoute;
+    [SerializeField]
+    private int zoomFps;
+    private bool isZoomPlaying;
 
     //parameter for parametric equation
     public float t = 0;
@@ -27,23 +30,34 @@ public class Zoom : MonoBehaviour
     void Update()
     {
         GetBezierCurvePointPositions();
-        if (Input.GetAxis("Mouse ScrollWheel") > 0)
+        if (Input.GetAxis("Mouse ScrollWheel") > 0 || isZoomPlaying)
         {
             if (t < CameraConstants.Instance.MAX_ZOOM_IN)
             {
+                isZoomPlaying = true;
                 AdjustCameraZoom(false, CameraConstants.Instance.INCREMENT_T);
+            }
+            else
+            {
+                print("reset isZoomPlaying");
+                isZoomPlaying = false;
+                t = 0;
             }
 
         }
-
-        else if (Input.GetAxis("Mouse ScrollWheel") < 0)
+        else if (Input.GetAxis("Mouse ScrollWheel") < 0 || isZoomPlaying)
         {
             if (t > CameraConstants.Instance.MIN_ZOOM_IN)
             {
+                isZoomPlaying = true;
                 AdjustCameraZoom(false, CameraConstants.Instance.DECREMENT_T);
             }
+            else
+            {
+                isZoomPlaying = false;
+                t = 0;
+            }
         }
-
     }
 
     private void GetBezierCurvePointPositions()
@@ -57,11 +71,12 @@ public class Zoom : MonoBehaviour
     private void AdjustCameraZoom(bool isFirstCall, bool isToBeIncremented)
     {
         if (isFirstCall)
+        {
             while (cam.rotation.eulerAngles.x > CameraConstants.Instance.INITIAL_ZOOM_ANGLE_X_AXIS)
             {
                 ZoomInstructionSequence(isToBeIncremented);
-
             }
+        }
         else
         {
             ZoomInstructionSequence(isToBeIncremented);
@@ -74,7 +89,7 @@ public class Zoom : MonoBehaviour
             t += Time.deltaTime * CameraConstants.Instance.ZOOM_SPEED;
         else
             t -= Time.deltaTime * CameraConstants.Instance.ZOOM_SPEED;
-       // t = t * t * t * (t * (6f * t - 15f) + 10f);
+        // t = t * t * t * (t * (6f * t - 15f) + 10f);
     }
     private void ZoomInstructionSequence(bool isToBeIncremented)
     {

@@ -9,7 +9,7 @@ public class GridCreator : MonoBehaviour
     void Start()
     {
         
-        GameLogicGrid gameGrid = new GameLogicGrid(terrain);
+        //GameLogicGrid gameGrid = new GameLogicGrid(terrain);
         //Debug.Log(gameGrid.elements.Length);
     }
 
