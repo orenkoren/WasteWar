@@ -10,6 +10,7 @@ public class GameLogicGrid
     Vector3 terrainPos;
     Vector3 terrainSize;
 
+
     public GameLogicGrid(Terrain terrain)
     {
         this.terrain = terrain;
@@ -17,11 +18,15 @@ public class GameLogicGrid
         terrainSize = terrain.GetComponent<Terrain>().terrainData.size;
         Elements = new int[(int)(terrainSize.x / CellSize), (int)(terrainSize.z / CellSize)];
     }
+    public GameLogicGrid()
+    {
 
-      
+    }
+
+
     //    cells.SetIndices(, MeshTopology.Lines);
 
-        
+
     //}
     //public Vector3 GetNearestPointOnGrid(Vector3 position)
     //{

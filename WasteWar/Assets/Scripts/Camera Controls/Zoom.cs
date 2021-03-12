@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 
+
 public class Zoom : MonoBehaviour
 {
     [SerializeField]
@@ -18,6 +19,33 @@ public class Zoom : MonoBehaviour
     private Vector3 p3;
     private Vector3 p4;
 
+    void Start()
+    {
+        GetBezierCurvePointPositions();
+        AdjustCameraZoom(true, CameraConstants.Instance.INCREMENT_T);
+    }
+
+    void Update()
+    {
+        GetBezierCurvePointPositions();
+        if (Input.GetAxis("Mouse ScrollWheel") > 0)
+        {
+            if (t < CameraConstants.Instance.MAX_ZOOM_IN)
+            {
+                AdjustCameraZoom(false, CameraConstants.Instance.INCREMENT_T);
+            }
+
+        }
+
+        else if (Input.GetAxis("Mouse ScrollWheel") < 0)
+        {
+            if (t > CameraConstants.Instance.MIN_ZOOM_IN)
+            {
+                AdjustCameraZoom(false, CameraConstants.Instance.DECREMENT_T);
+            }
+        }
+
+    }
 
     private void GetBezierCurvePointPositions()
     {
@@ -27,70 +55,32 @@ public class Zoom : MonoBehaviour
         p4 = route.GetChild(3).position;
     }
 
-    private void SetCameraZoomLevel(bool initial,bool increment)
+    private void AdjustCameraZoom(bool isFirstCall, bool isToBeIncremented)
     {
-        if(initial)
-        while (cam.rotation.eulerAngles.x > 60)
-        {
-            IncreaseParameter(increment);
-            cam.rotation = CalculateCurrentRotationBasedOnParameterT();
-            cam.position = CalculateCurrentPosBasedOnParameterT();
+        if (isFirstCall)
+            while (cam.rotation.eulerAngles.x > CameraConstants.Instance.INITIAL_ZOOM_ANGLE_X_AXIS)
+            {
+                ZoomInstructionSequence(isToBeIncremented);
 
-        }
+            }
         else
         {
-            IncreaseParameter(increment);
-            cam.rotation = CalculateCurrentRotationBasedOnParameterT();
-            cam.position = CalculateCurrentPosBasedOnParameterT();
+            ZoomInstructionSequence(isToBeIncremented);
         }
-
     }
 
-    private void IncreaseParameter(bool increment)
+    private void AdjustParameter(bool isToBeIncremented)
     {
-        if (increment)
-            t += Time.deltaTime * CameraConstants.ZOOM_SPEED;
+        if (isToBeIncremented)
+            t += Time.deltaTime * CameraConstants.Instance.ZOOM_SPEED;
         else
-            t -= Time.deltaTime * CameraConstants.ZOOM_SPEED;
+            t -= Time.deltaTime * CameraConstants.Instance.ZOOM_SPEED;
 
     }
-
-    private Quaternion CalculateCurrentRotationBasedOnParameterT()
+    private void ZoomInstructionSequence(bool isToBeIncremented)
     {
-        return Quaternion.Lerp(
-                   rotationRoute.GetChild(0).rotation,
-                   rotationRoute.GetChild(1).rotation,
-                   t);
-    }
-    //using the parameter and the given curve to specify where the gameObject will be positioned
-    private Vector3 CalculateCurrentPosBasedOnParameterT()
-    {
-        return Mathf.Pow(1 - t, 3) * p1 +
-            3 * Mathf.Pow(1 - t, 2) * t * p2 +
-            3 * (1 - t) * Mathf.Pow(t, 2) * p3 +
-            Mathf.Pow(t, 3) * p4;
-    }
-   
-    void Start()
-    {
-        GetBezierCurvePointPositions();
-        SetCameraZoomLevel(true,true);
-    }
-
-    void Update()
-    {
-        GetBezierCurvePointPositions();
-        Debug.Log(Input.GetAxis("Mouse ScrollWheel"));
-        if (Input.GetAxis("Mouse ScrollWheel") > 0)
-        {
-            if (t < CameraConstants.MAX_ZOOM_IN)
-                SetCameraZoomLevel(false, true);
-        }
-
-        else if (Input.GetAxis("Mouse ScrollWheel") < 0)
-        {
-            if (t > CameraConstants.MIN_ZOOM_IN)
-                SetCameraZoomLevel(false, false);
-        }
+        AdjustParameter(isToBeIncremented);
+        cam.rotation = MathUtilBasic.CalcRotationChangeAlongTheCurve(t, rotationRoute.GetChild(0), rotationRoute.GetChild(1));
+        cam.position = MathUtilBasic.CalcCurrPosAlongTheCurve(t, p1, p2, p3, p4);
     }
 }

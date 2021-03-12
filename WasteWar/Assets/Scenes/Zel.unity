@@ -451,7 +451,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1676778736}
-  - component: {fileID: 1676778735}
   m_Layer: 0
   m_Name: Grid
   m_TagString: Untagged
@@ -459,19 +458,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1676778735
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1676778734}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2aca3e84fe623b5408ccb7ec70f9d070, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  terrain: {fileID: 1321402549}
 --- !u!4 &1676778736
 Transform:
   m_ObjectHideFlags: 0
@@ -709,6 +695,7 @@ GameObject:
   - component: {fileID: 1966433307}
   - component: {fileID: 1966433311}
   - component: {fileID: 1966433309}
+  - component: {fileID: 1966433308}
   m_Layer: 0
   m_Name: Camera Parent
   m_TagString: Untagged
@@ -733,6 +720,27 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1966433308
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1966433306}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0a7f95eb6ea88b34b83b82181f3e11b0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MOVE_SPEED: 20
+  ROTATION_SPEED: 60
+  ZOOM_SPEED: 1
+  SCREEN_BORDER: 20
+  DEFAULT_HEIGHT: 5
+  WORLD_BORDER: 10
+  INITIAL_ZOOM_ANGLE_X_AXIS: 60
+  MAX_ZOOM_IN: 0.95
+  MIN_ZOOM_IN: 0
 --- !u!114 &1966433309
 MonoBehaviour:
   m_ObjectHideFlags: 0
