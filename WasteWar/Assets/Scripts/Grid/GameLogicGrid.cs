@@ -3,25 +3,31 @@
 
 public class GameLogicGrid
 {
-    private readonly Terrain terrain;
-    private Mesh cells = new Mesh();
-    public float CellSize { get; } = 1f;
-    public int[,] Elements { get; set; }
-    Vector3 terrainPos;
-    Vector3 terrainSize;
+    //private readonly Terrain terrain;
+    //private Mesh cells = new Mesh();
+    //public float CellSize { get; } = 1f;
+    //public int[,] Elements { get; set; }
+    //Vector3 terrainPos;
+    //Vector3 terrainSize;
 
-    public GameLogicGrid(Terrain terrain)
-    {
-        this.terrain = terrain;
-        terrainPos = terrain.transform.position;
-        terrainSize = terrain.GetComponent<Terrain>().terrainData.size;
-        Elements = new int[(int)(terrainSize.x / CellSize), (int)(terrainSize.z / CellSize)];
-    }
 
-      
+    //public GameLogicGrid(Terrain terrain)
+    //{
+    //    this.terrain = terrain;
+    //    terrainPos = terrain.transform.position;
+    //    terrainSize = terrain.GetComponent<Terrain>().terrainData.size;
+    //    Elements = new int[(int)(terrainSize.x / CellSize), (int)(terrainSize.z / CellSize)];
+    //}
+    //public GameLogicGrid()
+    //{
+
+    //}
+
+
     //    cells.SetIndices(, MeshTopology.Lines);
 
-        
+
+
     //}
     //public Vector3 GetNearestPointOnGrid(Vector3 position)
     //{

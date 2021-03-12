@@ -4,10 +4,8 @@ public class Zoom : MonoBehaviour
 {
     [SerializeField]
     private Transform route;
-
     [SerializeField]
     private Transform cam;
-
     [SerializeField]
     private Transform rotationRoute;
 
@@ -16,81 +14,72 @@ public class Zoom : MonoBehaviour
 
     //points along Bezier curve for smooth movement of camera
     private Vector3 p1;
-
     private Vector3 p2;
-
     private Vector3 p3;
-
     private Vector3 p4;
-   
+
     void Start()
     {
-
-        p1 = route.GetChild(0).position;
-        p2 = route.GetChild(1).position;
-        p3 = route.GetChild(2).position;
-        p4 = route.GetChild(3).position;
-
-        while (transform.rotation.eulerAngles.x > 60)
-        {
-            t += Time.deltaTime * CameraConstants.ZOOM_SPEED;
-            cam.rotation = Quaternion.Lerp(
-                    rotationRoute.GetChild(0).rotation,
-                    rotationRoute.GetChild(1).rotation,
-                    t);
-            cam.position = Mathf.Pow(1 - t, 3) * p1 +
-            3 * Mathf.Pow(1 - t, 2) * t * p2 +
-            3 * (1 - t) * Mathf.Pow(t, 2) * p3 +
-            Mathf.Pow(t, 3) * p4;
-
-        }
+        GetBezierCurvePointPositions();
+        AdjustCameraZoom(true, CameraConstants.Instance.INCREMENT_T);
     }
 
-    internal void Update()
+    void Update()
     {
-        p1 = route.GetChild(0).position;
-        p2 = route.GetChild(1).position;
-        p3 = route.GetChild(2).position;
-        p4 = route.GetChild(3).position;
-
+        GetBezierCurvePointPositions();
         if (Input.GetAxis("Mouse ScrollWheel") > 0)
         {
-            if (t < 0.95f)
+            if (t < CameraConstants.Instance.MAX_ZOOM_IN)
             {
-                t += Time.deltaTime * CameraConstants.ZOOM_SPEED;
-
-
-                //90deg,0,0 to 0,0,0
-                cam.rotation = Quaternion.Lerp(
-                     rotationRoute.GetChild(0).rotation,
-                     rotationRoute.GetChild(1).rotation,
-                     t);
-
-                //moving the camera along a curve
-                cam.position = Mathf.Pow(1 - t, 3) * p1 +
-                    3 * Mathf.Pow(1 - t, 2) * t * p2 +
-                    3 * (1 - t) * Mathf.Pow(t, 2) * p3 +
-                    Mathf.Pow(t, 3) * p4;
+                AdjustCameraZoom(false, CameraConstants.Instance.INCREMENT_T);
             }
+
         }
 
         else if (Input.GetAxis("Mouse ScrollWheel") < 0)
         {
-            if (t > 0)
+            if (t > CameraConstants.Instance.MIN_ZOOM_IN)
             {
-                t -= Time.deltaTime * CameraConstants.ZOOM_SPEED;
-
-                cam.rotation = Quaternion.Lerp(
-                    rotationRoute.GetChild(0).rotation,
-                    rotationRoute.GetChild(1).rotation,
-                    t);
-
-                //moving the camera along a curve
-                cam.position = Mathf.Pow(1 - t, 3) * p1 +
-                    3 * Mathf.Pow(1 - t, 2) * t * p2 +
-                    3 * (1 - t) * Mathf.Pow(t, 2) * p3 +
-                    Mathf.Pow(t, 3) * p4;
+                AdjustCameraZoom(false, CameraConstants.Instance.DECREMENT_T);
             }
         }
+
+    }
+
+    private void GetBezierCurvePointPositions()
+    {
+        p1 = route.GetChild(0).position;
+        p2 = route.GetChild(1).position;
+        p3 = route.GetChild(2).position;
+        p4 = route.GetChild(3).position;
+    }
+
+    private void AdjustCameraZoom(bool isFirstCall, bool isToBeIncremented)
+    {
+        if (isFirstCall)
+            while (cam.rotation.eulerAngles.x > CameraConstants.Instance.INITIAL_ZOOM_ANGLE_X_AXIS)
+            {
+                ZoomInstructionSequence(isToBeIncremented);
+
+            }
+        else
+        {
+            ZoomInstructionSequence(isToBeIncremented);
+        }
+    }
+
+    private void AdjustParameter(bool isToBeIncremented)
+    {
+        if (isToBeIncremented)
+            t += Time.deltaTime * CameraConstants.Instance.ZOOM_SPEED;
+        else
+            t -= Time.deltaTime * CameraConstants.Instance.ZOOM_SPEED;
+       // t = t * t * t * (t * (6f * t - 15f) + 10f);
+    }
+    private void ZoomInstructionSequence(bool isToBeIncremented)
+    {
+        AdjustParameter(isToBeIncremented);
+        cam.rotation = MathUtilBasic.CalcRotationChangeAlongTheCurve(t, rotationRoute.GetChild(0), rotationRoute.GetChild(1));
+        cam.position = MathUtilBasic.CalcCurrPosAlongTheCurve(t, p1, p2, p3, p4);
     }
 }
