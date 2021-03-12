@@ -6,6 +6,7 @@ public class Move : MonoBehaviour
     private Terrain terrain;
     [SerializeField]
     private Transform cam;
+    
     private Vector3 terrainSize;
 
     // Start is called before the first frame update

@@ -36,4 +36,3 @@ public class CameraConstants : MonoBehaviour
         }
     }
 }
-
