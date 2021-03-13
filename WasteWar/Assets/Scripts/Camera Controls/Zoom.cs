@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 
-
 public class Zoom : MonoBehaviour
 {
     private const string TILT = "tilt";

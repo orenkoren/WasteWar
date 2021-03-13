@@ -11,3 +11,4 @@ public class Rotate : MonoBehaviour
             transform.Rotate(Vector3.up, CameraConstants.Instance.ROTATION_SPEED * Time.deltaTime);
     }
 }
+
