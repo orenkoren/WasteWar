@@ -2,18 +2,20 @@
 
 public class Zoom : MonoBehaviour
 {
+    private const string TILT = "tilt";
+    private const string TRANSLATION = "translation";
+    private const int TICKSAMOUNT = 10;
+
     [SerializeField]
     private Transform route;
     [SerializeField]
     private Transform cam;
     [SerializeField]
     private Transform rotationRoute;
-    [SerializeField]
-    private int zoomFps;
-    private bool isZoomPlaying;
 
-    //parameter for parametric equation
-    public float t = 0;
+    //parameters for parametric equations
+    public float tRot = 0;
+    public float tPos = 0;
 
     //points along Bezier curve for smooth movement of camera
     private Vector3 p1;
@@ -21,42 +23,35 @@ public class Zoom : MonoBehaviour
     private Vector3 p3;
     private Vector3 p4;
 
+    private int zoomInTicks = TICKSAMOUNT;
+    private int zoomOutTicks = TICKSAMOUNT;
+
     void Start()
     {
         GetBezierCurvePointPositions();
-        AdjustCameraZoom(true, CameraConstants.Instance.INCREMENT_T);
+        InitializeCameraTiltAndPosition();
     }
 
     void Update()
     {
+        //the curve moves as the player moves, so we need to get new point positions
         GetBezierCurvePointPositions();
-        if (Input.GetAxis("Mouse ScrollWheel") > 0 || isZoomPlaying)
-        {
-            if (t < CameraConstants.Instance.MAX_ZOOM_IN)
-            {
-                isZoomPlaying = true;
-                AdjustCameraZoom(false, CameraConstants.Instance.INCREMENT_T);
-            }
-            else
-            {
-                print("reset isZoomPlaying");
-                isZoomPlaying = false;
-                t = 0;
-            }
+        if (Input.GetAxis("Mouse ScrollWheel") > 0)
+            zoomInTicks = TICKSAMOUNT;
 
-        }
-        else if (Input.GetAxis("Mouse ScrollWheel") < 0 || isZoomPlaying)
+         if ( zoomInTicks > 0)
         {
-            if (t > CameraConstants.Instance.MIN_ZOOM_IN)
-            {
-                isZoomPlaying = true;
-                AdjustCameraZoom(false, CameraConstants.Instance.DECREMENT_T);
-            }
-            else
-            {
-                isZoomPlaying = false;
-                t = 0;
-            }
+            TiltAndMoveAlongCurve(CameraConstants.Instance.INCREMENT_T);
+            zoomInTicks--;
+        }
+
+        if (Input.GetAxis("Mouse ScrollWheel") < 0 )
+            zoomOutTicks = TICKSAMOUNT;
+
+        if (zoomOutTicks > 0)
+        {
+            TiltAndMoveAlongCurve(CameraConstants.Instance.DECREMENT_T);
+            zoomOutTicks--;
         }
     }
 
@@ -68,33 +63,44 @@ public class Zoom : MonoBehaviour
         p4 = route.GetChild(3).position;
     }
 
-    private void AdjustCameraZoom(bool isFirstCall, bool isToBeIncremented)
+    private void InitializeCameraTiltAndPosition()
     {
-        if (isFirstCall)
-        {
             while (cam.rotation.eulerAngles.x > CameraConstants.Instance.INITIAL_ZOOM_ANGLE_X_AXIS)
             {
-                ZoomInstructionSequence(isToBeIncremented);
+                tPos = AdjustParameter(CameraConstants.Instance.INCREMENT_T, tPos,TILT);
+                cam.position = MathUtilBasic.CalcCurrPosAlongTheCurve(tPos, p1, p2, p3, p4);
+                tRot = AdjustParameter(CameraConstants.Instance.INCREMENT_T, tRot,TRANSLATION);
+                cam.rotation = MathUtilBasic.CalcRotationChangeAlongTheCurve(tRot, rotationRoute.GetChild(0), rotationRoute.GetChild(1));
             }
-        }
-        else
-        {
-            ZoomInstructionSequence(isToBeIncremented);
-        }
     }
 
-    private void AdjustParameter(bool isToBeIncremented)
+    private static float AdjustParameter(bool isToBeIncremented,float tParam, string typeOfParameter)
     {
-        if (isToBeIncremented)
-            t += Time.deltaTime * CameraConstants.Instance.ZOOM_SPEED;
-        else
-            t -= Time.deltaTime * CameraConstants.Instance.ZOOM_SPEED;
-        // t = t * t * t * (t * (6f * t - 15f) + 10f);
+        if (typeOfParameter.Equals(TILT))
+        {
+            if (isToBeIncremented)
+                tParam += Time.deltaTime * CameraConstants.Instance.TILT_SPEED;
+            else
+                tParam -= Time.deltaTime * CameraConstants.Instance.TILT_SPEED;
+            tParam = Mathf.Clamp(tParam, CameraConstants.Instance.TILT_START, CameraConstants.Instance.TILT_END);
+        }
+        else if (typeOfParameter.Equals(TRANSLATION))
+        {
+            if (isToBeIncremented)
+                tParam += Time.deltaTime * CameraConstants.Instance.CURVE_MOVE_SPEED;
+            else
+                tParam -= Time.deltaTime * CameraConstants.Instance.CURVE_MOVE_SPEED;
+            tParam = Mathf.Clamp(tParam, CameraConstants.Instance.CURVE_START, CameraConstants.Instance.CURVE_END);
+        }
+
+        return tParam;
     }
-    private void ZoomInstructionSequence(bool isToBeIncremented)
+    private void TiltAndMoveAlongCurve(bool isToBeInCremented)
     {
-        AdjustParameter(isToBeIncremented);
-        cam.rotation = MathUtilBasic.CalcRotationChangeAlongTheCurve(t, rotationRoute.GetChild(0), rotationRoute.GetChild(1));
-        cam.position = MathUtilBasic.CalcCurrPosAlongTheCurve(t, p1, p2, p3, p4);
+        tPos = AdjustParameter(isToBeInCremented, tPos, TRANSLATION);
+        cam.position = MathUtilBasic.CalcCurrPosAlongTheCurve(tPos, p1, p2, p3, p4);
+        tRot = AdjustParameter(isToBeInCremented, tRot, TILT);
+        cam.rotation = MathUtilBasic.CalcRotationChangeAlongTheCurve(tRot, rotationRoute.GetChild(0), rotationRoute.GetChild(1));
+
     }
 }
