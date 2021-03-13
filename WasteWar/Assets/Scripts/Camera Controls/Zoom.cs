@@ -4,6 +4,7 @@ public class Zoom : MonoBehaviour
 {
     private const string TILT = "tilt";
     private const string TRANSLATION = "translation";
+    private const int TICKSAMOUNT = 10;
 
     [SerializeField]
     private Transform route;
@@ -22,8 +23,8 @@ public class Zoom : MonoBehaviour
     private Vector3 p3;
     private Vector3 p4;
 
-    private int zoomInTicks = 10;
-    private int zoomOutTicks = 10;
+    private int zoomInTicks = TICKSAMOUNT;
+    private int zoomOutTicks = TICKSAMOUNT;
 
     void Start()
     {
@@ -36,7 +37,7 @@ public class Zoom : MonoBehaviour
         //the curve moves as the player moves, so we need to get new point positions
         GetBezierCurvePointPositions();
         if (Input.GetAxis("Mouse ScrollWheel") > 0)
-            zoomInTicks = 10; ;
+            zoomInTicks = TICKSAMOUNT;
 
          if ( zoomInTicks > 0)
         {
@@ -45,7 +46,7 @@ public class Zoom : MonoBehaviour
         }
 
         if (Input.GetAxis("Mouse ScrollWheel") < 0 )
-            zoomOutTicks = 10;
+            zoomOutTicks = TICKSAMOUNT;
 
         if (zoomOutTicks > 0)
         {
