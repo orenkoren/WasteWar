@@ -457,13 +457,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MOVE_SPEED: 20
   ROTATION_SPEED: 60
-  ZOOM_SPEED: 1
   SCREEN_BORDER: 20
   DEFAULT_HEIGHT: 5
   WORLD_BORDER: 10
   INITIAL_ZOOM_ANGLE_X_AXIS: 60
-  MAX_ZOOM_IN: 0.95
-  MIN_ZOOM_IN: 0
+  TILT_SPEED: 1.25
+  TILT_END: 1
+  TILT_START: 0
+  CURVE_MOVE_SPEED: 1.25
+  CURVE_END: 0.95
+  CURVE_START: 0
 --- !u!1 &1676778734
 GameObject:
   m_ObjectHideFlags: 0
@@ -593,7 +596,8 @@ MonoBehaviour:
   route: {fileID: 1934224683}
   cam: {fileID: 1690183742}
   rotationRoute: {fileID: 1090026153}
-  t: 0
+  tRot: 0
+  tPos: 0
 --- !u!1 &1829927812
 GameObject:
   m_ObjectHideFlags: 0
