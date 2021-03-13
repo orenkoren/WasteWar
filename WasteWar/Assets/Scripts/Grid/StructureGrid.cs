@@ -33,13 +33,15 @@ public class StructureGrid
         GridCoords gridPos = new GridCoords();
         gridPos = GetNearestCellOnGrid(pos);
         Structures[gridPos.x, gridPos.y] = 1;
+        Debug.Log(gridPos.x);
+        Debug.Log(gridPos.y);
     }
 
     private GridCoords GetNearestCellOnGrid(Vector3 pos)
     {
-        int x= Mathf.RoundToInt(pos.x / CellSize);
+        int x= Mathf.FloorToInt(pos.x / CellSize);
         //int y = Mathf.RoundToInt(pos.y / CellSize); for the future
-        int z = Mathf.RoundToInt(pos.z / CellSize);
+        int z = Mathf.FloorToInt(pos.z / CellSize);
 
         GridCoords gridPos = new GridCoords();
         gridPos.Set(x, z);
