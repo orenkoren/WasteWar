@@ -101,6 +101,5 @@ public class Zoom : MonoBehaviour
         cam.position = MathUtilBasic.CalcCurrPosAlongTheCurve(tPos, p1, p2, p3, p4);
         tRot = AdjustParameter(isToBeInCremented, tRot, TILT);
         cam.rotation = MathUtilBasic.CalcRotationChangeAlongTheCurve(tRot, rotationRoute.GetChild(0), rotationRoute.GetChild(1));
-
     }
 }
