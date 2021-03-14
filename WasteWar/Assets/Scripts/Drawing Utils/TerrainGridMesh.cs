@@ -4,12 +4,12 @@ using System.Collections.Generic;
 //https://gist.github.com/mdomrach/a66602ee85ce45f8860c36b2ad31ea14
 
 
-public class GridMesh : MonoBehaviour
+public class TerrainGridMesh : MonoBehaviour
 {
     public Terrain terrain;
-    //can make it visible in the inspector if necessary
+    //can make it visible in the inspector if necessary but it shouldn't be because the grid covers the whole terrain
     private int GridSize;
-
+    private float cellLoc = 0f;
 
     void Awake()
     {
@@ -20,19 +20,25 @@ public class GridMesh : MonoBehaviour
         var verticies = new List<Vector3>();
 
         var indicies = new List<int>();
-        for (int i = 0; i <= GridSize; i++)
+
+        //logic @ https://i.imgur.com/4n2iKqP.gifv
+        for (int i = 0; i <= (int)(GridSize/ GridConstants.Instance.FloatCellSize()); i++)
         {
-            verticies.Add(new Vector3(i, 0, 0));
-            verticies.Add(new Vector3(i, 0, GridSize));
+            
+
+            verticies.Add(new Vector3(cellLoc, 0, 0));
+            verticies.Add(new Vector3(cellLoc, 0, GridSize));
 
             indicies.Add(4 * i + 0);
             indicies.Add(4 * i + 1);
 
-            verticies.Add(new Vector3(0, 0, i));
-            verticies.Add(new Vector3(GridSize, 0, i));
+            verticies.Add(new Vector3(0, 0, cellLoc));
+            verticies.Add(new Vector3(GridSize, 0, cellLoc));
 
             indicies.Add(4 * i + 2);
             indicies.Add(4 * i + 3);
+
+            cellLoc += GridConstants.Instance.FloatCellSize();
         }
 
         mesh.vertices = verticies.ToArray();

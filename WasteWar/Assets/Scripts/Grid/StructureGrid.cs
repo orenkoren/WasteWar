@@ -4,37 +4,20 @@
 public class StructureGrid
 {
     public float CellSize { get; private set; }
-    public struct GridCoords
-    {
-        public int x { get; private set; }
-        public int y { get; private set; }
-
-        public void Set(int x, int y)
-        {
-            this.x = x;
-            this.y = y;
-        }
-
-    }
 
     private int[,] Structures { get; set; }
-   
 
-    public StructureGrid(Terrain terrain, float cellSizeInInspector)
+    public StructureGrid(float xSize, float zSize, float cellSizeInInspector)
     {
         this.CellSize = cellSizeInInspector;
-        Vector3 terrainPos; terrainPos = terrain.transform.position;
-        Vector3 terrainSize = terrain.GetComponent<Terrain>().terrainData.size;
-        Structures = new int[(int)(terrainSize.x / CellSize), (int)(terrainSize.z / CellSize)];
+        Structures = new int[(int)(xSize / CellSize), (int)(zSize / CellSize)];
     }
 
     public void AddStructure(Vector3 pos)
     {
-        GridCoords gridPos = new GridCoords();
-        gridPos = GetNearestCellOnGrid(pos);
-        Structures[gridPos.x, gridPos.y] = 1;
-        Debug.Log(gridPos.x);
-        Debug.Log(gridPos.y);
+        GridCoords gridPos = GetNearestCellOnGrid(pos);
+        Structures[gridPos.X, gridPos.Y] = 1;
+        Debug.Log(gridPos.X.ToString()+' '+gridPos.Y.ToString());
     }
 
     private GridCoords GetNearestCellOnGrid(Vector3 pos)
@@ -48,5 +31,16 @@ public class StructureGrid
 
         return gridPos;
 
+    }
+}
+public struct GridCoords
+{
+    public int X { get; private set; }
+    public int Y { get; private set; }
+
+    public void Set(int x, int y)
+    {
+        this.X = x;
+        this.Y = y;
     }
 }
