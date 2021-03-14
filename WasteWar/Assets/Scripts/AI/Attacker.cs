@@ -9,10 +9,8 @@ public class Attacker : MonoBehaviour
     private NavMeshAgent agent;
     [SerializeField]
     private float aggroRadius;
-    
-    private Vector3 agentPosition;
 
-    private const float CAST_DISTANCE_PLACEHOLDER = 0.1f;
+    private Vector3 agentPosition;
 
     void Start()
     {
@@ -29,7 +27,7 @@ public class Attacker : MonoBehaviour
 
     private Vector3 FindTarget()
     {
-        var target = Physics.SphereCastAll(agentPosition, aggroRadius, Vector3.up, CAST_DISTANCE_PLACEHOLDER, attackable)[0];
+        var target = Physics.SphereCastAll(agentPosition, aggroRadius, Vector3.up, 0.1f, attackable)[0];
         Debug.DrawLine(transform.position, target.transform.position);
         return target.transform.position;
     }
