@@ -20,6 +20,8 @@ public class CameraConstants : MonoBehaviour
     public  float CURVE_END = 0.95f;
     public  float CURVE_START = 0f;
 
+    public float RAYCAST_DISTANCE = 100f;
+
     public bool INCREMENT_T { get; } = true;
     public bool DECREMENT_T { get; } = false;
 

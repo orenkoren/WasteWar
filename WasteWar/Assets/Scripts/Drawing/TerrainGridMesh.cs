@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using Constants;
 
 //https://gist.github.com/mdomrach/a66602ee85ce45f8860c36b2ad31ea14
 
@@ -15,16 +16,19 @@ public class TerrainGridMesh : MonoBehaviour
     {
         GridSize= (int)(terrain.GetComponent<Terrain>().terrainData.size.x);
 
-        MeshFilter filter = gameObject.GetComponent<MeshFilter>();
         var mesh = new Mesh();
         var verticies = new List<Vector3>();
         var indicies = new List<int>();
 
-        //logic @ https://i.imgur.com/4n2iKqP.gifv
-        for (int i = 0; i <= (int)(GridSize/ GridConstants.Instance.FloatCellSize()); i++)
-        {
-            
+        GenerateLines(verticies,indicies);
+        DrawLines(mesh, verticies, indicies);
+    }
 
+    private void GenerateLines(List<Vector3> verticies, List<int> indicies)
+    {
+        //logic @ https://i.imgur.com/4n2iKqP.gifv
+        for (int i = 0; i <= (int)(GridSize / GridConstants.Instance.FloatCellSize()); i++)
+        {
             verticies.Add(new Vector3(cellLoc, 0, 0));
             verticies.Add(new Vector3(cellLoc, 0, GridSize));
 
@@ -39,7 +43,11 @@ public class TerrainGridMesh : MonoBehaviour
 
             cellLoc += GridConstants.Instance.FloatCellSize();
         }
+    }
 
+    private void DrawLines(Mesh mesh,List<Vector3> verticies,List<int> indicies) {
+        MeshFilter filter = gameObject.GetComponent<MeshFilter>();
+        
         mesh.vertices = verticies.ToArray();
         mesh.SetIndices(indicies.ToArray(), MeshTopology.Lines, 0);
         filter.mesh = mesh;
