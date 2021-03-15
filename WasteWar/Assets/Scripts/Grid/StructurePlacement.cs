@@ -3,10 +3,11 @@
 public class StructurePlacement : MonoBehaviour
 {
     [SerializeField]
-    private GameObject buildingPrefab;
+    private GameObject buildingPrefab1;
+    [SerializeField]
+    private GameObject buildingPrefab2;
     [SerializeField]
     private Terrain terrain;
-    //not a primitive value? so why out?
     
     private RaycastHit hit;
     private Ray ray;
@@ -14,7 +15,7 @@ public class StructurePlacement : MonoBehaviour
     private Vector3 terrainSize;
     private StructureGrid structureGrid;
     private GameObject buildingTemplate;
-    private bool isStructureSelected = false;
+    private bool isAStructureSelected = false;
 
     void Start()
     {
@@ -25,41 +26,53 @@ public class StructurePlacement : MonoBehaviour
     void Update() {
         ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
-        if (Physics.Raycast(ray, out hit) && CursorIsWithinBounds(hit.point))
-        {
-
-            if (Input.GetKey(KeyCode.B) && isStructureSelected == false)
-            {
-                buildingTemplate= Instantiate(buildingPrefab, ObjectSnapper.SnapToGridCell(hit.point, GridConstants.Instance.FloatCellSize()), Quaternion.Euler(0, 0, 0));
-                isStructureSelected = true;
-            }
-            if (Input.GetKey(KeyCode.Escape) && isStructureSelected == true)
-            {
-                Destroy(buildingTemplate);
-                isStructureSelected = false;
-            }
-
-            if (Input.GetMouseButtonDown(0) && isStructureSelected == true)
-            {
-                Destroy(buildingTemplate);
-                isStructureSelected = false;
-                structureGrid.AddStructure(hit.point);
-                Debug.Log(hit.point);
-            }
-
-            if (isStructureSelected == true)
-                buildingTemplate.transform.position = ObjectSnapper.SnapToGridCell(hit.point, GridConstants.Instance.FloatCellSize(),buildingTemplate.GetComponent<Renderer>().bounds.size);
-        }
+        if (Physics.Raycast(ray, out hit, 100f, LayerMasks.GROUND) && CursorIsWithinBounds(hit.point))
+            PlaceStructureInGridOnClick();
     }
     private bool CursorIsWithinBounds(Vector3 hitLocation)
     {
         int failedConditions = 0;
-
         failedConditions = hitLocation.x > terrainSize.z ? (failedConditions + 1) : failedConditions;
         failedConditions = hitLocation.x < 0 ? (failedConditions + 1) : failedConditions;
         failedConditions = hitLocation.z > terrainSize.z ? (failedConditions + 1) : failedConditions;
         failedConditions = hitLocation.z < 0 ? (failedConditions + 1) : failedConditions;
 
         return failedConditions == 0;
+    }
+    private void PlaceStructureInGridOnClick()
+    {
+    //will create some kind of switch case for this later on
+        if (Input.GetKey(KeyCode.B) && isAStructureSelected == false)
+        {
+            buildingTemplate = Instantiate(buildingPrefab1, ObjectSnapper.SnapToGridCell(hit.point, GridConstants.Instance.FloatCellSize()), Quaternion.Euler(0, 0, 0));
+            isAStructureSelected = true;
+        }
+        if (Input.GetKey(KeyCode.C) && isAStructureSelected == false)
+        {
+            buildingTemplate = Instantiate(buildingPrefab2, ObjectSnapper.SnapToGridCell(hit.point, GridConstants.Instance.FloatCellSize()), Quaternion.Euler(0, 0, 0));
+            isAStructureSelected = true;
+        }
+        if (Input.GetKey(KeyCode.Escape) && isAStructureSelected == true)
+            {
+                Destroy(buildingTemplate);
+                isAStructureSelected = false;
+            }
+        if (Input.GetMouseButtonDown(0) && isAStructureSelected == true)
+        {
+            Destroy(buildingTemplate);
+            isAStructureSelected = false;
+            structureGrid.AddStructure(hit.point, buildingTemplate.GetComponent<Renderer>().bounds.size);
+            Debug.Log(hit.point);
+        }
+        if (isAStructureSelected == true)
+        {
+            if (structureGrid.isGridCellFilled(hit.point))
+                buildingTemplate.GetComponent<MeshRenderer>().material.SetColor("_Color", Color.green);
+            else
+            {
+                buildingTemplate.GetComponent<MeshRenderer>().material.SetColor("_Color", Color.red);
+            }
+            buildingTemplate.transform.position = ObjectSnapper.SnapToGridCell(hit.point, GridConstants.Instance.FloatCellSize(), buildingTemplate.GetComponent<Renderer>().bounds.size);
+        }
     }
 }

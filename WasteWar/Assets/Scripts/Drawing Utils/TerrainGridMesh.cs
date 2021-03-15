@@ -11,14 +11,13 @@ public class TerrainGridMesh : MonoBehaviour
     private int GridSize;
     private float cellLoc = 0f;
 
-    void Awake()
+    void Start()
     {
         GridSize= (int)(terrain.GetComponent<Terrain>().terrainData.size.x);
 
         MeshFilter filter = gameObject.GetComponent<MeshFilter>();
         var mesh = new Mesh();
         var verticies = new List<Vector3>();
-
         var indicies = new List<int>();
 
         //logic @ https://i.imgur.com/4n2iKqP.gifv

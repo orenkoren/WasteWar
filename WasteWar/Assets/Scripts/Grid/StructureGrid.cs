@@ -3,8 +3,8 @@
 
 public class StructureGrid
 {
-    public float CellSize { get; private set; }
-
+    private float CellSize { get;set; }
+    // placeholder array type, will change to game object instances
     private int[,] Structures { get; set; }
 
     public StructureGrid(float xSize, float zSize, float cellSizeInInspector)
@@ -13,7 +13,7 @@ public class StructureGrid
         Structures = new int[(int)(xSize / CellSize), (int)(zSize / CellSize)];
     }
 
-    public void AddStructure(Vector3 pos)
+    public void AddStructure(Vector3 pos,Vector3 size)
     {
         GridCoords gridPos = GetNearestCellOnGrid(pos);
         Structures[gridPos.X, gridPos.Y] = 1;
@@ -30,7 +30,11 @@ public class StructureGrid
         gridPos.Set(x, z);
 
         return gridPos;
-
+    }
+    public bool isGridCellFilled(Vector3 pos)
+    {
+        GridCoords gridPos = GetNearestCellOnGrid(pos);
+        return Structures[gridPos.X, gridPos.Y] != 1;
     }
 }
 public struct GridCoords
