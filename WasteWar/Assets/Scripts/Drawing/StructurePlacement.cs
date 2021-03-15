@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 using Constants;
 
 public class StructurePlacement : MonoBehaviour
@@ -16,6 +17,8 @@ public class StructurePlacement : MonoBehaviour
     private Vector3 terrainSize;
     private StructureGrid structureGrid;
     private GameObject buildingTemplate;
+    private readonly List<GameObject>  Structures = new List<GameObject>();
+
     private bool isAStructureSelected = false;
 
     void Start()
@@ -28,10 +31,7 @@ public class StructurePlacement : MonoBehaviour
         ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
         if (Physics.Raycast(ray, out hit, CameraConstants.Instance.RAYCAST_DISTANCE, LayerMasks.GROUND) && CursorIsWithinBounds(hit.point))
-        {
-            PlaceStructureOnLogicGridOnClick();
-            DrawStructureOnGridOnClick();
-        }
+            PlaceStructureOnGridOnClick();
     }
     private bool CursorIsWithinBounds(Vector3 hitLocation)
     {
@@ -44,7 +44,7 @@ public class StructurePlacement : MonoBehaviour
 
         return failedConditions == 0;
     }
-    private void PlaceStructureOnLogicGridOnClick()
+    private void PlaceStructureOnGridOnClick()
     {
         bool isSpaceOccupied=false;
 
@@ -84,13 +84,19 @@ public class StructurePlacement : MonoBehaviour
             Destroy(buildingTemplate);
             isAStructureSelected = false;
             structureGrid.AddStructure(hit.point, buildingTemplate.GetComponent<Renderer>().bounds.size);
+            DrawStructureOnGrid(Structures,buildingTemplate,hit.point);
             Debug.Log(hit.point);
         }
     }
 
-    private void DrawStructureOnGridOnClick()
+    private static void DrawStructureOnGrid(List<GameObject> Structures,GameObject structureToAdd,Vector3 coords)
     {
-
+        structureToAdd.GetComponent<MeshRenderer>().material.SetColor("_Color", Color.white);
+        Structures.Add(Instantiate(structureToAdd, ObjectSnapper.SnapToGridCell(
+            coords, 
+            GridConstants.Instance.FloatCellSize(), structureToAdd.GetComponent<Renderer>().bounds.size), 
+            Quaternion.Euler(0, 0, 0)
+            ));
     }
 
 }
