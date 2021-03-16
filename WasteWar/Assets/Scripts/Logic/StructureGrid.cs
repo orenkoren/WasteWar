@@ -24,12 +24,11 @@ public class StructureGrid
         GridCoords gridPos = GetNearestCellOnGrid(pos);
         for (int i = 0; i < XGridSize; i++)
             for (int j = 0; j < YGridSize; j++)
-            {
-                Debug.Log((gridPos.X + i).ToString() + ' ' + (gridPos.X + i).ToString());
                 Structures[gridPos.X + i, gridPos.Y + j] = 1;
-            }
     }
 
+
+    //TODO work on edge case when placing a structure at the edge of the map (might aswell just make edge unplayable area)
     public bool IsGridCellFilled(Vector3 pos, Vector3 buildingSize)
     {
         int XGridSize;
@@ -38,14 +37,11 @@ public class StructureGrid
         XYSize(out XGridSize,out YGridSize, buildingSize);
         GridCoords gridPos = GetNearestCellOnGrid(pos);
 
-        int failedConditions = 0;
-        //unnecessary to go through all 1, should short circuit if any condition is true FIX LATER
-        failedConditions = Structures[gridPos.X, gridPos.Y] == 1 ? (failedConditions + 1) : failedConditions;
-        failedConditions = Structures[gridPos.X + XGridSize - 1, gridPos.Y] == 1 ? (failedConditions + 1) : failedConditions;
-        failedConditions = Structures[gridPos.X , gridPos.Y + YGridSize - 1] == 1 ? (failedConditions + 1) : failedConditions;
-        failedConditions = Structures[gridPos.X + XGridSize - 1, gridPos.Y + YGridSize - 1] == 1 ? (failedConditions + 1) : failedConditions;
-
-        return failedConditions != 0;
+        for (int i = 0; i < XGridSize; i++)
+            for (int j = 0; j < YGridSize; j++)
+                if (Structures[gridPos.X + i , gridPos.Y + j]==1)
+                    return true;
+        return false;
     }
 
     private GridCoords GetNearestCellOnGrid(Vector3 pos)

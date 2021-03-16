@@ -52,17 +52,15 @@ public class CameraConstants : MonoBehaviour
     }
 
     public static CameraConstants Instance { get; private set; }
-    
-    //????????
+
     private void Awake()
     {
         if (Instance == null)
         {
-            //what's this here?
             Instance = this;
+            //what's this here?
             DontDestroyOnLoad(gameObject);
         }
-       
         else
         {
             Destroy(gameObject);

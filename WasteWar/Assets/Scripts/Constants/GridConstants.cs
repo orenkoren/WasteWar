@@ -1,9 +1,7 @@
 ﻿using UnityEngine;
 
-
 namespace Constants
 {
-    //need an explanation as to how this works
     public class GridConstants : MonoBehaviour
     {
         public enum CellSize
@@ -38,16 +36,14 @@ namespace Constants
             return 1f;
         }
 
-
         public static GridConstants Instance { get; private set; }
 
-        //????????
         private void Awake()
         {
             if (Instance == null)
             {
-                //what's this here?
                 Instance = this;
+                //what's this here?
                 DontDestroyOnLoad(gameObject);
             }
             else
