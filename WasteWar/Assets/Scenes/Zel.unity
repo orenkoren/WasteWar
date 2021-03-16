@@ -687,6 +687,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   terrain: {fileID: 1321402549}
+  cam: {fileID: 1690183741}
   drawingScripts: {fileID: 320501294}
 --- !u!1 &1386916141
 GameObject:

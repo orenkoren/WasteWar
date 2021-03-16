@@ -32,7 +32,7 @@ public class TerrainGridMesh : MonoBehaviour
             verticies.Add(new Vector3(cellLoc, 0, 0));
             verticies.Add(new Vector3(cellLoc, 0, GridSize));
 
-            indicies.Add(4 * i + 0);
+            indicies.Add(4 * i );
             indicies.Add(4 * i + 1);
 
             verticies.Add(new Vector3(0, 0, cellLoc));

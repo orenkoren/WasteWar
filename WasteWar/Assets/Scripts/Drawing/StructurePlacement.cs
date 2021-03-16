@@ -6,6 +6,8 @@ public class StructurePlacement : MonoBehaviour
     [SerializeField]
     private Terrain terrain;
     [SerializeField]
+    private Camera cam;
+    [SerializeField]
     private GameObject drawingScripts;
     
     private RaycastHit hit;
@@ -26,7 +28,7 @@ public class StructurePlacement : MonoBehaviour
     }
 
     void Update() {
-        ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        ray = cam.ScreenPointToRay(Input.mousePosition);
 
         if (Physics.Raycast(ray, out hit, CameraConstants.Instance.RAYCAST_DISTANCE, LayerMasks.Instance.GROUND) && CursorIsWithinBounds(hit.point))
             PlaceStructureOnGridOnClick();
