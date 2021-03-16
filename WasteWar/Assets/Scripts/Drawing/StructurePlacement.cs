@@ -5,21 +5,24 @@ using Constants;
 public class StructurePlacement : MonoBehaviour
 {
     [SerializeField]
-    private GameObject buildingPrefab1;
+    private GameObject structurePrefab1;
     [SerializeField]
-    private GameObject buildingPrefab2;
+    private GameObject structurePrefab2;
     [SerializeField]
     private Terrain terrain;
     
     private RaycastHit hit;
     private Ray ray;
 
-    private Vector3 terrainSize;
     private StructureGrid structureGrid;
-    private GameObject buildingTemplate;
+    private GameObject structureTemplate;
+    private Vector3 terrainSize;
+    private Vector3 sizeOfStructureTemplate;
+
     private readonly List<GameObject>  Structures = new List<GameObject>();
 
     private bool isAStructureSelected = false;
+    bool isSpaceOccupied = false;
 
     void Start()
     {
@@ -30,13 +33,13 @@ public class StructurePlacement : MonoBehaviour
     void Update() {
         ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
-        if (Physics.Raycast(ray, out hit, CameraConstants.Instance.RAYCAST_DISTANCE, LayerMasks.GROUND) && CursorIsWithinBounds(hit.point))
+        if (Physics.Raycast(ray, out hit, CameraConstants.Instance.RAYCAST_DISTANCE, LayerMasks.Instance.GROUND) && CursorIsWithinBounds(hit.point))
             PlaceStructureOnGridOnClick();
     }
     private bool CursorIsWithinBounds(Vector3 hitLocation)
     {
         int failedConditions = 0;
-        //unnecessary to go through all 1, should short circuit if any condition is true FIX LATER
+        //TODO unnecessary to go through all 1, should short circuit if any condition is true
         failedConditions = hitLocation.x > terrainSize.z ? (failedConditions + 1) : failedConditions;
         failedConditions = hitLocation.x < 0 ? (failedConditions + 1) : failedConditions;
         failedConditions = hitLocation.z > terrainSize.z ? (failedConditions + 1) : failedConditions;
@@ -46,57 +49,73 @@ public class StructurePlacement : MonoBehaviour
     }
     private void PlaceStructureOnGridOnClick()
     {
-        bool isSpaceOccupied=false;
+        PrepareTemplateStructure();
 
-    //will create some kind of switch case for this later on
-        if (Input.GetKey(KeyCode.B))
-        {
-            Destroy(buildingTemplate);
-            buildingTemplate = Instantiate(buildingPrefab1, ObjectSnapper.SnapToGridCell(hit.point, GridConstants.Instance.FloatCellSize()), Quaternion.Euler(0, 0, 0));
-            isAStructureSelected = true;
-        }
-        else if (Input.GetKey(KeyCode.C))
-        {
-            Destroy(buildingTemplate);
-            buildingTemplate = Instantiate(buildingPrefab2, ObjectSnapper.SnapToGridCell(hit.point, GridConstants.Instance.FloatCellSize()), Quaternion.Euler(0, 0, 0));
-            isAStructureSelected = true;
-        }
-        else if (Input.GetKey(KeyCode.Escape))
-            {
-                Destroy(buildingTemplate);
-                isAStructureSelected = false;
-            }
         if (isAStructureSelected == true)
         {
-            isSpaceOccupied = structureGrid.IsGridCellFilled(hit.point, buildingTemplate.GetComponent<Renderer>().bounds.size);
+            sizeOfStructureTemplate = structureTemplate.GetComponent<Renderer>().bounds.size;
+
+            isSpaceOccupied = structureGrid.IsGridCellFilled(hit.point, sizeOfStructureTemplate);
            
             if (!isSpaceOccupied)
-                buildingTemplate.GetComponent<MeshRenderer>().material.SetColor("_Color", Color.green);
+                structureTemplate.GetComponent<MeshRenderer>().material.SetColor("_Color", Color.green);
             else
             {
-                buildingTemplate.GetComponent<MeshRenderer>().material.SetColor("_Color", Color.red);
+                structureTemplate.GetComponent<MeshRenderer>().material.SetColor("_Color", Color.red);
             }
-            buildingTemplate.transform.position = ObjectSnapper.SnapToGridCell(hit.point, GridConstants.Instance.FloatCellSize(), buildingTemplate.GetComponent<Renderer>().bounds.size);
+            structureTemplate.transform.position = ObjectSnapper.SnapToGridCell(hit.point, GridConstants.Instance.FloatCellSize(), sizeOfStructureTemplate);
         }
 
         if (Input.GetMouseButtonDown(0) && isAStructureSelected == true && !isSpaceOccupied)
         {
-            Destroy(buildingTemplate);
+            Destroy(structureTemplate);
             isAStructureSelected = false;
-            structureGrid.AddStructure(hit.point, buildingTemplate.GetComponent<Renderer>().bounds.size);
-            DrawStructureOnGrid(Structures,buildingTemplate,hit.point);
+            structureGrid.AddStructure(hit.point, sizeOfStructureTemplate);
+            DrawStructureOnGrid(structureTemplate,sizeOfStructureTemplate);
             Debug.Log(hit.point);
         }
     }
 
-    private static void DrawStructureOnGrid(List<GameObject> Structures,GameObject structureToAdd,Vector3 coords)
+    private void DrawStructureOnGrid(GameObject structureToAdd,Vector3 structureSize)
     {
         structureToAdd.GetComponent<MeshRenderer>().material.SetColor("_Color", Color.white);
         Structures.Add(Instantiate(structureToAdd, ObjectSnapper.SnapToGridCell(
-            coords, 
-            GridConstants.Instance.FloatCellSize(), structureToAdd.GetComponent<Renderer>().bounds.size), 
+            hit.point, 
+            GridConstants.Instance.FloatCellSize(),structureSize), 
             Quaternion.Euler(0, 0, 0)
             ));
     }
 
+    private void PrepareTemplateStructure()
+    {
+        foreach (var key in GameKeys.Instance.StructureKeybinds) {
+            if (Input.GetKey(key))
+            {
+                switch (key)
+                {
+                    case KeyCode.B:
+                        destroyPreviousAndPrepareNew(structurePrefab1);
+                        break;
+                    case KeyCode.C:
+                        destroyPreviousAndPrepareNew(structurePrefab2);
+                        break;
+                    case KeyCode.Escape:
+                        isAStructureSelected = false;
+                        break;
+
+                }
+            }
+        }
+        if(isAStructureSelected)
+        {
+            structureTemplate = Instantiate(structureTemplate, ObjectSnapper.SnapToGridCell(hit.point, GridConstants.Instance.FloatCellSize()), Quaternion.Euler(0, 0, 0));
+            isAStructureSelected = false;
+        }
+        void destroyPreviousAndPrepareNew(GameObject structure)
+        {
+            Destroy(structureTemplate);
+            structureTemplate = structure;
+            isAStructureSelected = true;
+        }
+    }
 }

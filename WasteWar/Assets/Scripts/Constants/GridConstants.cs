@@ -50,7 +50,6 @@ namespace Constants
                 Instance = this;
                 DontDestroyOnLoad(gameObject);
             }
-
             else
             {
                 Destroy(gameObject);
