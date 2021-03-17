@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 public class Zoom : MonoBehaviour
 {
+
     private const int ZOOM_TICKS_PER_FRAME = 10;
 
     [SerializeField]
@@ -12,20 +13,16 @@ public class Zoom : MonoBehaviour
     [SerializeField]
     private Transform rotationRoute;
 
-    public float tRot = 0;
 
+    public float tRot = 0;
     public float tPos = 0;
 
     private Vector3 p1;
-
     private Vector3 p2;
-
     private Vector3 p3;
-
     private Vector3 p4;
 
     private int zoomInTicks = ZOOM_TICKS_PER_FRAME;
-
     private int zoomOutTicks = ZOOM_TICKS_PER_FRAME;
 
     void Start()
