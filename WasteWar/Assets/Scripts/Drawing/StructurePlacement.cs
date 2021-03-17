@@ -8,7 +8,7 @@ public class StructurePlacement : MonoBehaviour
     [SerializeField]
     private Camera cam;
     [SerializeField]
-    private GameObject drawingScripts;
+    private DrawOnTerrain drawOnTerrain;
     
     private RaycastHit hit;
     private Ray ray;
@@ -22,7 +22,7 @@ public class StructurePlacement : MonoBehaviour
 
     void Start()
     {
-        terrainCanvas = drawingScripts.GetComponent<DrawOnTerrain>();
+        terrainCanvas = drawOnTerrain;
         terrainSize = terrain.GetComponent<Terrain>().terrainData.size;
         structureGrid = new StructureGrid(terrainSize.x,terrainSize.z, GridConstants.Instance.FloatCellSize());
     }
