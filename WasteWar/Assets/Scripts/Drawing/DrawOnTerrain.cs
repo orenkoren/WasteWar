@@ -1,8 +1,8 @@
 ﻿
+using Constants;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
-using Constants;
-
 
 public class DrawOnTerrain : MonoBehaviour
 {
@@ -15,6 +15,22 @@ public class DrawOnTerrain : MonoBehaviour
     public Vector3 TemplateStructureSize { get; private set; }
     private readonly List<GameObject> Structures = new List<GameObject>();
     private bool IsAStructureSelected = false;
+
+    private void Start()
+    {
+        GameEvents.DrawStateChangedListeners += DestroyPreviousAndPrepareNew;
+    }
+
+    private void DestroyPreviousAndPrepareNew(object sender, DrawData data)
+    {
+        print("hpo");
+        Destroy(TemplateStructure);
+        TemplateStructure = Instantiate(data.StructurePrefab,
+                            ObjectSnapper.SnapToGridCell(data.StructureLocation, GridConstants.Instance.FloatCellSize()),
+                            Quaternion.Euler(GameConstants.Instance.DEFAULT_OBJECT_ROTATION));
+        IsAStructureSelected = true;
+        TemplateStructureSize = TemplateStructure.GetComponent<Renderer>().bounds.size;
+    }
 
     public void DrawStructure(Vector3 snapLoc)
     {
@@ -33,12 +49,12 @@ public class DrawOnTerrain : MonoBehaviour
             {
                 switch (key)
                 {
-                    case KeyCode.B:
-                        destroyPreviousAndPrepareNew(structurePrefab1);
-                        break;
-                    case KeyCode.C:
-                        destroyPreviousAndPrepareNew(structurePrefab2);
-                        break;
+                    //case KeyCode.B:
+                    //    destroyPreviousAndPrepareNew(structurePrefab1);
+                    //    break;
+                    //case KeyCode.C:
+                    //    destroyPreviousAndPrepareNew(structurePrefab2);
+                    //    break;
                     case KeyCode.Escape:
                         Destroy(TemplateStructure);
                         IsAStructureSelected = false;
@@ -48,12 +64,9 @@ public class DrawOnTerrain : MonoBehaviour
         }
         return IsAStructureSelected;
 
-        void destroyPreviousAndPrepareNew(GameObject structure)
+        void DestroyPreviousAndPrepareNew(object sender, GameObject structure)
         {
-            Destroy(TemplateStructure);
-            TemplateStructure = Instantiate(structure, ObjectSnapper.SnapToGridCell(structLoc, GridConstants.Instance.FloatCellSize()), Quaternion.Euler(GameConstants.Instance.DEFAULT_OBJECT_ROTATION));
-            IsAStructureSelected = true;
-            TemplateStructureSize = TemplateStructure.GetComponent<Renderer>().bounds.size;
+            
         }
     }
     public void SetTemplateStructureColor(Color color)
@@ -66,8 +79,14 @@ public class DrawOnTerrain : MonoBehaviour
         TemplateStructure.transform.position = ObjectSnapper.SnapToGridCell(pos, GridConstants.Instance.FloatCellSize(), TemplateStructureSize);
     }
 
-    public void DestroyTemplateStructure(){
+    public void DestroyTemplateStructure()
+    {
         Destroy(TemplateStructure);
-        IsAStructureSelected = false;         
-        }
+        IsAStructureSelected = false;
+    }
+
+    private void DoSomething(object sender, int something)
+    {
+       
+    }
 }
