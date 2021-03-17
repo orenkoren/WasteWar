@@ -4,10 +4,8 @@ namespace Constants
 {
     public class GameKeys : MonoBehaviour
     {
-        public KeyCode[] StructureKeybinds { get; private set; } = new KeyCode[] { KeyCode.B, KeyCode.C, KeyCode.Escape };
+        public KeyCode[] StructureKeybinds { get; private set; } = new KeyCode[] { KeyCode.B, KeyCode.C,KeyCode.X, KeyCode.Escape };
         //KeyCode[] MenuKeybinds = new KeyCode[] { KeyCode.Escape };
-
-
         public static GameKeys Instance { get; private set; }
 
         private void Awake()
