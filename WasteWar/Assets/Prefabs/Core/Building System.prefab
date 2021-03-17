@@ -46,7 +46,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   terrain: {fileID: 0}
   cam: {fileID: 0}
-  drawingScripts: {fileID: 0}
+  drawOnTerrain: {fileID: 1849861851773692179}
 --- !u!114 &1849861851773692179
 MonoBehaviour:
   m_ObjectHideFlags: 0
