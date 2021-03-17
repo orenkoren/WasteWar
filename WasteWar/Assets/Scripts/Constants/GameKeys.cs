@@ -6,8 +6,6 @@ namespace Constants
     {
         public KeyCode[] StructureKeybinds { get; private set; } = new KeyCode[] { KeyCode.B, KeyCode.C,KeyCode.X, KeyCode.Escape };
         //KeyCode[] MenuKeybinds = new KeyCode[] { KeyCode.Escape };
-
-
         public static GameKeys Instance { get; private set; }
 
         private void Awake()
