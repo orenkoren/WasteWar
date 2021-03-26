@@ -1,6 +1,5 @@
-﻿using UnityEngine;
-using Constants;
-using System;
+﻿using Constants;
+using UnityEngine;
 
 public class StructurePlacement : MonoBehaviour
 {
