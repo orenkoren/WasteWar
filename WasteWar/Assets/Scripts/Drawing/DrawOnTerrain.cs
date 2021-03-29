@@ -6,67 +6,65 @@ using UnityEngine;
 
 public class DrawOnTerrain : MonoBehaviour
 {
-    [SerializeField]
-    private GameObject structurePrefab1;
-    [SerializeField]
-    private GameObject structurePrefab2;
-
     public GameObject TemplateStructure { get; set; }
     public Vector3 TemplateStructureSize { get; private set; }
+    public bool IsAStructureToBuildSelected { get; private set; } = false;
+
     private readonly List<GameObject> Structures = new List<GameObject>();
-    private bool IsAStructureSelected = false;
+    private bool isCellOccupied;
 
-    private void Start()
+    public bool IsCellOccupied
     {
-        GameEvents.DrawStateChangedListeners += DestroyPreviousAndPrepareNew;
+        get { return isCellOccupied; }
+        set { isCellOccupied = value; }
+    } 
+
+    void Start()
+    {
+        GameEvents.TemplateSelectedListeners += DestroyPreviousAndPrepareNewTemplate;
+        GameEvents.StructurePlacedListeners += DrawStructure;
+    }
+    void Update()
+    {
+        
     }
 
-    private void DestroyPreviousAndPrepareNew(object sender, DrawData data)
+    private void DestroyPreviousAndPrepareNewTemplate(object sender, TemplateData data)
     {
-        print("hpo");
         Destroy(TemplateStructure);
-        TemplateStructure = Instantiate(data.StructurePrefab,
-                            ObjectSnapper.SnapToGridCell(data.StructureLocation, GridConstants.Instance.FloatCellSize()),
-                            Quaternion.Euler(GameConstants.Instance.DEFAULT_OBJECT_ROTATION));
-        IsAStructureSelected = true;
-        TemplateStructureSize = TemplateStructure.GetComponent<Renderer>().bounds.size;
-    }
-
-    public void DrawStructure(Vector3 snapLoc)
-    {
-        TemplateStructure.GetComponent<MeshRenderer>().material.SetColor("_Color", Color.white);
-        Structures.Add(Instantiate(TemplateStructure, ObjectSnapper.SnapToGridCell(
-            snapLoc,
-            GridConstants.Instance.FloatCellSize(), TemplateStructureSize),
-            Quaternion.Euler(GameConstants.Instance.DEFAULT_OBJECT_ROTATION)
-            ));
-    }
-    public bool DrawTemplateStructure(Vector3 structLoc)
-    {
-        foreach (var key in GameKeys.Instance.StructureKeybinds)
+        if (data.IsSelected)
         {
-            if (Input.GetKey(key))
-            {
-                switch (key)
-                {
-                    //case KeyCode.B:
-                    //    destroyPreviousAndPrepareNew(structurePrefab1);
-                    //    break;
-                    //case KeyCode.C:
-                    //    destroyPreviousAndPrepareNew(structurePrefab2);
-                    //    break;
-                    case KeyCode.Escape:
-                        Destroy(TemplateStructure);
-                        IsAStructureSelected = false;
-                        break;
-                }
-            }
+            TemplateStructure = Instantiate(data.TemplateStructure,
+                                ObjectSnapper.SnapToGridCell(data.mousePos, GridConstants.Instance.FloatCellSize()),
+                                Quaternion.Euler(GameConstants.Instance.DEFAULT_OBJECT_ROTATION));
+            IsAStructureToBuildSelected = true;
+            TemplateStructureSize = TemplateStructure.GetComponent<Renderer>().bounds.size;
         }
-        return IsAStructureSelected;
+        else
+            IsAStructureToBuildSelected = false;
+    }
 
-        void DestroyPreviousAndPrepareNew(object sender, GameObject structure)
-        {
-            
+    public void DrawTemplateStructure(Vector3 loc)
+    {
+            if (!isCellOccupied)
+                SetTemplateStructureColor(Color.green);
+            else
+                SetTemplateStructureColor(Color.red);
+        SetTemplateStructurePos(loc);
+    }
+
+    public void DrawStructure(object sender, Vector3 mousePos)
+    {
+        if (IsAStructureToBuildSelected == true && !IsCellOccupied)
+        { 
+            TemplateStructure.GetComponent<MeshRenderer>().material.SetColor("_Color", Color.white);
+            Structures.Add(Instantiate(TemplateStructure, ObjectSnapper.SnapToGridCell(
+                mousePos,
+                GridConstants.Instance.FloatCellSize(), TemplateStructureSize),
+                Quaternion.Euler(GameConstants.Instance.DEFAULT_OBJECT_ROTATION)
+                ));
+            Destroy(TemplateStructure);
+            IsAStructureToBuildSelected = false;
         }
     }
     public void SetTemplateStructureColor(Color color)
@@ -77,16 +75,5 @@ public class DrawOnTerrain : MonoBehaviour
     public void SetTemplateStructurePos(Vector3 pos)
     {
         TemplateStructure.transform.position = ObjectSnapper.SnapToGridCell(pos, GridConstants.Instance.FloatCellSize(), TemplateStructureSize);
-    }
-
-    public void DestroyTemplateStructure()
-    {
-        Destroy(TemplateStructure);
-        IsAStructureSelected = false;
-    }
-
-    private void DoSomething(object sender, int something)
-    {
-       
     }
 }
