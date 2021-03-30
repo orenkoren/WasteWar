@@ -26,8 +26,8 @@ public class EnemySpawnerSystem : ComponentSystem
                 hasCreated = true;
             });
         }
-        Entities.ForEach((ref Attacker entity) =>
-            MoveToRandomLocation(entity.entity));
+        //Entities.ForEach((ref Attacker entity) =>
+        //    MoveToRandomLocation(entity.entity));
     }
 
     private void SpawnEntities(EnemySpawnerComponent prefab, int spawnAmount)
@@ -41,9 +41,9 @@ public class EnemySpawnerSystem : ComponentSystem
 
     private void MoveToRandomLocation(Entity enemy)
     {
-        //EntityManager.SetComponentData(enemy, new Translation
-        //{
-        //    Value = new float3(random.NextFloat(0, 100), 0, random.NextFloat(0, 100))
-        //});
+        EntityManager.SetComponentData(enemy, new Translation
+        {
+            Value = new float3(random.NextFloat(0, 100), 2, random.NextFloat(0, 100))
+        });
     }
 }

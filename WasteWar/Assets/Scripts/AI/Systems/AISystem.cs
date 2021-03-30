@@ -1,44 +1,35 @@
-﻿using Reese.Nav;
+﻿using Unity.Burst;
 using Unity.Entities;
+using Unity.Jobs;
+using Unity.Physics;
+using Unity.Physics.Systems;
+using Unity.Transforms;
 using UnityEngine;
-using UnityEngine.AI;
 
 public class AISystem : ComponentSystem
 {
-    public struct AIGroup : IComponentData
+    private Translation playerBasePosition;
+
+    protected override void OnStartRunning()
     {
-        public Attacker attacker;
-        public NavAgentAuthoring agent;
+        base.OnStartRunning();
+        Entities.WithAny<PlayerBase>().ForEach((ref Translation translation) =>
+        {
+            playerBasePosition = translation;
+        });
     }
 
+    [BurstCompile]
     protected override void OnUpdate()
     {
-        //Entities.ForEach((ref AIGroup group) =>
-        //{
-        //    Vector3 agentPosition = group.agent.transform.position;
-        //    if (HasTarget(group.agent, group))
-        //    {
-        //        //group.agent.(FindTarget(group.agent, group));
-        //        Vector3 hit = FindTarget(group.agent, group);
-        //        EntityManager.AddComponentData(GetSingletonEntity<NavAgent>(), new NavDestination
-        //        {
-        //            WorldPoint = hit,
-        //            Teleport = false
-        //        });
-        //    }
-        //});
-    }
-
-    private Vector3 FindTarget(NavAgentAuthoring ai, AIGroup group)
-    {
-        var target = Physics.SphereCastAll(ai.transform.position, group.attacker.aggroRadius, Vector3.up,
-                                            Attacker.CAST_DISTANCE_PLACEHOLDER, group.attacker.attackable)[0];
-        Debug.DrawLine(ai.transform.position, target.transform.position);
-        return target.transform.position;
-    }
-
-    private bool HasTarget(NavAgentAuthoring ai, AIGroup group)
-    {
-        return Physics.CheckSphere(ai.transform.position, group.attacker.aggroRadius, group.attacker.attackable);
+        Translation playerBase = playerBasePosition;
+        float deltaTime = Time.DeltaTime;
+        Entities.WithAll<Attacker>().ForEach((ref Attacker attacker, ref Translation attackerPos) =>
+        {
+            float step = attacker.speed * deltaTime;
+            attackerPos.Value = Vector3.MoveTowards(attackerPos.Value,
+                                            new Vector3(playerBase.Value.x,
+                                            attackerPos.Value.y, playerBase.Value.z), step);
+        });
     }
 }
