@@ -24,15 +24,11 @@ public class DrawOnTerrain : MonoBehaviour
         GameEvents.TemplateSelectedListeners += DestroyPreviousAndPrepareNewTemplate;
         GameEvents.StructurePlacedListeners += DrawStructure;
     }
-    void Update()
-    {
-        
-    }
 
     private void DestroyPreviousAndPrepareNewTemplate(object sender, TemplateData data)
     {
         Destroy(TemplateStructure);
-        if (data.IsSelected)
+        if (data.StructureType != StructureType.NONE)
         {
             TemplateStructure = Instantiate(data.TemplateStructure,
                                 ObjectSnapper.SnapToGridCell(data.mousePos, GridConstants.Instance.FloatCellSize()),
@@ -53,13 +49,13 @@ public class DrawOnTerrain : MonoBehaviour
         SetTemplateStructurePos(loc);
     }
 
-    public void DrawStructure(object sender, Vector3 mousePos)
+    public void DrawStructure(object sender, TemplateData data)
     {
         if (IsAStructureToBuildSelected == true && !IsCellOccupied)
         { 
             TemplateStructure.GetComponent<MeshRenderer>().material.SetColor("_Color", Color.white);
             Structures.Add(Instantiate(TemplateStructure, ObjectSnapper.SnapToGridCell(
-                mousePos,
+                data.mousePos,
                 GridConstants.Instance.FloatCellSize(), TemplateStructureSize),
                 Quaternion.Euler(GameConstants.Instance.DEFAULT_OBJECT_ROTATION)
                 ));

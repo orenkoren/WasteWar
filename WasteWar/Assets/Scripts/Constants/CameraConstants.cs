@@ -7,7 +7,7 @@ public class CameraConstants : MonoBehaviour
     public float MOVE_SPEED = 20f;
     public float ROTATION_SPEED = 60f;
     public float SCREEN_BORDER = 20f;
-    public float DEFAULT_HEIGHT = 5f;
+    public float DEFAULT_CAMERA_ALTITUDE = 5f;
     public float WORLD_BORDER = 10f;
     //method that relies on this variable fires on scrolling
     public float INITIAL_ZOOM_ANGLE_X_AXIS = 60f;

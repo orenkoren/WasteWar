@@ -10,12 +10,12 @@ public class MouseClickManager : MonoBehaviour
     private RaycastHit hit;
     private Ray ray;
     private Vector3 terrainSize;
-    private int TemplateStructureType { get; set; }
+    private TemplateData templateData;
 
     void Start()
     {
         terrainSize = terrain.terrainData.size;
-        GameEvents.TemplateSelectedTypeListeners += SetTemplateStructureType;
+        GameEvents.TemplateSelectedListeners += SetTemplateData;
     }
 
     void Update()
@@ -23,15 +23,17 @@ public class MouseClickManager : MonoBehaviour
         ray = cam.ScreenPointToRay(Input.mousePosition);
         if (
            Input.GetMouseButtonDown(0)
+           && templateData.StructureType!=StructureType.NONE
            && Physics.Raycast(ray, out hit, CameraConstants.Instance.RAYCAST_DISTANCE, LayerMasks.Instance.GROUND)
            && MathUtilBasic.CursorIsWithinBounds(hit.point, terrainSize)
            )
         {
-            GameEvents.FireStructurePlaced(this, hit.point,TemplateStructureType);
+            templateData.mousePos = hit.point;
+            GameEvents.FireStructurePlaced(this,templateData);
         }
     }
-    void SetTemplateStructureType(object sender, StructureType type)
+    void SetTemplateData(object sender, TemplateData data)
     {
-        TemplateStructureType = (int)type; 
+        templateData = data; 
     }
 }

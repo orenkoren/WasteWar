@@ -16,11 +16,11 @@ public class Building : Structure
     }
 }
 
-public class Tower : Structure
+public class Turret : Structure
 {
     public int PollutionIndex { get; set; }
 
-    public Tower()
+    public Turret()
     {
         Health = 200;
         Armor = 0;

@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 
 //edge case, when  we put a big building at the top/right/top-right edge (for self reference)
-public class GameGrid : MonoBehaviour
+public class GameGrid 
 {
+    private const int KEY_HELPER = 1000;
+
     private float CellSize { get; set; }
 
     private int[,] GridCoordinates { get; set; }
@@ -11,32 +13,34 @@ public class GameGrid : MonoBehaviour
     private Dictionary<int, Structure> Structures;
     private Dictionary<int, Resource> Resources;
 
-    private void Start()
-    {
-        GameEvents.StructurePlacedListeners += AddStructure;
-    }
-
     public GameGrid(float xSize, float zSize, float cellSizeInInspector)
     {
+        GameEvents.StructurePlacedListeners += AddObjectToGameGrid;
         this.CellSize = cellSizeInInspector;
         GridCoordinates = new int[(int)(xSize / CellSize), (int)(zSize / CellSize)];
         Structures = new Dictionary<int, Structure>();
         Resources = new Dictionary<int, Resource>();
     }
 
-    public void AddStructure(object sender,Vector3 pos, Vector3 buildingSize, int structureType)
+    public void AddObjectToGameGrid(object sender,TemplateData data)
     {
-        // how many fields along X[] or Z[] the building takes 
-        int XGridSize;
-        int YGridSize;
+        Vector3 templateSize = data.TemplateStructure.GetComponent<Renderer>().bounds.size;
 
-        XYSize(out XGridSize,out YGridSize, buildingSize);
+        if (!IsGridCellFilled(data.mousePos, templateSize))
+        {
+            // how many fields along X[] or Z[] the building takes 
+            int XGridSize;
+            int YGridSize;
 
-        GridCoords gridPos = GetNearestCellOnGrid(pos);    
+            XYSize(out XGridSize, out YGridSize, data.TemplateStructure.GetComponent<Renderer>().bounds.size);
 
-        for (int i = 0; i < XGridSize; i++)
-            for (int j = 0; j < YGridSize; j++)
-                GridCoordinates[gridPos.X + i, gridPos.Y + j] = 1;
+            GridCoords gridPos = GetNearestCellOnGrid(data.mousePos);
+            Structures.Add(gridPos.X*KEY_HELPER+gridPos.Y, GenerateStructure(data.StructureType, gridPos));
+            //fill all nearby cells to the nearestcellongrid
+            for (int i = 0; i < XGridSize; i++)
+                for (int j = 0; j < YGridSize; j++)
+                    GridCoordinates[gridPos.X + i, gridPos.Y + j] = 1;
+        }
     }
 
     //TODO work on edge case when placing a structure at the edge of the map (might aswell just make edge unplayable area)
@@ -53,6 +57,20 @@ public class GameGrid : MonoBehaviour
                 if (GridCoordinates[gridPos.X + i , gridPos.Y + j]==1)
                     return true;
         return false;
+    }
+    private Structure GenerateStructure(StructureType type,GridCoords gridPos)
+    {
+        switch (type)
+        {
+            case (StructureType.BUILDING):
+                return new Building();
+            case (StructureType.TURRET):
+                return new Turret();
+            case (StructureType.WALL):
+                return new Wall();
+            default:
+                return null;
+        }
     }
 
     private GridCoords GetNearestCellOnGrid(Vector3 pos)

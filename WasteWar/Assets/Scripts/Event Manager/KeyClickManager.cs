@@ -35,17 +35,16 @@ public class KeyClickManager : MonoBehaviour
                     switch (key)
                     {
                         case KeyCode.B:
-                            GameEvents.FireTemplateSelected(this, new TemplateData { TemplateStructure = prefabBuilding, mousePos = hit.point, IsSelected = true, StructureType=StructureType.BUILDING});
-                            GameEvents.FireTemplateSelectedType(this, StructureType.BUILDING );
+                            GameEvents.FireTemplateSelected(this, new TemplateData { TemplateStructure = prefabBuilding, mousePos = hit.point, StructureType=StructureType.BUILDING});
                             break;
                         case KeyCode.V:
-                            GameEvents.FireTemplateSelected(this, new TemplateData { TemplateStructure = prefabTurret, mousePos = hit.point, IsSelected = true, StructureType = StructureType.TURRET });
+                            GameEvents.FireTemplateSelected(this, new TemplateData { TemplateStructure = prefabTurret, mousePos = hit.point, StructureType = StructureType.TURRET });
                             break;
                         case KeyCode.C:
-                            GameEvents.FireTemplateSelected(this, new TemplateData { TemplateStructure = prefabWall, mousePos = hit.point, IsSelected = true, StructureType = StructureType.WALL });
+                            GameEvents.FireTemplateSelected(this, new TemplateData { TemplateStructure = prefabWall, mousePos = hit.point, StructureType = StructureType.WALL });
                             break;
                         case KeyCode.Escape:
-                            GameEvents.FireTemplateSelected(this, new TemplateData { TemplateStructure = null, mousePos = new Vector3( 0, 0, 0 ), IsSelected = false });
+                            GameEvents.FireTemplateSelected(this, new TemplateData { TemplateStructure = null, mousePos = new Vector3( 0, 0, 0 ), StructureType = StructureType.NONE });
                             break;
                     }
                 }

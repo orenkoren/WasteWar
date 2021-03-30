@@ -8,18 +8,16 @@ public class StructurePlacement : MonoBehaviour
     [SerializeField]
     private Camera cam;
     [SerializeField] 
-    private DrawOnTerrain drawOnTerrain;
+    private DrawOnTerrain terrainCanvas;
 
     private RaycastHit hit;
     private Ray ray;
 
     private GameGrid gameGrid;
     private Vector3 terrainSize;
-    private DrawOnTerrain terrainCanvas;
 
     void Start()
     {
-        terrainCanvas = drawOnTerrain;
         terrainSize = terrain.GetComponent<Terrain>().terrainData.size;
         gameGrid = new GameGrid(terrainSize.x, terrainSize.z, GridConstants.Instance.FloatCellSize());
     }
@@ -39,10 +37,5 @@ public class StructurePlacement : MonoBehaviour
 
         if (terrainCanvas.IsAStructureToBuildSelected)
             terrainCanvas.DrawTemplateStructure(hit.point);
-  
-        if (Input.GetMouseButtonDown(0) && terrainCanvas.IsAStructureToBuildSelected == true && !terrainCanvas.IsCellOccupied) // make a FinalBuildingManager 
-        {
-            gameGrid.AddStructure(hit.point, terrainCanvas.TemplateStructureSize);
-        }
     }
 }

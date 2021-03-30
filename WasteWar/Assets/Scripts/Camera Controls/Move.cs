@@ -12,7 +12,10 @@ public class Move : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        terrainSize = terrain.terrainData.size;
         CenterCamera();
+
+        //this probably won't work if you resize the game window at runtime
         ScreenAndMapValues.Initializer(Screen.height - CameraConstants.Instance.SCREEN_BORDER,
                                           CameraConstants.Instance.SCREEN_BORDER,
                                           Screen.width - CameraConstants.Instance.SCREEN_BORDER,
@@ -55,11 +58,9 @@ public class Move : MonoBehaviour
             cam.position = MoveXZ(cam.position, -cam.right);
     }
 
-
     private void CenterCamera()
     {
-        terrainSize = terrain.terrainData.size;
-        cam.position = new Vector3(terrainSize.x / 2, CameraConstants.Instance.DEFAULT_HEIGHT, terrainSize.z / 2);
+        cam.position = new Vector3(terrainSize.x / 2, CameraConstants.Instance.DEFAULT_CAMERA_ALTITUDE, terrainSize.z / 2);
     }
     private Vector3 MoveXZ(Vector3 pos,Vector3 directionVec)
     {

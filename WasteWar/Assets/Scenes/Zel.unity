@@ -219,18 +219,6 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 1849861851791104705}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &511535924
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 511535923}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f64b3b739ca85c54fa2b678495f4a7fb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &511535928
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -441,6 +429,11 @@ PrefabInstance:
       propertyPath: CELL_SIZE
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 3139353389990836420, guid: cae28d4f55bdaa9498d1a7230f8eec30,
+        type: 3}
+      propertyPath: DEFAULT_CAMERA_ALTITUDE
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 3139353389990836421, guid: cae28d4f55bdaa9498d1a7230f8eec30,
         type: 3}
       propertyPath: m_RootOrder
@@ -528,7 +521,7 @@ PrefabInstance:
     - target: {fileID: 3827050943749171814, guid: cea69143681596441bb7681d57708275,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 2
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 3827050943749171814, guid: cea69143681596441bb7681d57708275,
         type: 3}
