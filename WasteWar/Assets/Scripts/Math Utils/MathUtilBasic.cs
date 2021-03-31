@@ -31,4 +31,14 @@ public static class MathUtilBasic {
             Mathf.Pow(t, 3) * p4;
     }
 
+    public static bool CursorIsWithinBounds(Vector3 hitLocation, Vector3 terrainSize)
+    {
+        int failedConditions = 0;
+        //TODO unnecessary to go through all 1, should short circuit if any condition is true
+        failedConditions = hitLocation.x > terrainSize.x- CameraConstants.Instance.WORLD_BORDER ? (failedConditions + 1) : failedConditions;
+        failedConditions = hitLocation.x < CameraConstants.Instance.WORLD_BORDER ? (failedConditions + 1) : failedConditions;
+        failedConditions = hitLocation.z > terrainSize.z- CameraConstants.Instance.WORLD_BORDER ? (failedConditions + 1) : failedConditions;
+        failedConditions = hitLocation.z < CameraConstants.Instance.WORLD_BORDER ? (failedConditions + 1) : failedConditions;
+        return failedConditions == 0;
+    }
 }
