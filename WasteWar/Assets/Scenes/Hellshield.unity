@@ -291,6 +291,18 @@ Camera:
     type: 3}
   m_PrefabInstance: {fileID: 1923881991}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &557486197 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1849861851773692179, guid: d6d2e458b16140b4c91811f4c792bc87,
+    type: 3}
+  m_PrefabInstance: {fileID: 1702378554}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6a46ef4434e839f4cb6ab795f6a8dd67, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &584779517
 GameObject:
   m_ObjectHideFlags: 0
@@ -820,6 +832,11 @@ PrefabInstance:
       propertyPath: terrain
       value: 
       objectReference: {fileID: 1409040946}
+    - target: {fileID: 1849861851773692177, guid: d6d2e458b16140b4c91811f4c792bc87,
+        type: 3}
+      propertyPath: terrainCanvas
+      value: 
+      objectReference: {fileID: 557486197}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d6d2e458b16140b4c91811f4c792bc87, type: 3}
 --- !u!4 &1782672711 stripped

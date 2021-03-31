@@ -1,4 +1,5 @@
-﻿public enum CellSize
+﻿//only used for visualization of the grid, not for any game logic
+public enum CellSize
 {
     QUARTER,
     THIRD,

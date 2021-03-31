@@ -14,6 +14,8 @@ public class MouseClickManager : MonoBehaviour
 
     void Start()
     {
+        templateData = new TemplateData();
+
         terrainSize = terrain.terrainData.size;
         GameEvents.TemplateSelectedListeners += SetTemplateData;
     }
@@ -32,8 +34,9 @@ public class MouseClickManager : MonoBehaviour
             GameEvents.FireStructurePlaced(this,templateData);
         }
     }
-    void SetTemplateData(object sender, TemplateData data)
+    private void SetTemplateData(object sender, TemplateData data)
     {
         templateData = data; 
     }
+
 }

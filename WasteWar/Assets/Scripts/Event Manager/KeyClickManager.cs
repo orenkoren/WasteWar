@@ -16,11 +16,9 @@ public class KeyClickManager : MonoBehaviour
 
     private RaycastHit hit;
     private Ray ray;
-    private Vector3 terrainSize;
 
     private void Start()
     {
-        terrainSize = terrain.terrainData.size;
     }
 
     void Update()
@@ -30,7 +28,8 @@ public class KeyClickManager : MonoBehaviour
             if (Input.GetKeyDown(key))
             {
                 ray = cam.ScreenPointToRay(Input.mousePosition);
-                if (Physics.Raycast(ray, out hit, CameraConstants.Instance.RAYCAST_DISTANCE, LayerMasks.Instance.GROUND) && MathUtilBasic.CursorIsWithinBounds(hit.point, terrainSize))
+                if (Physics.Raycast(ray, out hit, CameraConstants.Instance.RAYCAST_DISTANCE, LayerMasks.Instance.GROUND) 
+                    && MathUtilBasic.CursorIsWithinBounds(hit.point, terrain.terrainData.size))
                 {
                     switch (key)
                     {

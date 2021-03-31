@@ -219,6 +219,18 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 1849861851791104705}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &511535925 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1849861851773692179, guid: d6d2e458b16140b4c91811f4c792bc87,
+    type: 3}
+  m_PrefabInstance: {fileID: 1849861851791104705}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 511535923}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6a46ef4434e839f4cb6ab795f6a8dd67, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &511535928
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -415,7 +427,29 @@ PrefabInstance:
       propertyPath: terrain
       value: 
       objectReference: {fileID: 1321402549}
-    m_RemovedComponents: []
+    - target: {fileID: 1849861851773692177, guid: d6d2e458b16140b4c91811f4c792bc87,
+        type: 3}
+      propertyPath: terrainCanvas
+      value: 
+      objectReference: {fileID: 511535925}
+    - target: {fileID: 1849861851773692179, guid: d6d2e458b16140b4c91811f4c792bc87,
+        type: 3}
+      propertyPath: cam
+      value: 
+      objectReference: {fileID: 562481417}
+    - target: {fileID: 1849861851773692179, guid: d6d2e458b16140b4c91811f4c792bc87,
+        type: 3}
+      propertyPath: terrain
+      value: 
+      objectReference: {fileID: 1321402549}
+    - target: {fileID: 1849861851773692179, guid: d6d2e458b16140b4c91811f4c792bc87,
+        type: 3}
+      propertyPath: resourceGrid
+      value: 
+      objectReference: {fileID: 11400000, guid: f8a44e992cb724c48af9467458164c22,
+        type: 2}
+    m_RemovedComponents:
+    - {fileID: 1849861851773692177, guid: d6d2e458b16140b4c91811f4c792bc87, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: d6d2e458b16140b4c91811f4c792bc87, type: 3}
 --- !u!1001 &3139353388431884742
 PrefabInstance:
@@ -427,17 +461,27 @@ PrefabInstance:
     - target: {fileID: 3139353389990836418, guid: cae28d4f55bdaa9498d1a7230f8eec30,
         type: 3}
       propertyPath: CELL_SIZE
-      value: 1
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 3139353389990836420, guid: cae28d4f55bdaa9498d1a7230f8eec30,
         type: 3}
       propertyPath: DEFAULT_CAMERA_ALTITUDE
-      value: 5
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 3139353389990836421, guid: cae28d4f55bdaa9498d1a7230f8eec30,
         type: 3}
       propertyPath: m_RootOrder
       value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 3139353389990836421, guid: cae28d4f55bdaa9498d1a7230f8eec30,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3139353389990836421, guid: cae28d4f55bdaa9498d1a7230f8eec30,
+        type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3139353389990836421, guid: cae28d4f55bdaa9498d1a7230f8eec30,
         type: 3}
@@ -568,6 +612,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Camera Parent
       objectReference: {fileID: 0}
+    - target: {fileID: 3827050943825874320, guid: cea69143681596441bb7681d57708275,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -20
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: cea69143681596441bb7681d57708275, type: 3}
 --- !u!1001 &5035339239263798065
@@ -586,6 +635,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: GridVisualization
+      objectReference: {fileID: 0}
+    - target: {fileID: 5035339239777450417, guid: bb80aa11f0ba418459ccb1bacab0ce16,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5035339239777450418, guid: bb80aa11f0ba418459ccb1bacab0ce16,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5035339239777450421, guid: bb80aa11f0ba418459ccb1bacab0ce16,
         type: 3}
