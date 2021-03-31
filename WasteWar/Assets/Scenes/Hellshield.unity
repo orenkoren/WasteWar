@@ -229,11 +229,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 3139353389990836420, guid: cae28d4f55bdaa9498d1a7230f8eec30,
-        type: 3}
-      propertyPath: DEFAULT_HEIGHT
-      value: 20
-      objectReference: {fileID: 0}
     - target: {fileID: 3139353389990836421, guid: cae28d4f55bdaa9498d1a7230f8eec30,
         type: 3}
       propertyPath: m_RootOrder
@@ -780,7 +775,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b57356614c43cc94e904621d7fd171a0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  prefabEnemy: {fileID: 2363916051410778117, guid: 9f1b616cb035b7d45b0628fd32cd068b,
+  prefabEnemy: {fileID: 2363916051410778117, guid: 9961613b6f23f8e4285260b25918bc76,
     type: 3}
   spawnAmount: 10000
 --- !u!114 &1523105821
@@ -856,6 +851,21 @@ PrefabInstance:
       propertyPath: terrain
       value: 
       objectReference: {fileID: 1409040946}
+    - target: {fileID: 1484518420, guid: d6d2e458b16140b4c91811f4c792bc87, type: 3}
+      propertyPath: prefabWall
+      value: 
+      objectReference: {fileID: 5945110931214094937, guid: 982dba650d3c0314a97d006aeab7f20a,
+        type: 3}
+    - target: {fileID: 1484518420, guid: d6d2e458b16140b4c91811f4c792bc87, type: 3}
+      propertyPath: prefabTurret
+      value: 
+      objectReference: {fileID: 1221063325293802509, guid: 00874071ff0b09f4fa30e98f9d912ab1,
+        type: 3}
+    - target: {fileID: 1484518420, guid: d6d2e458b16140b4c91811f4c792bc87, type: 3}
+      propertyPath: prefabBuilding
+      value: 
+      objectReference: {fileID: 8265789795041056996, guid: 18d18376a73078247a4b65fdd0292f9e,
+        type: 3}
     - target: {fileID: 1849861851773692174, guid: d6d2e458b16140b4c91811f4c792bc87,
         type: 3}
       propertyPath: m_Name
@@ -926,6 +936,22 @@ PrefabInstance:
       propertyPath: terrain
       value: 
       objectReference: {fileID: 1409040946}
+    - target: {fileID: 1849861851773692179, guid: d6d2e458b16140b4c91811f4c792bc87,
+        type: 3}
+      propertyPath: cam
+      value: 
+      objectReference: {fileID: 217181595}
+    - target: {fileID: 1849861851773692179, guid: d6d2e458b16140b4c91811f4c792bc87,
+        type: 3}
+      propertyPath: terrain
+      value: 
+      objectReference: {fileID: 1409040946}
+    - target: {fileID: 1849861851773692179, guid: d6d2e458b16140b4c91811f4c792bc87,
+        type: 3}
+      propertyPath: resourceGrid
+      value: 
+      objectReference: {fileID: 11400000, guid: f8a44e992cb724c48af9467458164c22,
+        type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d6d2e458b16140b4c91811f4c792bc87, type: 3}
 --- !u!1001 &1923881991

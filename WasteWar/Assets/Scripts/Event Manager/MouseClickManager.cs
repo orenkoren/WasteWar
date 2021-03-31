@@ -39,4 +39,9 @@ public class MouseClickManager : MonoBehaviour
         templateData = data; 
     }
 
+    private void OnDestroy()
+    {
+        GameEvents.TemplateSelectedListeners -= SetTemplateData;
+    }
+
 }

@@ -81,6 +81,7 @@ public class DrawOnTerrain : MonoBehaviour
                 Quaternion.Euler(GameConstants.Instance.DEFAULT_OBJECT_ROTATION)
                 ));
             Destroy(TemplateStructure);
+            data.StructureType = StructureType.NONE;
         }
     }
     public void SetTemplateStructureColor(Color color)
@@ -119,5 +120,11 @@ public class DrawOnTerrain : MonoBehaviour
         }
         //TODO fix  https://gyazo.com/e6b8e9aa69ffeeafe03f0e3b2f1a970c
         terrain.terrainData.SetAlphamaps(mapX, mapZ, splatMapData);
+    }
+
+    private void OnDestroy()
+    {
+        GameEvents.TemplateSelectedListeners -= DestroyPreviousAndPrepareNewTemplate;
+        GameEvents.StructurePlacedListeners -= DrawStructure;
     }
 }
