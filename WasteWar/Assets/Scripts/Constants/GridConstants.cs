@@ -1,19 +1,8 @@
 ﻿using UnityEngine;
-
 namespace Constants
 {
     public class GridConstants : MonoBehaviour
     {
-        public enum CellSize
-        {
-            QUARTER,
-            THIRD,
-            HALF,
-            ONE,
-            TWO,
-            FOUR
-        }
-
         public CellSize CELL_SIZE;
 
         public float FloatCellSize()

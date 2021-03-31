@@ -46,7 +46,7 @@ public class TerrainGridMesh : MonoBehaviour
     }
 
     private void DrawLines(Mesh mesh,List<Vector3> verticies,List<int> indicies) {
-        MeshFilter filter = gameObject.GetComponent<MeshFilter>();
+        MeshFilter filter = gameObject.AddComponent<MeshFilter>();
         
         mesh.vertices = verticies.ToArray();
         mesh.SetIndices(indicies.ToArray(), MeshTopology.Lines, 0);
