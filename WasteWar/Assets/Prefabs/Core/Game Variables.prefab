@@ -50,7 +50,7 @@ MonoBehaviour:
   MOVE_SPEED: 20
   ROTATION_SPEED: 60
   SCREEN_BORDER: 20
-  DEFAULT_CAMERA_ALTITUDE: 5
+  DEFAULT_CAMERA_ALTITUDE: 20
   WORLD_BORDER: 10
   INITIAL_ZOOM_ANGLE_X_AXIS: 60
   TILT_SPEED: 1.25
@@ -110,6 +110,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a34d5eedb1276684dada6b796ebceb1f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  IGNORE_RAYCAST: 0
-  GROUND: 0
-  ATTACKABLE: 0
