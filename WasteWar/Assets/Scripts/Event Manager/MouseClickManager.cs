@@ -27,7 +27,7 @@ public class MouseClickManager : MonoBehaviour
            Input.GetMouseButtonDown(0)
            && templateData.StructureType!=StructureType.NONE
            && Physics.Raycast(ray, out hit, CameraConstants.Instance.RAYCAST_DISTANCE, LayerMasks.Instance.GROUND)
-           && MathUtilBasic.CursorIsWithinBounds(hit.point, terrainSize)
+           && MathUtils.CursorIsWithinBounds(hit.point, terrainSize)
            )
         {
             templateData.mousePos = hit.point;

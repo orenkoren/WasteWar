@@ -5,33 +5,30 @@ using UnityEngine;
 public class DrawOnTerrain : MonoBehaviour
 {
     private const int KEY_GENERATOR = 10000;
-
     private const int TEXTURE_WIDTH = 6;
-
     private const int TEXTURE_HEIGHT = 6;
 
     [SerializeField]
     private Camera cam;
-
     [SerializeField]
     private Terrain terrain;
 
     public GameObject TemplateStructure { get; set; }
     public Vector3 TemplateStructureSize { get; private set; }
+
     private RaycastHit hit;
     private Ray ray;
     private ResourceGrid Resources;
-    private readonly List<GameObject> Structures = new List<GameObject>();
+    private List<GameObject> Structures = new List<GameObject>();
 
     void Start()
     {
-
         GameEvents.TemplateSelectedListeners += DestroyPreviousAndPrepareNewTemplate;
         GameEvents.StructurePlacedListeners += DrawStructure;
 
         drawTerrainTexture();
         Resources = new ResourceGrid(terrain.terrainData.size);
-        foreach (var resource in Resources.Resources)
+        foreach (var resource in Resources.Nodes)
             drawResourceTextures((float)(resource.Key / KEY_GENERATOR), (float)(resource.Key % KEY_GENERATOR));
     }
 
@@ -39,7 +36,7 @@ public class DrawOnTerrain : MonoBehaviour
     {
         ray = cam.ScreenPointToRay(Input.mousePosition);
         if (Physics.Raycast(ray, out hit, CameraConstants.Instance.RAYCAST_DISTANCE, LayerMasks.Instance.GROUND)
-            && TemplateStructure != null && MathUtilBasic.CursorIsWithinBounds(hit.point, terrain.terrainData.size))
+            && TemplateStructure != null && MathUtils.CursorIsWithinBounds(hit.point, terrain.terrainData.size))
             DrawTemplateStructureAt(hit.point);
     }
 
@@ -59,11 +56,14 @@ public class DrawOnTerrain : MonoBehaviour
         {
             TemplateStructure.GetComponent<MeshRenderer>().material.SetColor("_Color", Color.white);
             TemplateStructure.layer = LayerMasks.Instance.ATTACKABLE_LAYER;
-            Structures.Add(Instantiate(TemplateStructure, ObjectSnapper.SnapToGridCell(
+            var Structure= Instantiate(TemplateStructure, ObjectSnapper.SnapToGridCell(
                 data.mousePos,
                 GridConstants.Instance.FloatCellSize(), TemplateStructureSize),
                 Quaternion.Euler(GameConstants.Instance.DEFAULT_OBJECT_ROTATION)
-                ));
+                );
+            Structure.GetComponent<BuildingData>().IsTemplate = false;
+            Structure.GetComponent<BuildingData>().Resources = Resources;
+            Structures.Add(Structure);
             Destroy(TemplateStructure);
             data.StructureType = StructureType.NONE;
         }
@@ -140,7 +140,8 @@ public class DrawOnTerrain : MonoBehaviour
     }
 
     private void OnDestroy()
-    {
+    {  // why unsubscribe here and not inside ResourceGrid destructor??
+        GameEvents.MouseOverListeners -= Resources.ShowCurrentResourceAmount;
         GameEvents.TemplateSelectedListeners -= DestroyPreviousAndPrepareNewTemplate;
         GameEvents.StructurePlacedListeners -= DrawStructure;
     }

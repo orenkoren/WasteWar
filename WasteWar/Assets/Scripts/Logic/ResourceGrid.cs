@@ -2,32 +2,31 @@
 using Random = UnityEngine.Random;
 using System.Collections.Generic;
 
-[CreateAssetMenu(fileName = "Resource Grid", menuName = "Scriptable Objects")]
 public class ResourceGrid
 {
     private const float STOPPING_PROBABILITY = 0.01f;
-    private const int MIN_RESOURCES = 50;
-    private const int KEY_GENERATOR = 10000;
-    GridCoords gridSize;
-    public Dictionary<int, Resource> Resources { get; private set; } = new Dictionary<int, Resource>();
+    private const int MIN_NODES = 50;
+    GridUtils.GridCoords gridSize;
+    public Dictionary<int, Resource> Nodes { get; private set; } = new Dictionary<int, Resource>();
 
     public ResourceGrid(Vector3 terrainSize)
     {
-        gridSize = Vector3ToGridCoord(terrainSize);
-        GenerateResources();
+        GameEvents.MouseOverListeners += ShowCurrentResourceAmount;
+        gridSize = GridUtils.Vector3ToGridCoord(terrainSize);
+        GenerateNodes();
     }
 
-    private void GenerateResources()
+    private void GenerateNodes()
     {
-        int x = Random.Range(0, gridSize.X - (int)CameraConstants.Instance.WORLD_BORDER);
-        int y = Random.Range(0, gridSize.Y - (int)CameraConstants.Instance.WORLD_BORDER);
+        int x = Random.Range((int)CameraConstants.Instance.WORLD_BORDER, gridSize.X - (int)CameraConstants.Instance.WORLD_BORDER);
+        int y = Random.Range((int)CameraConstants.Instance.WORLD_BORDER, gridSize.Y - (int)CameraConstants.Instance.WORLD_BORDER);
         int i = 0;
-        HashSet<GridCoords> available = new HashSet<GridCoords>();
+        HashSet<GridUtils.GridCoords> available = new HashSet<GridUtils.GridCoords>();
 
         AddCoal(x, y);
         AddNeighbours(available, x, y);
 
-        while (Random.Range(0f, 1f) < (1 - STOPPING_PROBABILITY) || i < MIN_RESOURCES)
+        while (Random.Range(0f, 1f) < (1 - STOPPING_PROBABILITY) || i < MIN_NODES)
         {
             var index = Random.Range(0, available.Count);
 
@@ -46,62 +45,49 @@ public class ResourceGrid
 
             AddCoal(x, y);
             AddNeighbours(available, x, y);
-            available.Remove(new GridCoords(x, y));
+            available.Remove(new GridUtils.GridCoords(x, y));
             i++;
         }
     }
 
     private void AddCoal(int x, int y)
     {
-        if (!Resources.ContainsKey((x) * KEY_GENERATOR + y))
-            Resources.Add(x * KEY_GENERATOR + y, new Coal());
+        if (!Nodes.ContainsKey((x) * MathUtils.DICT_KEY_GENERATOR+ y))
+            Nodes.Add(x * MathUtils.DICT_KEY_GENERATOR + y, new Coal());
     }
 
-
-    private void AddNeighbours(HashSet<GridCoords> available, int x, int y)
+    private void AddNeighbours(HashSet<GridUtils.GridCoords> available, int x, int y)
     {
-        if (!Resources.ContainsKey((x + 1) * KEY_GENERATOR + y) && checkXYValidity(x + 1, y))
+        if (!Nodes.ContainsKey((x + 1) * MathUtils.DICT_KEY_GENERATOR + y) && checkXYValidity(x + 1, y))
         {
-            available.Add(new GridCoords(x + 1, y));
+            available.Add(new GridUtils.GridCoords(x + 1, y));
         }
-        if (!Resources.ContainsKey((x - 1) * KEY_GENERATOR + y) && checkXYValidity(x - 1, y))
+        if (!Nodes.ContainsKey((x - 1) * MathUtils.DICT_KEY_GENERATOR + y) && checkXYValidity(x - 1, y))
         {
-            available.Add(new GridCoords(x - 1, y));
+            available.Add(new GridUtils.GridCoords(x - 1, y));
         }
-        if (!Resources.ContainsKey(x * KEY_GENERATOR + (y + 1)) && checkXYValidity(x, y + 1))
+        if (!Nodes.ContainsKey(x * MathUtils.DICT_KEY_GENERATOR + (y + 1)) && checkXYValidity(x, y + 1))
         {
-            available.Add(new GridCoords(x, y + 1));
+            available.Add(new GridUtils.GridCoords(x, y + 1));
         }
-        if (!Resources.ContainsKey(x * KEY_GENERATOR + (y - 1)) && checkXYValidity(x, y - 1))
+        if (!Nodes.ContainsKey(x * MathUtils.DICT_KEY_GENERATOR + (y - 1)) && checkXYValidity(x, y - 1))
         {
-            available.Add(new GridCoords(x, y - 1));
+            available.Add(new GridUtils.GridCoords(x, y - 1));
         }
     }
 
-    private GridCoords Vector3ToGridCoord(Vector3 pos)
-    {
-        int x = Mathf.FloorToInt(pos.x);
-        int z = Mathf.FloorToInt(pos.z);
-
-        GridCoords gridPos = new GridCoords(x, z);
-
-        return gridPos;
-    }
     private bool checkXYValidity(int x, int y)
     {
-        return ((x >= 0 && x <= gridSize.X - (int)CameraConstants.Instance.WORLD_BORDER) && (y >= 0 && y <= gridSize.Y - (int)CameraConstants.Instance.WORLD_BORDER));
+        return ((x >= (int)CameraConstants.Instance.WORLD_BORDER && x <= gridSize.X - (int)CameraConstants.Instance.WORLD_BORDER) && 
+            (y >= (int)CameraConstants.Instance.WORLD_BORDER && y <= gridSize.Y - (int)CameraConstants.Instance.WORLD_BORDER));
     }
-}
-
-public struct GridCoords
-{
-    public int X { get; private set; }
-    public int Y { get; private set; }
-
-    public GridCoords(int x, int y)
+    //TODO refactor, improve by only checking if mouse is over a resource, also how to unsubscribe without making this public
+    public void ShowCurrentResourceAmount(object sender,Vector3 hitPoint)
     {
-        this.X = x;
-        this.Y = y;
+        var gridCoord = GridUtils.Vector3ToGridCoord(hitPoint);
+        int key = gridCoord.X * MathUtils.DICT_KEY_GENERATOR + gridCoord.Y;
+
+        //if (Nodes.ContainsKey(key))
+          //  Debug.Log(Nodes[key].Count);
     }
 }
-

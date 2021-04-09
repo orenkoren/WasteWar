@@ -51,9 +51,9 @@ public class Zoom : MonoBehaviour
         while (cam.rotation.eulerAngles.x > CameraConstants.Instance.INITIAL_ZOOM_ANGLE_X_AXIS)
         {
             tPos = AdjustParameter(CameraConstants.Instance.INCREMENT_T, tPos, CameraConstants.TRANSLATION);
-            cam.position = MathUtilBasic.CalcCurrPosAlongTheCurve(tPos, p1, p2, p3, p4);
+            cam.position = MathUtils.CalcCurrPosAlongTheCurve(tPos, p1, p2, p3, p4);
             tRot = AdjustParameter(CameraConstants.Instance.INCREMENT_T, tRot, CameraConstants.TILT);
-            cam.rotation = MathUtilBasic.CalcRotationChangeAlongTheCurve(tRot, rotationRoute.GetChild(0), rotationRoute.GetChild(1));
+            cam.rotation = MathUtils.CalcRotationChangeAlongTheCurve(tRot, rotationRoute.GetChild(0), rotationRoute.GetChild(1));
         }
     }
 
@@ -79,9 +79,9 @@ public class Zoom : MonoBehaviour
     private void TiltAndMoveAlongCurve(bool isToBeInCremented)
     {
         tPos = AdjustParameter(isToBeInCremented, tPos, CameraConstants.TRANSLATION);
-        cam.position = MathUtilBasic.CalcCurrPosAlongTheCurve(tPos, p1, p2, p3, p4);
+        cam.position = MathUtils.CalcCurrPosAlongTheCurve(tPos, p1, p2, p3, p4);
         tRot = AdjustParameter(isToBeInCremented, tRot, CameraConstants.TILT);
-        cam.rotation = MathUtilBasic.CalcRotationChangeAlongTheCurve(tRot, rotationRoute.GetChild(0), rotationRoute.GetChild(1));
+        cam.rotation = MathUtils.CalcRotationChangeAlongTheCurve(tRot, rotationRoute.GetChild(0), rotationRoute.GetChild(1));
     }
 
     private void TiltAndMoveAlongCurvePerTick()
