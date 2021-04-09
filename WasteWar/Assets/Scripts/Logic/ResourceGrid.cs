@@ -2,32 +2,37 @@
 using Random = UnityEngine.Random;
 using System.Collections.Generic;
 
-[CreateAssetMenu(fileName ="Resource Grid", menuName ="Scriptable Objects")]
-public class ResourceGrid : ScriptableObject
+[CreateAssetMenu(fileName = "Resource Grid", menuName = "Scriptable Objects")]
+public class ResourceGrid
 {
     private const float STOPPING_PROBABILITY = 0.01f;
     private const int MIN_RESOURCES = 50;
     private const int KEY_GENERATOR = 10000;
+    GridCoords gridSize;
+    public Dictionary<int, Resource> Resources { get; private set; } = new Dictionary<int, Resource>();
 
-
-    private Dictionary<int, Resource> Resources = new Dictionary<int, Resource>();
-
-    public Dictionary<int,Resource> GenerateResources(Vector3 terrainSize)
+    public ResourceGrid(Vector3 terrainSize)
     {
-        GridCoords gridSize = Vector3ToGridCoord(terrainSize);
-        int x= Random.Range(0, gridSize.X- (int)CameraConstants.Instance.WORLD_BORDER);
-        int y = Random.Range(0, gridSize.Y - (int)CameraConstants.Instance.WORLD_BORDER); ; 
+        gridSize = Vector3ToGridCoord(terrainSize);
+        GenerateResources();
+    }
+
+    private void GenerateResources()
+    {
+        int x = Random.Range(0, gridSize.X - (int)CameraConstants.Instance.WORLD_BORDER);
+        int y = Random.Range(0, gridSize.Y - (int)CameraConstants.Instance.WORLD_BORDER);
         int i = 0;
         HashSet<GridCoords> available = new HashSet<GridCoords>();
 
         AddCoal(x, y);
-        AddNeighbours(available,x, y);
+        AddNeighbours(available, x, y);
 
-        while (Random.Range(0f, 1f) < 1 - STOPPING_PROBABILITY || i < MIN_RESOURCES)
+        while (Random.Range(0f, 1f) < (1 - STOPPING_PROBABILITY) || i < MIN_RESOURCES)
         {
             var index = Random.Range(0, available.Count);
 
             int j = 0;
+            // TODO refactor, unnecessarily looping til reaching the element
             foreach (var element in available)
             {
                 if (j == index)
@@ -40,34 +45,34 @@ public class ResourceGrid : ScriptableObject
             }
 
             AddCoal(x, y);
-            AddNeighbours(available,x, y);
+            AddNeighbours(available, x, y);
             available.Remove(new GridCoords(x, y));
             i++;
         }
-        return Resources;
     }
 
     private void AddCoal(int x, int y)
     {
-        Resources.Add(x * KEY_GENERATOR + y, new Coal());
+        if (!Resources.ContainsKey((x) * KEY_GENERATOR + y))
+            Resources.Add(x * KEY_GENERATOR + y, new Coal());
     }
 
 
-    private void AddNeighbours(HashSet<GridCoords> available,int x,int y)
-{
-        if (!Resources.ContainsKey( (x + 1) * KEY_GENERATOR + y  ))
+    private void AddNeighbours(HashSet<GridCoords> available, int x, int y)
+    {
+        if (!Resources.ContainsKey((x + 1) * KEY_GENERATOR + y) && checkXYValidity(x + 1, y))
         {
-            available.Add(new GridCoords(x + 1 ,y));
+            available.Add(new GridCoords(x + 1, y));
         }
-        if (!Resources.ContainsKey( (x - 1) * KEY_GENERATOR + y ))
+        if (!Resources.ContainsKey((x - 1) * KEY_GENERATOR + y) && checkXYValidity(x - 1, y))
         {
             available.Add(new GridCoords(x - 1, y));
         }
-        if (!Resources.ContainsKey( x * KEY_GENERATOR + (y + 1) ))
+        if (!Resources.ContainsKey(x * KEY_GENERATOR + (y + 1)) && checkXYValidity(x, y + 1))
         {
             available.Add(new GridCoords(x, y + 1));
         }
-        if (!Resources.ContainsKey( x * KEY_GENERATOR + (y - 1) ))
+        if (!Resources.ContainsKey(x * KEY_GENERATOR + (y - 1)) && checkXYValidity(x, y - 1))
         {
             available.Add(new GridCoords(x, y - 1));
         }
@@ -81,6 +86,10 @@ public class ResourceGrid : ScriptableObject
         GridCoords gridPos = new GridCoords(x, z);
 
         return gridPos;
+    }
+    private bool checkXYValidity(int x, int y)
+    {
+        return ((x >= 0 && x <= gridSize.X - (int)CameraConstants.Instance.WORLD_BORDER) && (y >= 0 && y <= gridSize.Y - (int)CameraConstants.Instance.WORLD_BORDER));
     }
 }
 
