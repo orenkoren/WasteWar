@@ -5,8 +5,9 @@ using UnityEngine;
 public class DrawOnTerrain : MonoBehaviour
 {
     private const int KEY_GENERATOR = 10000;
-    private const int TEXTURE_WIDTH = 6;
-    private const int TEXTURE_HEIGHT = 6;
+    private const int CELL_TEXTURE_WIDTH = 6;
+    private const int CELL_TEXTURE_HEIGHT = 6;
+    private const int TEXTURE_LAYER_COUNT = 2;
 
     [SerializeField]
     private Camera cam;
@@ -23,13 +24,17 @@ public class DrawOnTerrain : MonoBehaviour
 
     void Start()
     {
-        GameEvents.TemplateSelectedListeners += DestroyPreviousAndPrepareNewTemplate;
-        GameEvents.StructurePlacedListeners += DrawStructure;
-
-        drawTerrainTexture();
         Resources = new ResourceGrid(terrain.terrainData.size);
+
+        GameEvents.TemplateSelectedListeners += DestroyPreviousAndPrepareNewTemplate;
+        GameEvents.NodeUsedUpListeners += UpdateTerrainTexture;
+        GameEvents.LeftClickPressedListeners += DrawStructure;
+        GameEvents.RightClickPressedListeners += DeleteStructure;
+        GameEvents.MouseOverListeners += Resources.ShowCurrentResourceAmount;
+
+        DrawTerrainTexture();
         foreach (var resource in Resources.Nodes)
-            drawResourceTextures((float)(resource.Key / KEY_GENERATOR), (float)(resource.Key % KEY_GENERATOR));
+            DrawResourceTextureOnTerrain((float)(resource.Key / KEY_GENERATOR), (float)(resource.Key % KEY_GENERATOR));
     }
 
     void Update()
@@ -42,7 +47,7 @@ public class DrawOnTerrain : MonoBehaviour
 
     public void DrawTemplateStructureAt(Vector3 loc)
     {
-        if (checkIfLocationIsFree())
+        if (CheckIfLocationIsFree())
             SetTemplateStructureColor(Color.green);
         else
             SetTemplateStructureColor(Color.red);
@@ -50,31 +55,40 @@ public class DrawOnTerrain : MonoBehaviour
     }
 
     //TODO fix placement near edges of the map
-    public void DrawStructure(object sender, TemplateData data)
+    private void DrawStructure(object sender, TemplateData data)
     {
-        if (data.StructureType != StructureType.NONE && checkIfLocationIsFree())
+        if (data.StructureType != StructureType.NONE && CheckIfLocationIsFree())
         {
             TemplateStructure.GetComponent<MeshRenderer>().material.SetColor("_Color", Color.white);
             TemplateStructure.layer = LayerMasks.Instance.ATTACKABLE_LAYER;
-            var Structure= Instantiate(TemplateStructure, ObjectSnapper.SnapToGridCell(
+            var Structure = Instantiate(TemplateStructure, ObjectSnapper.SnapToGridCell(
                 data.mousePos,
                 GridConstants.Instance.FloatCellSize(), TemplateStructureSize),
                 Quaternion.Euler(GameConstants.Instance.DEFAULT_OBJECT_ROTATION)
                 );
-            Structure.GetComponent<BuildingData>().IsTemplate = false;
-            Structure.GetComponent<BuildingData>().Resources = Resources;
+
+            if (data.StructureType == StructureType.BUILDING)
+            {
+                Structure.GetComponent<BuildingData>().IsTemplate = false;
+                Structure.GetComponent<BuildingData>().Resources = Resources;
+            }
             Structures.Add(Structure);
             Destroy(TemplateStructure);
             data.StructureType = StructureType.NONE;
         }
     }
+    private void DeleteStructure(object sender, RaycastHit data)
+    {
+        Structures.Remove(data.collider.gameObject);
+        Destroy(data.collider.gameObject);
+    }
 
-    public void SetTemplateStructureColor(Color color)
+    private void SetTemplateStructureColor(Color color)
     {
         TemplateStructure.GetComponent<MeshRenderer>().material.SetColor("_Color", color);
     }
 
-    public void SetTemplateStructurePos(Vector3 pos)
+    private void SetTemplateStructurePos(Vector3 pos)
     {
         TemplateStructure.transform.position = ObjectSnapper.SnapToGridCell(pos, GridConstants.Instance.FloatCellSize(), TemplateStructureSize);
     }
@@ -94,55 +108,71 @@ public class DrawOnTerrain : MonoBehaviour
             Destroy(TemplateStructure);
     }
 
-    private bool checkIfLocationIsFree()
+    private bool CheckIfLocationIsFree()
     {
         return !Physics.CheckBox(TemplateStructure.GetComponent<Collider>().bounds.center, TemplateStructure.GetComponent<Collider>().bounds.extents,
             TemplateStructure.transform.rotation, LayerMasks.Instance.ATTACKABLE);
     }
 
-    private void drawResourceTextures(float x, float z)
+    private void DrawResourceTextureOnTerrain(float x, float z)
     {
-        var terrainSize = terrain.GetComponent<Terrain>().terrainData.size;
+        int textureWidth = CELL_TEXTURE_HEIGHT;
+        int textureHeight = CELL_TEXTURE_WIDTH;
 
-        //mapping texture coords to world coords
-        int mapX = (int)((x / terrain.terrainData.size.x) * terrain.terrainData.alphamapWidth);
-        int mapZ = (int)((z / terrain.terrainData.size.z) * terrain.terrainData.alphamapHeight);
-
-        //arg 1 height, arg 2 width, arg3 layer count
-        float[,,] splatMapData = new float[TEXTURE_WIDTH, TEXTURE_HEIGHT, 2];
-
-        for (int i = 0; i < TEXTURE_WIDTH; i++)
-        {
-            for (int j = 0; j < TEXTURE_HEIGHT; j++)
-            {
-                splatMapData[i, j, 0] = 0;
-                splatMapData[i, j, 1] = 1;
-            }
-        }
-        terrain.terrainData.SetAlphamaps(mapX, mapZ, splatMapData);
+        GridUtils.GridCoords start =MapTextureCoordToWorldCoord(x, z);
+        TexturePlacer(start, new GridUtils.GridCoords(textureWidth, textureHeight),false);
     }
 
     //has to be called on every run, because otherwise the terrain texture doesn't reset
-    private void drawTerrainTexture()
+    private void DrawTerrainTexture()
     {
-        float[,,] splatMapData = new float[512, 512, 2];
+        int textureWidth = 512;
+        int textureHeight = 512;
 
-        for (int i = 0; i < 512; i++)
+        TexturePlacer(new GridUtils.GridCoords(0, 0), new GridUtils.GridCoords(textureWidth, textureHeight),true);
+    }
+    private void UpdateTerrainTexture(object sender, int locationKey)
+    {
+        int x = locationKey / KEY_GENERATOR;
+        int y = locationKey % KEY_GENERATOR;
+        int textureWidth = CELL_TEXTURE_HEIGHT;
+        int textureHeight = CELL_TEXTURE_WIDTH;
+
+        GridUtils.GridCoords start = MapTextureCoordToWorldCoord(x, y);
+        TexturePlacer(start, new GridUtils.GridCoords(textureWidth, textureHeight), true);
+    }
+
+    private void TexturePlacer(GridUtils.GridCoords start,GridUtils.GridCoords dimensions,bool resource)
+    {
+        //arg 1 height, arg 2 width, arg3 layer count
+        float[,,] splatMapData = new float[dimensions.X, dimensions.Y, TEXTURE_LAYER_COUNT];
+
+        for (int i = 0; i < dimensions.X; i++)
         {
-            for (int j = 0; j < 512; j++)
-            {
-                splatMapData[i, j, 0] = 1;
-                splatMapData[i, j, 1] = 0;
+            for (int j = 0; j < dimensions.Y; j++)
+            {//layer 0 opacity 0% layer 1 opacity 100%
+                splatMapData[i, j, 0] = resource ? 1 : 0;
+                splatMapData[i, j, 1] = resource ? 0 : 1;
             }
         }
+        terrain.terrainData.SetAlphamaps(start.X, start.Y, splatMapData);
+    }
 
-        terrain.terrainData.SetAlphamaps(0, 0, splatMapData);
+    private GridUtils.GridCoords MapTextureCoordToWorldCoord(float x, float z)
+    {
+        //mapping texture coords to world terrain coords
+        int mapX = (int)((x / terrain.terrainData.size.x) * terrain.terrainData.alphamapWidth);
+        int mapY = (int)((z / terrain.terrainData.size.z) * terrain.terrainData.alphamapHeight);
+
+        return new GridUtils.GridCoords(mapX, mapY);
     }
 
     private void OnDestroy()
     {  // why unsubscribe here and not inside ResourceGrid destructor??
-        GameEvents.MouseOverListeners -= Resources.ShowCurrentResourceAmount;
         GameEvents.TemplateSelectedListeners -= DestroyPreviousAndPrepareNewTemplate;
-        GameEvents.StructurePlacedListeners -= DrawStructure;
+        GameEvents.NodeUsedUpListeners -= UpdateTerrainTexture;
+        GameEvents.LeftClickPressedListeners -= DrawStructure;
+        GameEvents.RightClickPressedListeners -= DeleteStructure;
+        GameEvents.MouseOverListeners -= Resources.ShowCurrentResourceAmount;
     }
 }

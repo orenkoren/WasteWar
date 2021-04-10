@@ -15,7 +15,6 @@ public class MouseClickManager : MonoBehaviour
     void Start()
     {
         templateData = new TemplateData();
-
         terrainSize = terrain.terrainData.size;
         GameEvents.TemplateSelectedListeners += SetTemplateData;
     }
@@ -25,15 +24,25 @@ public class MouseClickManager : MonoBehaviour
         ray = cam.ScreenPointToRay(Input.mousePosition);
         if (
            Input.GetMouseButtonDown(0)
-           && templateData.StructureType!=StructureType.NONE
+           && templateData.StructureType != StructureType.NONE
            && Physics.Raycast(ray, out hit, CameraConstants.Instance.RAYCAST_DISTANCE, LayerMasks.Instance.GROUND)
            && MathUtils.CursorIsWithinBounds(hit.point, terrainSize)
            )
         {
             templateData.mousePos = hit.point;
-            GameEvents.FireStructurePlaced(this,templateData);
+            GameEvents.FireLeftClickPressed(this, templateData);
+        }
+        else if  (
+          Input.GetMouseButtonDown(1)
+          && templateData.StructureType == StructureType.NONE
+          && Physics.Raycast(ray, out hit, CameraConstants.Instance.RAYCAST_DISTANCE, LayerMasks.Instance.ATTACKABLE)
+          && MathUtils.CursorIsWithinBounds(hit.point, terrainSize)
+          )
+        {
+            GameEvents.FireRightClickPressed(this, hit);
         }
     }
+
     private void SetTemplateData(object sender, TemplateData data)
     {
         templateData = data; 

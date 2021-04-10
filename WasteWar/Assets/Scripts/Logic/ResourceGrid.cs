@@ -6,12 +6,13 @@ public class ResourceGrid
 {
     private const float STOPPING_PROBABILITY = 0.01f;
     private const int MIN_NODES = 50;
-    GridUtils.GridCoords gridSize;
+
     public Dictionary<int, Resource> Nodes { get; private set; } = new Dictionary<int, Resource>();
+
+    private GridUtils.GridCoords gridSize;
 
     public ResourceGrid(Vector3 terrainSize)
     {
-        GameEvents.MouseOverListeners += ShowCurrentResourceAmount;
         gridSize = GridUtils.Vector3ToGridCoord(terrainSize);
         GenerateNodes();
     }

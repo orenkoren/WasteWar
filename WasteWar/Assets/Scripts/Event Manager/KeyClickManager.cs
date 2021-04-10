@@ -40,7 +40,6 @@ public class KeyClickManager : MonoBehaviour
                         case KeyCode.B:
                             GameEvents.FireTemplateSelected(this, new TemplateData { TemplateStructure = prefabBuilding, mousePos = hit.point, StructureType = StructureType.BUILDING});
                             break;
-
                         //TODO turret placement doesn't work (other placements do) (because of Turret components or something)... fix.
                         case KeyCode.V:
                             GameEvents.FireTemplateSelected(this, new TemplateData { TemplateStructure = prefabTurret, mousePos = hit.point, StructureType = StructureType.TURRET });
