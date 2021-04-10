@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 3139353389990836417}
   - component: {fileID: -4036671332743198193}
   m_Layer: 0
-  m_Name: Game Variables
+  m_Name: GameVariables
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -72,7 +72,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b0466b2ab26365645b8206af790cd55b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CELL_SIZE: 1
+  CELL_SIZE: 3
 --- !u!114 &3139353389990836416
 MonoBehaviour:
   m_ObjectHideFlags: 0
