@@ -28,6 +28,7 @@ public class ResourceGrid
         }
         while ((Random.Range(0f, 1f) < (1 - STOPPING_PROBABILITY_MAP)));
     }
+
     private void GenerateOneBlockOfResourcesAt(GridUtils.GridCoords loc)
     {
         HashSet<GridUtils.GridCoords> available = new HashSet<GridUtils.GridCoords>();
@@ -45,7 +46,7 @@ public class ResourceGrid
             var index = Random.Range(0, available.Count);
 
             int j = 0;
-            // todo refactor, unnecessarily looping til reaching the element
+            // TODO refactor, unnecessarily looping til reaching the element, use a different data structure or smth
             foreach (var element in available)
             {
                 if (j == index)
