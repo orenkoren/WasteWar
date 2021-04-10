@@ -5,6 +5,7 @@ using Unity.Jobs;
 using Unity.Physics;
 using Unity.Physics.Systems;
 using Unity.Rendering;
+using Unity.Transforms;
 
 [UpdateInGroup(typeof(FixedStepSimulationSystemGroup))]
 [UpdateAfter(typeof(EndFramePhysicsSystem))]
@@ -14,7 +15,7 @@ public class AICollisionSystem : SystemBase
     StepPhysicsWorld m_StepPhysicsWorldSystem;
     EndSimulationEntityCommandBufferSystem m_EndSimulationEcbSystem;
     EntityQuery m_TriggerGravityGroup;
-    NativeList<Entity> entitiesToDestroy = new NativeList<Entity>(Allocator.Persistent);
+    NativeList<Entity> dynamicCollidedEntities = new NativeList<Entity>(Allocator.Persistent);
 
     protected override void OnCreate()
     {
@@ -46,25 +47,35 @@ public class AICollisionSystem : SystemBase
         Dependency = new CollisionJob
         {
             PhysicsVelocityGroup = GetComponentDataFromEntity<PhysicsVelocity>(),
-            EntitiesList = entitiesToDestroy
+            DynamicEntitiesList = dynamicCollidedEntities,
+            CurrentHealth = GetComponentDataFromEntity<PlayerBase>(),
+            Colliders = GetComponentDataFromEntity<PhysicsCollider>(),
+            Positions = GetComponentDataFromEntity<Translation>()
 
         }.Schedule(m_StepPhysicsWorldSystem.Simulation,
             ref m_BuildPhysicsWorldSystem.PhysicsWorld, Dependency);
 
-        var entities = entitiesToDestroy;
+        var dynamicEntitiesCurrentFrame = dynamicCollidedEntities;
         var ecb = m_EndSimulationEcbSystem.CreateCommandBuffer();
 
         Dependency = Job
             .WithBurst()
             .WithCode(() =>
             {
-                foreach (var entity in entities)
+                foreach (var entity in dynamicEntitiesCurrentFrame)
                 {
                     ecb.DestroyEntity(entity);
-
                 }
-                entities.Clear();
+                dynamicEntitiesCurrentFrame.Clear();
             }).Schedule(Dependency);
+
+        Dependency = Entities.
+            ForEach((Entity e, ref PlayerBase playerBase) =>
+            {
+                if (playerBase.Health <= 0)
+                    ecb.DestroyEntity(e);
+            }).Schedule(Dependency);
+
         m_EndSimulationEcbSystem.AddJobHandleForProducer(Dependency);
     }
 
@@ -73,7 +84,13 @@ public class AICollisionSystem : SystemBase
     {
         public ComponentDataFromEntity<PhysicsVelocity> PhysicsVelocityGroup;
 
-        public NativeList<Entity> EntitiesList;
+        public NativeList<Entity> DynamicEntitiesList;
+
+        public ComponentDataFromEntity<PlayerBase> CurrentHealth;
+
+        public ComponentDataFromEntity<PhysicsCollider> Colliders;
+
+        public ComponentDataFromEntity<Translation> Positions;
 
         public void Execute(CollisionEvent collisionEvent)
         {
@@ -81,17 +98,28 @@ public class AICollisionSystem : SystemBase
             Entity entityA = collisionEvent.EntityA;
             Entity entityB = collisionEvent.EntityB;
 
+            if (CurrentHealth.HasComponent(entityA))
+            {
+                CurrentHealth[entityA] = new PlayerBase { Health = CurrentHealth[entityA].Health - 1 };
+            }
+            else if (CurrentHealth.HasComponent(entityB))
+            {
+                CurrentHealth[entityB] = new PlayerBase { Health = CurrentHealth[entityB].Health - 1 };
+            }
+
             bool isBodyADynamic = PhysicsVelocityGroup.HasComponent(entityA);
             bool isBodyBDynamic = PhysicsVelocityGroup.HasComponent(entityB);
 
             if (isBodyADynamic)
             {
-                EntitiesList.Add(entityA);
+                DynamicEntitiesList.Add(entityA);
+                Positions[entityA] = new Translation { Value = new Unity.Mathematics.float3 { x = 0, y = -100, z = 0} };
 
             }
             else if (isBodyBDynamic)
             {
-                EntitiesList.Add(entityB);
+                DynamicEntitiesList.Add(entityB);
+                Positions[entityB] = new Translation { Value = new Unity.Mathematics.float3 { x = 0, y = -100, z = 0} };
             }
         }
     }
@@ -99,6 +127,6 @@ public class AICollisionSystem : SystemBase
     protected override void OnDestroy()
     {
         base.OnDestroy();
-        entitiesToDestroy.Dispose();
+        dynamicCollidedEntities.Dispose();
     }
 }

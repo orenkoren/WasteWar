@@ -787,7 +787,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   prefabEnemy: {fileID: 2363916051410778117, guid: 9961613b6f23f8e4285260b25918bc76,
     type: 3}
-  spawnAmount: 15000
+  spawnAmount: 10000
 --- !u!114 &1523105821
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1105,11 +1105,5 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 6129023971681488938, guid: 00874071ff0b09f4fa30e98f9d912ab1,
-        type: 3}
-      propertyPath: m_Material.m_CollisionResponse.m_Value
-      value: 1
-      objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 8752535509683542489, guid: 00874071ff0b09f4fa30e98f9d912ab1, type: 3}
+    m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 00874071ff0b09f4fa30e98f9d912ab1, type: 3}
