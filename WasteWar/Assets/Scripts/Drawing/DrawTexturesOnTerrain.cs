@@ -13,13 +13,13 @@ public class DrawTexturesOnTerrain : MonoBehaviour
 
     private void Start()
     {
-        DrawTerrainTexture();
         GameEvents.NodeUsedUpListeners += UpdateTerrainTexture;
         GameEvents.LoadingTerrainTexturesListeners += DrawAllResourceTexturesOnTerrain;
     }
 
     private void DrawAllResourceTexturesOnTerrain(object sender, ResourceGrid resources)
     {
+        DrawTerrainTexture();
         foreach (var resource in resources.Nodes)
             DrawResourceTextureOnTerrain((float)(resource.Key / KEY_GENERATOR), (float)(resource.Key % KEY_GENERATOR));
     }

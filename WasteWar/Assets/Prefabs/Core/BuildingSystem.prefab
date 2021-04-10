@@ -11,9 +11,8 @@ GameObject:
   - component: {fileID: 1849861851773692176}
   - component: {fileID: 1849861851773692177}
   - component: {fileID: 1849861851773692179}
-  - component: {fileID: 1484518420}
   m_Layer: 0
-  m_Name: Building System
+  m_Name: BuildingSystem
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -61,25 +60,3 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cam: {fileID: 0}
   terrain: {fileID: 0}
---- !u!114 &1484518420
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1849861851773692174}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7a9e06832c50fd544afa0f45831f8013, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  prefabBuilding: {fileID: 1578355824271295957, guid: 4347a3dd91d7c65488a728b326222b97,
-    type: 3}
-  prefabTurret: {fileID: 1221063325293802509, guid: 00874071ff0b09f4fa30e98f9d912ab1,
-    type: 3}
-  prefabWall: {fileID: 5945110931214094937, guid: 982dba650d3c0314a97d006aeab7f20a,
-    type: 3}
-  prefabBelt: {fileID: 7078359137997691094, guid: 6f045b0835802f543b5c6fa5a7b9d921,
-    type: 3}
-  terrain: {fileID: 0}
-  cam: {fileID: 0}
