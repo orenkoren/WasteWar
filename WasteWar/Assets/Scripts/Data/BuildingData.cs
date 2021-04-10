@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class BuildingData : MonoBehaviour
 {
+    [SerializeField]
+    private UnityEngine.UI.Text CubeTextComponent;
+
     private const int TOTAL_CAPACITY = 100;
     private const float STARTING_YIELD_SPEED = 1.1f;
 
@@ -21,7 +24,6 @@ public class BuildingData : MonoBehaviour
     private GridUtils.GridCoords buildingLoc;
     private GridUtils.GridCoords buildingSize;
     private int key;
-    private UnityEngine.UI.Text CubeTextComponent;
 
     public float YieldFrequency
     {
@@ -39,7 +41,6 @@ public class BuildingData : MonoBehaviour
     {
         if (!IsTemplate)
         {
-            CubeTextComponent = gameObject.transform.GetChild(0).GetChild(0).GetComponent<UnityEngine.UI.Text>();
             buildingLoc = GridUtils.Vector3ToGridCoord(gameObject.GetComponent<Collider>().bounds.min);
             buildingSize = GridUtils.Vector3ToGridCoord(gameObject.GetComponent<Collider>().bounds.size);
 
@@ -81,6 +82,6 @@ public class BuildingData : MonoBehaviour
 
     private bool CheckIfStorageFull()
     {
-        return _storage == TOTAL_CAPACITY;
+        return _storage >= TOTAL_CAPACITY;
     }
 }
