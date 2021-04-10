@@ -4,7 +4,8 @@ using System.Collections.Generic;
 
 public class ResourceGrid
 {
-    private const float STOPPING_PROBABILITY = 0.01f;
+    private const float STOPPING_PROBABILITY_BLOCK = 0.01f;
+    private const float STOPPING_PROBABILITY_MAP = 0.5f;
     private const int MIN_NODES = 50;
 
     public Dictionary<int, Resource> Nodes { get; private set; } = new Dictionary<int, Resource>();
@@ -14,25 +15,37 @@ public class ResourceGrid
     public ResourceGrid(Vector3 terrainSize)
     {
         gridSize = GridUtils.Vector3ToGridCoord(terrainSize);
-        GenerateNodes();
+        GenerateResourceNodes();
     }
 
-    private void GenerateNodes()
+    private void GenerateResourceNodes()
     {
-        int x = Random.Range((int)CameraConstants.Instance.WORLD_BORDER, gridSize.X - (int)CameraConstants.Instance.WORLD_BORDER);
-        int y = Random.Range((int)CameraConstants.Instance.WORLD_BORDER, gridSize.Y - (int)CameraConstants.Instance.WORLD_BORDER);
-        int i = 0;
-        HashSet<GridUtils.GridCoords> available = new HashSet<GridUtils.GridCoords>();
-
-        AddCoal(x, y);
-        AddNeighbours(available, x, y);
-
-        while (Random.Range(0f, 1f) < (1 - STOPPING_PROBABILITY) || i < MIN_NODES)
+        do
         {
+            int x = Random.Range((int)CameraConstants.Instance.WORLD_BORDER, gridSize.X - (int)CameraConstants.Instance.WORLD_BORDER);
+            int y = Random.Range((int)CameraConstants.Instance.WORLD_BORDER, gridSize.Y - (int)CameraConstants.Instance.WORLD_BORDER);
+            GenerateOneBlockOfResourcesAt(new GridUtils.GridCoords(x, y));
+        }
+        while ((Random.Range(0f, 1f) < (1 - STOPPING_PROBABILITY_MAP)));
+    }
+    private void GenerateOneBlockOfResourcesAt(GridUtils.GridCoords loc)
+    {
+        HashSet<GridUtils.GridCoords> available = new HashSet<GridUtils.GridCoords>();
+        available.Add(loc);
+        int i = 0;
+        
+        AddCoal(loc.X,loc.Y);
+        AddNeighbours(available, loc.X,loc.Y);
+
+        while (Random.Range(0f, 1f) < (1 - STOPPING_PROBABILITY_BLOCK) || i < MIN_NODES)
+        {
+            int x=0;
+            int y=0;
+
             var index = Random.Range(0, available.Count);
 
             int j = 0;
-            // TODO refactor, unnecessarily looping til reaching the element
+            // todo refactor, unnecessarily looping til reaching the element
             foreach (var element in available)
             {
                 if (j == index)
@@ -50,6 +63,7 @@ public class ResourceGrid
             i++;
         }
     }
+
 
     private void AddCoal(int x, int y)
     {

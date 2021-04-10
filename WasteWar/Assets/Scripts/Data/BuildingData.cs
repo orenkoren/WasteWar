@@ -1,6 +1,6 @@
 ﻿using System.Collections;
-using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine;
 
 public class BuildingData : MonoBehaviour
 {
@@ -30,7 +30,7 @@ public class BuildingData : MonoBehaviour
             return _yieldFrequency;
         }
         private set
-        {   
+        {
             _yieldFrequency -= _yieldFrequency * (value / 10);
         }
     }
@@ -50,19 +50,18 @@ public class BuildingData : MonoBehaviour
 
     private IEnumerator MineResource()
     {
-        while ( !CheckIfStorageFull() && AvailableResources.Count !=0)
+        while (!CheckIfStorageFull() && AvailableResources.Count != 0)
         {
-           CubeTextComponent.text=(++_storage).ToString();
-           key = AvailableResources.Peek();
+            CubeTextComponent.text = (++_storage).ToString();
+            key = AvailableResources.Peek();
 
-           Resources.Nodes[key].Count--;
+            Resources.Nodes[key].Count--;
             if (Resources.Nodes[key].Count == 0)
             {
                 Resources.Nodes.Remove(key);
                 GameEvents.FireNodeUsedUp(this, key);
                 AvailableResources.Pop();
             }
-
             yield return new WaitForSeconds(YieldFrequency);
         }
     }
