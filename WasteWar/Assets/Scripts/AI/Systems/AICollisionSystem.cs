@@ -54,7 +54,7 @@ public class AICollisionSystem : SystemBase
         var entities = entitiesToDestroy;
         var ecb = m_EndSimulationEcbSystem.CreateCommandBuffer();
 
-        var job = Job
+        Dependency = Job
             .WithBurst()
             .WithCode(() =>
             {
@@ -65,7 +65,7 @@ public class AICollisionSystem : SystemBase
                 }
                 entities.Clear();
             }).Schedule(Dependency);
-        m_EndSimulationEcbSystem.AddJobHandleForProducer(job);
+        m_EndSimulationEcbSystem.AddJobHandleForProducer(Dependency);
     }
 
     [BurstCompile]
