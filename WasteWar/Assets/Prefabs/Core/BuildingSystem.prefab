@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 1849861851773692176}
   - component: {fileID: 1849861851773692177}
   - component: {fileID: 1849861851773692179}
+  - component: {fileID: -4762582495274316724}
   m_Layer: 0
   m_Name: BuildingSystem
   m_TagString: Untagged
@@ -44,7 +45,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 019e4482eb5a9ea4d88e7ffe147fb1f4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  terrain: {fileID: 0}
+  terrain: {fileID: 5953220787626883585, guid: b5bbecf3a312c1c4d9d7ff9b1645ad64, type: 3}
   cam: {fileID: 0}
 --- !u!114 &1849861851773692179
 MonoBehaviour:
@@ -59,4 +60,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cam: {fileID: 0}
-  terrain: {fileID: 0}
+  terrain: {fileID: 5953220787626883585, guid: b5bbecf3a312c1c4d9d7ff9b1645ad64, type: 3}
+--- !u!114 &-4762582495274316724
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1849861851773692174}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: da800bb51ead0cc43bf17946af50c7d5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  terrain: {fileID: 5953220787626883585, guid: b5bbecf3a312c1c4d9d7ff9b1645ad64, type: 3}

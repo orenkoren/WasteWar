@@ -10,7 +10,9 @@ public class KeyClickManager : MonoBehaviour
     [SerializeField]
     private GameObject prefabWall;
     [SerializeField]
-    private GameObject prefabBelt;
+    private GameObject prefabPipe;
+    [SerializeField]
+    private GameObject prefabPowerPole;
     [SerializeField]
     private Terrain terrain;
     [SerializeField]
@@ -48,7 +50,10 @@ public class KeyClickManager : MonoBehaviour
                             GameEvents.FireTemplateSelected(this, new TemplateData { TemplateStructure = prefabWall, mousePos = hit.point, StructureType = StructureType.WALL });
                             break;
                         case KeyCode.X:
-                            GameEvents.FireTemplateSelected(this, new TemplateData { TemplateStructure = prefabBelt, mousePos = hit.point, StructureType = StructureType.BELT });
+                            GameEvents.FireTemplateSelected(this, new TemplateData { TemplateStructure = prefabPipe, mousePos = hit.point, StructureType = StructureType.PIPE });
+                            break;
+                        case KeyCode.Z:
+                            GameEvents.FireTemplateSelected(this, new TemplateData { TemplateStructure = prefabPowerPole, mousePos = hit.point, StructureType = StructureType.POWER_POLE });
                             break;
                         case KeyCode.Escape:
                             GameEvents.FireTemplateSelected(this, new TemplateData { TemplateStructure = null, mousePos = new Vector3( 0, 0, 0 ), StructureType = StructureType.NONE });

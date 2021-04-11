@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using UnityEngine;
 
 public class DrawTexturesOnTerrain : MonoBehaviour
@@ -6,7 +5,6 @@ public class DrawTexturesOnTerrain : MonoBehaviour
     [SerializeField]
     private Terrain terrain;
 
-    private const int KEY_GENERATOR = 10000;
     private const int CELL_TEXTURE_WIDTH = 6;
     private const int CELL_TEXTURE_HEIGHT = 6;
     private const int TEXTURE_LAYER_COUNT = 2;
@@ -21,7 +19,7 @@ public class DrawTexturesOnTerrain : MonoBehaviour
     {
         DrawTerrainTexture();
         foreach (var resource in resources.Nodes)
-            DrawResourceTextureOnTerrain((float)(resource.Key / KEY_GENERATOR), (float)(resource.Key % KEY_GENERATOR));
+            DrawResourceTextureOnTerrain((float)(resource.Key / MathUtils.DICT_KEY_GENERATOR), (float)(resource.Key % MathUtils.DICT_KEY_GENERATOR));
     }
 
     private void DrawResourceTextureOnTerrain(float x, float z)
@@ -43,8 +41,8 @@ public class DrawTexturesOnTerrain : MonoBehaviour
     }
     private void UpdateTerrainTexture(object sender, int locationKey)
     {
-        int x = locationKey / KEY_GENERATOR;
-        int y = locationKey % KEY_GENERATOR;
+        int x = locationKey / MathUtils.DICT_KEY_GENERATOR;
+        int y = locationKey % MathUtils.DICT_KEY_GENERATOR;
         int textureWidth = CELL_TEXTURE_HEIGHT;
         int textureHeight = CELL_TEXTURE_WIDTH;
 
