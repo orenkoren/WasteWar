@@ -15,7 +15,6 @@ GameObject:
   - component: {fileID: 1521603426145592602}
   - component: {fileID: 4420971390803298868}
   - component: {fileID: 5890337142878608216}
-  - component: {fileID: -1754754802003132615}
   m_Layer: 10
   m_Name: Enemy0
   m_TagString: Untagged
@@ -52,6 +51,7 @@ MonoBehaviour:
   entity: {fileID: 2363916051410778117}
   playerBase: {fileID: 1221063325293802509, guid: 00874071ff0b09f4fa30e98f9d912ab1,
     type: 3}
+  Health: 0
   speed: 7
 --- !u!114 &2363916051410778121
 MonoBehaviour:
@@ -308,17 +308,3 @@ MonoBehaviour:
         Tag07: 0
     m_SerializedVersion: 1
   m_SerializedVersion: 1
---- !u!114 &-1754754802003132615
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2363916051410778117}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9be0be142b0801c4d9bcda3cc09a574a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Mesh: {fileID: 10208, guid: 0000000000000000e000000000000000, type: 0}
-  Material: {fileID: 0}

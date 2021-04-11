@@ -14,7 +14,6 @@ public class AICollisionSystem : SystemBase
     BuildPhysicsWorld m_BuildPhysicsWorldSystem;
     StepPhysicsWorld m_StepPhysicsWorldSystem;
     EndSimulationEntityCommandBufferSystem m_EndSimulationEcbSystem;
-    EntityQuery m_TriggerGravityGroup;
     NativeList<Entity> dynamicCollidedEntities = new NativeList<Entity>(Allocator.Persistent);
 
     protected override void OnCreate()
@@ -25,25 +24,8 @@ public class AICollisionSystem : SystemBase
         m_EndSimulationEcbSystem = World.GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>();
     }
 
-    protected override void OnStartRunning()
-    {
-        base.OnStartRunning();
-        m_TriggerGravityGroup = GetEntityQuery(new EntityQueryDesc
-        {
-            All = new ComponentType[]
-           {
-                typeof(AICollisionComponent)
-           }
-        });
-    }
-
     protected override void OnUpdate()
     {
-        if (m_TriggerGravityGroup.CalculateEntityCount() == 0)
-        {
-            return;
-        }
-
         Dependency = new CollisionJob
         {
             PhysicsVelocityGroup = GetComponentDataFromEntity<PhysicsVelocity>(),
