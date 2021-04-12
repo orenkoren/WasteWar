@@ -25,6 +25,7 @@ public class DrawOnTerrain : MonoBehaviour
         GameEvents.LeftClickPressedListeners += DrawStructure;
         GameEvents.RightClickPressedListeners += DeleteStructure;
         GameEvents.MouseOverListeners += Resources.ShowCurrentResourceAmount;
+        GameEvents.BuildingRotationListeners += RotateTemplate90Deg;
 
         GameEvents.FireLoadingTerrainTextures(this, Resources);
     }
@@ -56,7 +57,7 @@ public class DrawOnTerrain : MonoBehaviour
             var Structure = Instantiate(TemplateStructure, ObjectSnapper.SnapToGridCell(
                 data.mousePos,
                 GridConstants.Instance.FloatCellSize(), TemplateStructureSize),
-                Quaternion.Euler(GameConstants.Instance.DEFAULT_OBJECT_ROTATION)
+                TemplateStructure.transform.rotation
                 );
 
             if (data.StructureType == StructureType.BUILDING)
@@ -92,7 +93,7 @@ public class DrawOnTerrain : MonoBehaviour
             Destroy(TemplateStructure);
             TemplateStructure = Instantiate(data.TemplateStructure,
                                 ObjectSnapper.SnapToGridCell(data.mousePos, GridConstants.Instance.FloatCellSize()),
-                                Quaternion.Euler(GameConstants.Instance.DEFAULT_OBJECT_ROTATION));
+                                data.TemplateStructure.transform.rotation);
             TemplateStructure.layer = LayerMasks.Instance.IGNORE_RAYCAST_LAYER;
             TemplateStructureSize = TemplateStructure.GetComponent<Renderer>().bounds.size;
         }
@@ -106,8 +107,14 @@ public class DrawOnTerrain : MonoBehaviour
             TemplateStructure.transform.rotation, LayerMasks.Instance.ATTACKABLE);
     }
 
+    private void RotateTemplate90Deg(object sender,int i)
+    {
+        TemplateStructure.transform.Rotate(0f,90f,0f,Space.World);
+    }
+
     private void OnDestroy()
     {  // why unsubscribe here and not inside ResourceGrid destructor??
+        GameEvents.BuildingRotationListeners -= RotateTemplate90Deg;
         GameEvents.TemplateSelectedListeners -= DestroyPreviousAndPrepareNewTemplate;
         GameEvents.LeftClickPressedListeners -= DrawStructure;
         GameEvents.RightClickPressedListeners -= DeleteStructure;

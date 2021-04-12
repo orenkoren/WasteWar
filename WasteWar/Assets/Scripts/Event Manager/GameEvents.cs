@@ -10,6 +10,7 @@ public static class GameEvents
     public static event EventHandler<Vector3> MouseOverListeners;
     public static event EventHandler<int> NodeUsedUpListeners;
     public static event EventHandler<ResourceGrid> LoadingTerrainTexturesListeners;
+    public static event EventHandler<int> BuildingRotationListeners;
    
     public static void FireTemplateSelected(object sender, TemplateData data) => 
                                             TemplateSelectedListeners?.Invoke(sender, data);
@@ -23,6 +24,8 @@ public static class GameEvents
                                             NodeUsedUpListeners?.Invoke(sender, locationKey);
     public static void FireLoadingTerrainTextures(object sender, ResourceGrid resources) =>
                                             LoadingTerrainTexturesListeners?.Invoke(sender, resources);
+    public static void FireBuildingRotation(object sender, int kekw) =>
+                                            BuildingRotationListeners?.Invoke(sender,kekw);
 }
 
 public class TemplateData

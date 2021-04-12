@@ -62,5 +62,7 @@ public class KeyClickManager : MonoBehaviour
                 }
             }
         }
+        if (Input.GetKeyDown(KeyCode.R))
+            GameEvents.FireBuildingRotation(this,5);
     }
 }

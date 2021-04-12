@@ -11,7 +11,12 @@ namespace Constants
             KeyCode.C,
             KeyCode.X,
             KeyCode.Z, 
-            KeyCode.Escape };
+            KeyCode.Escape, 
+        };
+        public KeyCode[] StructureManipulationKeybinds { get; private set; } = new KeyCode[]
+        {
+            KeyCode.R,
+        };
         //KeyCode[] MenuKeybinds = new KeyCode[] { KeyCode.Escape };
         public static GameKeys Instance { get; private set; }
 

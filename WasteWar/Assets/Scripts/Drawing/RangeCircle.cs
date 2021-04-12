@@ -23,7 +23,7 @@ public class RangeCircle : MonoBehaviour
     void CreateCircleVerteces()
     {
         float x;
-        float y;
+        //float y;
         float z;
 
         float angle = 0f;
