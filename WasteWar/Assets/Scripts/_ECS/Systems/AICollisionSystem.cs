@@ -5,7 +5,6 @@ using Unity.Jobs;
 using Unity.Physics;
 using Unity.Physics.Systems;
 using Unity.Rendering;
-using Unity.Transforms;
 
 [UpdateInGroup(typeof(FixedStepSimulationSystemGroup))]
 [UpdateAfter(typeof(EndFramePhysicsSystem))]
@@ -13,7 +12,7 @@ public class AICollisionSystem : SystemBase
 {
     BuildPhysicsWorld m_BuildPhysicsWorldSystem;
     StepPhysicsWorld m_StepPhysicsWorldSystem;
-    EndSimulationEntityCommandBufferSystem m_EndSimulationEcbSystem;
+    EndFixedStepSimulationEntityCommandBufferSystem m_EndSimulationEcbSystem;
     NativeList<Entity> dynamicCollidedEntities = new NativeList<Entity>(Allocator.Persistent);
 
     protected override void OnCreate()
@@ -21,18 +20,18 @@ public class AICollisionSystem : SystemBase
         base.OnCreate();
         m_BuildPhysicsWorldSystem = World.GetOrCreateSystem<BuildPhysicsWorld>();
         m_StepPhysicsWorldSystem = World.GetOrCreateSystem<StepPhysicsWorld>();
-        m_EndSimulationEcbSystem = World.GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>();
+        m_EndSimulationEcbSystem = World.GetOrCreateSystem<EndFixedStepSimulationEntityCommandBufferSystem>();
     }
 
+    [BurstCompile]
     protected override void OnUpdate()
     {
         Dependency = new CollisionJob
         {
             PhysicsVelocityGroup = GetComponentDataFromEntity<PhysicsVelocity>(),
-            DynamicEntitiesList = dynamicCollidedEntities,
-            CurrentHealth = GetComponentDataFromEntity<PlayerBase>(),
-            Colliders = GetComponentDataFromEntity<PhysicsCollider>(),
-            Positions = GetComponentDataFromEntity<Translation>()
+            CurrentHealth = GetComponentDataFromEntity<PlayerBaseComponent>(),
+            Disabled = GetComponentDataFromEntity<Disabled>(),
+            Ecb = m_EndSimulationEcbSystem.CreateCommandBuffer()
 
         }.Schedule(m_StepPhysicsWorldSystem.Simulation,
             ref m_BuildPhysicsWorldSystem.PhysicsWorld, Dependency);
@@ -40,19 +39,8 @@ public class AICollisionSystem : SystemBase
         var dynamicEntitiesCurrentFrame = dynamicCollidedEntities;
         var ecb = m_EndSimulationEcbSystem.CreateCommandBuffer();
 
-        Dependency = Job
-            .WithBurst()
-            .WithCode(() =>
-            {
-                foreach (var entity in dynamicEntitiesCurrentFrame)
-                {
-                    ecb.DestroyEntity(entity);
-                }
-                dynamicEntitiesCurrentFrame.Clear();
-            }).Schedule(Dependency);
-
         Dependency = Entities.
-            ForEach((Entity e, ref PlayerBase playerBase) =>
+            ForEach((Entity e, ref PlayerBaseComponent playerBase) =>
             {
                 if (playerBase.Health <= 0)
                     ecb.DestroyEntity(e);
@@ -66,27 +54,24 @@ public class AICollisionSystem : SystemBase
     {
         public ComponentDataFromEntity<PhysicsVelocity> PhysicsVelocityGroup;
 
-        public NativeList<Entity> DynamicEntitiesList;
+        public ComponentDataFromEntity<PlayerBaseComponent> CurrentHealth;
 
-        public ComponentDataFromEntity<PlayerBase> CurrentHealth;
+        public EntityCommandBuffer Ecb;
 
-        public ComponentDataFromEntity<PhysicsCollider> Colliders;
-
-        public ComponentDataFromEntity<Translation> Positions;
+        public ComponentDataFromEntity<Disabled> Disabled;
 
         public void Execute(CollisionEvent collisionEvent)
         {
-            // Check if one of the colliding entities is Attacker, if so, destroy it
             Entity entityA = collisionEvent.EntityA;
             Entity entityB = collisionEvent.EntityB;
 
             if (CurrentHealth.HasComponent(entityA))
             {
-                CurrentHealth[entityA] = new PlayerBase { Health = CurrentHealth[entityA].Health - 1 };
+                CurrentHealth[entityA] = new PlayerBaseComponent { Health = CurrentHealth[entityA].Health - 1 };
             }
             else if (CurrentHealth.HasComponent(entityB))
             {
-                CurrentHealth[entityB] = new PlayerBase { Health = CurrentHealth[entityB].Health - 1 };
+                CurrentHealth[entityB] = new PlayerBaseComponent { Health = CurrentHealth[entityB].Health - 1 };
             }
 
             bool isBodyADynamic = PhysicsVelocityGroup.HasComponent(entityA);
@@ -94,14 +79,11 @@ public class AICollisionSystem : SystemBase
 
             if (isBodyADynamic)
             {
-                DynamicEntitiesList.Add(entityA);
-                Positions[entityA] = new Translation { Value = new Unity.Mathematics.float3 { x = 0, y = -100, z = 0} };
-
+                Ecb.AddComponent<Disabled>(entityA);
             }
             else if (isBodyBDynamic)
             {
-                DynamicEntitiesList.Add(entityB);
-                Positions[entityB] = new Translation { Value = new Unity.Mathematics.float3 { x = 0, y = -100, z = 0} };
+                Ecb.AddComponent<Disabled>(entityB);
             }
         }
     }

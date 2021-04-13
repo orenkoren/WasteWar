@@ -7,7 +7,7 @@ public class PlayerBaseSystem : ComponentSystem
     protected override void OnStartRunning()
     {
         base.OnCreate();
-        Entities.WithAny<PlayerBase>().ForEach((ref Translation translation) =>
+        Entities.WithAny<PlayerBaseComponent>().ForEach((ref Translation translation) =>
         {
             GameConstants.Instance.PlayerBasePosition = translation;
         });

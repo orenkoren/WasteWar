@@ -48,10 +48,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9bd2717aee061c742860b11e5618477d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  entity: {fileID: 2363916051410778117}
-  playerBase: {fileID: 1221063325293802509, guid: 00874071ff0b09f4fa30e98f9d912ab1,
-    type: 3}
-  Health: 0
+  Damage: 1
   speed: 7
 --- !u!114 &2363916051410778121
 MonoBehaviour:
