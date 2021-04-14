@@ -40,23 +40,23 @@ public class KeyClickManager : MonoBehaviour
                     switch (key)
                     {
                         case KeyCode.B:
-                            GameEvents.FireTemplateSelected(this, new TemplateData { TemplateStructure = prefabBuilding, mousePos = hit.point, StructureType = StructureType.BUILDING});
+                            GameEvents.FireTemplateSelected(this, new TemplateData { TemplateStructure = prefabBuilding, mousePos = hit.point});
                             break;
                         //TODO turret placement doesn't work (other placements do) (because of Turret components or something)... fix.
                         case KeyCode.V:
-                            GameEvents.FireTemplateSelected(this, new TemplateData { TemplateStructure = prefabTurret, mousePos = hit.point, StructureType = StructureType.TURRET });
+                            GameEvents.FireTemplateSelected(this, new TemplateData { TemplateStructure = prefabTurret, mousePos = hit.point});
                             break;
                         case KeyCode.C:
-                            GameEvents.FireTemplateSelected(this, new TemplateData { TemplateStructure = prefabWall, mousePos = hit.point, StructureType = StructureType.WALL });
+                            GameEvents.FireTemplateSelected(this, new TemplateData { TemplateStructure = prefabWall, mousePos = hit.point});
                             break;
                         case KeyCode.X:
-                            GameEvents.FireTemplateSelected(this, new TemplateData { TemplateStructure = prefabPipe, mousePos = hit.point, StructureType = StructureType.PIPE });
+                            GameEvents.FireTemplateSelected(this, new TemplateData { TemplateStructure = prefabPipe, mousePos = hit.point});
                             break;
                         case KeyCode.Z:
-                            GameEvents.FireTemplateSelected(this, new TemplateData { TemplateStructure = prefabPowerPole, mousePos = hit.point, StructureType = StructureType.POWER_POLE });
+                            GameEvents.FireTemplateSelected(this, new TemplateData { TemplateStructure = prefabPowerPole, mousePos = hit.point});
                             break;
                         case KeyCode.Escape:
-                            GameEvents.FireTemplateSelected(this, new TemplateData { TemplateStructure = null, mousePos = new Vector3( 0, 0, 0 ), StructureType = StructureType.NONE });
+                            GameEvents.FireTemplateSelected(this, new TemplateData { TemplateStructure = null, mousePos = new Vector3( 0, 0, 0 )});
                             break;
                     }
                 }

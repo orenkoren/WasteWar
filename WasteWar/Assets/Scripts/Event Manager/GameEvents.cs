@@ -32,10 +32,9 @@ public class TemplateData
 {
     public GameObject TemplateStructure { get; set; }
     public Vector3 mousePos { get;  set; }
-    public StructureType StructureType { get; set; }
 
     public TemplateData()
     {
-        StructureType = StructureType.NONE;
+        TemplateStructure = null;
     }
 }

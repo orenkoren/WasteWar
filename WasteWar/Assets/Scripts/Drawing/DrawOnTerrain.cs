@@ -8,6 +8,8 @@ public class DrawOnTerrain : MonoBehaviour
     private Camera cam;
     [SerializeField]
     private Terrain terrain;
+    [SerializeField]
+    private Prefabs Pipes;
 
     public GameObject TemplateStructure { get; set; }
     public Vector3 TemplateStructureSize { get; private set; }
@@ -50,30 +52,70 @@ public class DrawOnTerrain : MonoBehaviour
     //TODO fix placement near edges of the map
     private void DrawStructure(object sender, TemplateData data)
     {
-        if (data.StructureType != StructureType.NONE && CheckIfLocationIsFree())
+        if (data.TemplateStructure != null && CheckIfLocationIsFree())
         {
+            Vector3 gridPosition = ObjectSnapper.SnapToGridCell(data.mousePos, TemplateStructureSize);
+
+            if (data.TemplateStructure.tag == "Pipes")
+                TemplateStructure.GetComponent<PipeState>().CheckNeighbors(Pipes);
+
             TemplateStructure.GetComponent<MeshRenderer>().material.SetColor("_Color", Color.white);
             TemplateStructure.layer = LayerMasks.Instance.ATTACKABLE_LAYER;
-            var Structure = Instantiate(TemplateStructure, ObjectSnapper.SnapToGridCell(
-                data.mousePos,
-                GridConstants.Instance.FloatCellSize(), TemplateStructureSize),
-                TemplateStructure.transform.rotation
-                );
 
-            if (data.StructureType == StructureType.BUILDING)
+            var Structure = Instantiate(TemplateStructure,
+                    gridPosition,
+                    TemplateStructure.transform.rotation);
+            if (data.TemplateStructure.tag == "Building")
             {
                 Structure.GetComponent<BuildingData>().IsTemplate = false;
                 Structure.GetComponent<BuildingData>().Resources = Resources;
             }
             Structures.Add(Structure);
+
             Destroy(TemplateStructure);
-            data.StructureType = StructureType.NONE;
+            data.TemplateStructure= null;
         }
     }
     private void DeleteStructure(object sender, RaycastHit data)
     {
         Structures.Remove(data.collider.gameObject);
         Destroy(data.collider.gameObject);
+    }
+
+    private void DestroyPreviousAndPrepareNewTemplate(object sender, TemplateData data)
+    {
+        if (data.TemplateStructure != null)
+        {
+            Destroy(TemplateStructure);
+            TemplateStructure = Instantiate(data.TemplateStructure,
+                                ObjectSnapper.SnapToGridCell(data.mousePos),
+                                data.TemplateStructure.transform.rotation);
+            TemplateStructure.layer = LayerMasks.Instance.IGNORE_RAYCAST_LAYER;
+            TemplateStructureSize = TemplateStructure.GetComponent<Renderer>().bounds.size;
+        }
+        else
+            Destroy(TemplateStructure);
+    }
+    private void DestroyPreviousAndCreatePipeTemplate(GameObject gameObject, Vector3 gridPosition)
+    {
+        Destroy(TemplateStructure);
+        TemplateStructure = Instantiate(gameObject,
+                            gridPosition,
+                            gameObject.transform.rotation);
+        TemplateStructure.layer = LayerMasks.Instance.IGNORE_RAYCAST_LAYER;
+        TemplateStructureSize = TemplateStructure.GetComponent<Renderer>().bounds.size;
+    }
+
+
+    private void RotateTemplate90Deg(object sender, int i)
+    {
+        if (TemplateStructure)
+        {
+            TemplateStructure.transform.Rotate(0f, 90f, 0f, Space.World);
+            var temp = TemplateStructure.GetComponent<PipeState>();
+            if (temp != null)
+                temp.AdjustDirectionsThroughRotation();
+        }
     }
 
     private void SetTemplateStructureColor(Color color)
@@ -86,30 +128,10 @@ public class DrawOnTerrain : MonoBehaviour
         TemplateStructure.transform.position = ObjectSnapper.SnapToGridCell(pos, GridConstants.Instance.FloatCellSize(), TemplateStructureSize);
     }
 
-    private void DestroyPreviousAndPrepareNewTemplate(object sender, TemplateData data)
-    {
-        if (data.StructureType != StructureType.NONE)
-        {
-            Destroy(TemplateStructure);
-            TemplateStructure = Instantiate(data.TemplateStructure,
-                                ObjectSnapper.SnapToGridCell(data.mousePos, GridConstants.Instance.FloatCellSize()),
-                                data.TemplateStructure.transform.rotation);
-            TemplateStructure.layer = LayerMasks.Instance.IGNORE_RAYCAST_LAYER;
-            TemplateStructureSize = TemplateStructure.GetComponent<Renderer>().bounds.size;
-        }
-        else
-            Destroy(TemplateStructure);
-    }
-
     private bool CheckIfLocationIsFree()
     {
         return !Physics.CheckBox(TemplateStructure.GetComponent<Collider>().bounds.center, TemplateStructure.GetComponent<Collider>().bounds.extents,
             TemplateStructure.transform.rotation, LayerMasks.Instance.ATTACKABLE);
-    }
-
-    private void RotateTemplate90Deg(object sender,int i)
-    {
-        TemplateStructure.transform.Rotate(0f,90f,0f,Space.World);
     }
 
     private void OnDestroy()
