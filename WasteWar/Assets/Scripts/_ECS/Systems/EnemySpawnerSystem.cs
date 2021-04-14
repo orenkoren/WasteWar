@@ -1,49 +1,64 @@
 using Unity.Collections;
 using Unity.Entities;
+using Unity.Jobs;
 using Unity.Mathematics;
 using Unity.Transforms;
 
-public class EnemySpawnerSystem : ComponentSystem
+public class EnemySpawnerSystem : SystemBase
 {
     private Random random;
-    private bool hasCreated = false;
+    private EntityCommandBufferSystem ecb;
+    private EnemySpawnerComponent spawner;
 
     protected override void OnCreate()
     {
         base.OnCreate();
         random = new Random(56);
-
+        Enabled = false;
     }
-    protected override void OnUpdate()
+
+    protected override void OnStartRunning()
     {
-        if (!hasCreated)
-        {
-            Entities
-                .ForEach((ref EnemySpawnerComponent prefab) =>
+        base.OnStartRunning();
+        ecb = World.GetOrCreateSystem<EntityCommandBufferSystem>();
+        Entities
+            .WithoutBurst()
+            .ForEach((ref EnemySpawnerComponent prefab) =>
             {
-                UnityEngine.Debug.Log("spawning");
-                SpawnEntities(prefab, prefab.spawnAmount);
-                hasCreated = true;
+                spawner = prefab;
+            }).Run();
+
+        var buffer = ecb.CreateCommandBuffer().AsParallelWriter();
+        var spawnJob = new SpawnEntitiesJob
+        {
+            ecb = buffer,
+            entity = spawner.prefabEnemy,
+            random = random
+        };
+
+        spawnJob.Schedule(spawner.spawnAmount, 128).Complete();
+    }
+
+
+    [BurstCompatible]
+    struct SpawnEntitiesJob : IJobParallelFor
+    {
+        public Entity entity;
+        public EntityCommandBuffer.ParallelWriter ecb;
+        public Random random;
+
+        public void Execute(int index)
+        {
+            var e = ecb.Instantiate(index, entity);
+            ecb.SetComponent(index, e, new Translation
+            {
+                Value = new float3(random.NextFloat(0, 100), 2, random.NextFloat(0, 100))
             });
         }
-        //Entities.ForEach((ref Attacker entity) =>
-        //    MoveToRandomLocation(entity.entity));
     }
 
-    private void SpawnEntities(EnemySpawnerComponent prefab, int spawnAmount)
+    protected override void OnUpdate()
     {
-        NativeArray<Entity> newEnemies = EntityManager.Instantiate(prefab.prefabEnemy, prefab.spawnAmount, Allocator.Temp);
-        foreach (var enemy in newEnemies)
-        {
-            MoveToRandomLocation(enemy);
-        }
-    }
 
-    private void MoveToRandomLocation(Entity enemy)
-    {
-        EntityManager.SetComponentData(enemy, new Translation
-        {
-            Value = new float3(random.NextFloat(0, 100), 2, random.NextFloat(0, 100))
-        });
     }
 }
