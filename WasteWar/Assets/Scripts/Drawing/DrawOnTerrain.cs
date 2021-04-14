@@ -57,7 +57,7 @@ public class DrawOnTerrain : MonoBehaviour
             Vector3 gridPosition = ObjectSnapper.SnapToGridCell(data.mousePos, TemplateStructureSize);
 
             if (data.TemplateStructure.tag == "Pipes")
-                TemplateStructure.GetComponent<PipeState>().CheckNeighbors(Pipes);
+                DestroyPreviousAndCreatePipeTemplate(TemplateStructure.GetComponent<PipeState>().CheckNeighbors(Pipes),gridPosition);
 
             TemplateStructure.GetComponent<MeshRenderer>().material.SetColor("_Color", Color.white);
             TemplateStructure.layer = LayerMasks.Instance.ATTACKABLE_LAYER;

@@ -3,30 +3,23 @@ using System;
 
 public class PipeState : MonoBehaviour
 {
-    public bool Full { get; private set; } = false;
-    public PipeDirection pipeDirection;
-    public Vector3 templateCenter;
-    public int z = 0;
+    public bool Full { get; private set; }
+    private PipeDirection pipeDirection;
 
     // Start is called before the first frame update
     void Start()
     {
-
+        Full = false;
         pipeDirection = new PipeDirection();
 
     }
+   
     public void AdjustDirectionsThroughRotation()
     {
         pipeDirection.From = (pipeDirection.From + 2) % 4;
         pipeDirection.To = (pipeDirection.To + 2) % 4;
     }
 
-    private void Update()
-    {
-        Debug.Log(z);
-        Debug.Log(gameObject.GetInstanceID());
-        Debug.DrawRay(templateCenter, new Vector3(0f, 0f, 10f), Color.red);
-    }
     public GameObject CheckNeighbors(Prefabs pipes)
     {
         Vector3 templateSize = gameObject.GetComponent<Renderer>().bounds.size;
@@ -35,8 +28,8 @@ public class PipeState : MonoBehaviour
         bool isRight = false;
         bool isDown = false;
         bool isLeft = false;
-        z++;
-        templateCenter = new Vector3(gameObject.transform.position.x, gameObject.transform.position.y, gameObject.transform.position.z );
+
+        Vector3 templateCenter = new Vector3(gameObject.transform.position.x, gameObject.transform.position.y, gameObject.transform.position.z );
         RaycastHit hit;
         Ray rayUp = new Ray(templateCenter, new Vector3(0,0,1f));
         Ray rayRight = new Ray(templateCenter, new Vector3(1f,0,0));
@@ -63,20 +56,23 @@ public class PipeState : MonoBehaviour
         }
         if (Physics.Raycast(rayLeft, out hit, 1f, LayerMasks.Instance.ATTACKABLE)
         && hit.collider.gameObject.tag == "Pipes")
+        {
+            Debug.Log("kekw");
             isLeft = true;
+        }
 
-        //if (isUp && isDown)
-        //    return pipes.Pipe;
-        //else if (isLeft && isRight)
-        //    return pipes.PipeLeftRight;
-        //else if (isUp && isRight)
-        //    return pipes.PipeTopRight;
-        //else if (isDown && isRight)
-        //    return pipes.PipeBottomRight;
-        //else if (isDown && isLeft)
-        //    return pipes.PipeBottomLeft;
-        //else if (isUp && isLeft)
-        //    return pipes.PipeTopLeft;
+        if (isUp && isDown)
+            return pipes.PipeTopBottom;
+        else if (isLeft && isRight)
+            return pipes.PipeLeftRight;
+        else if (isUp && isRight)
+            return pipes.PipeTopRight;
+        else if (isDown && isRight)
+            return pipes.PipeBottomRight;
+        else if (isDown && isLeft)
+            return pipes.PipeBottomLeft;
+        else if (isUp && isLeft)
+            return pipes.PipeTopLeft;
 
 
         return gameObject;
