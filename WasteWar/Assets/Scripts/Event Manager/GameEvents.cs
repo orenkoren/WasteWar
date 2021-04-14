@@ -1,8 +1,9 @@
 ﻿using System;
+using Unity.Entities;
 using UnityEngine;
 
 public static class GameEvents
-{   
+{
     public static event EventHandler<TemplateData> TemplateSelectedListeners;
     public static event EventHandler<TemplateData> StructurePlacedListeners;
     public static void FireTemplateSelected(object sender, TemplateData data) => 
