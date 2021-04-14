@@ -1,5 +1,35 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &778192355916375876
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6583692049268307155}
+  m_Layer: 9
+  m_Name: MuzzleFlashPosition
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6583692049268307155
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 778192355916375876}
+  m_LocalRotation: {x: -0.28709322, y: -0.08276942, z: -0.041629195, w: 0.95341164}
+  m_LocalPosition: {x: 0, y: 2.241, z: 3.166}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1243050243389896301}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: -33.664, y: -9.26, z: -2.193}
 --- !u!1 &1221063325293802509
 GameObject:
   m_ObjectHideFlags: 0
@@ -14,6 +44,7 @@ GameObject:
   - component: {fileID: 6129023971681488938}
   - component: {fileID: 1654771747}
   - component: {fileID: 1420241451}
+  - component: {fileID: 165292783}
   m_Layer: 9
   m_Name: Turret0
   m_TagString: Untagged
@@ -268,6 +299,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Health: 25000
   ShouldDestroyOnDeath: 1
+--- !u!114 &165292783
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1221063325293802509}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 66e49642388c69b498a5fbec34d4e37d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ParticleSystem: {fileID: 100006, guid: f47cb9d88f4bc6c4bb7441e962c2c1a5, type: 3}
+  SpawnPosition: {fileID: 778192355916375876}
 --- !u!1001 &1642277714134749574
 PrefabInstance:
   m_ObjectHideFlags: 0
