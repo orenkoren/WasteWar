@@ -1,23 +1,36 @@
 using UnityEngine;
-using System;
 
 public class PipeState : MonoBehaviour
 {
     public bool Full { get; private set; }
-    private PipeDirection pipeDirection;
+    public ActiveSides activeSides;
 
-    // Start is called before the first frame update
-    void Start()
+    private void Awake()
     {
         Full = false;
-        pipeDirection = new PipeDirection();
-
+        activeSides = new ActiveSides(gameObject);
     }
    
-    public void AdjustDirectionsThroughRotation()
+    public void Rotate()
     {
-        pipeDirection.From = (pipeDirection.From + 2) % 4;
-        pipeDirection.To = (pipeDirection.To + 2) % 4;
+        activeSides.IsTop = !activeSides.IsTop;
+        activeSides.IsRight = !activeSides.IsRight;
+        activeSides.IsBottom = !activeSides.IsBottom;
+        activeSides.IsLeft = !activeSides.IsLeft; 
+    }
+    
+    public bool CheckIfPipeAligns(Vector3 dir)
+    {
+        if (dir == Vector3.forward)
+            return activeSides.IsBottom;
+        else if (dir == Vector3.right)
+            return activeSides.IsLeft;
+        else if (dir == Vector3.back)
+            return activeSides.IsTop;
+        else if (dir == Vector3.left)
+            return activeSides.IsRight;
+        return false;
+
     }
 
     public GameObject CheckNeighbors(Prefabs pipes)
@@ -31,31 +44,35 @@ public class PipeState : MonoBehaviour
 
         Vector3 templateCenter = new Vector3(gameObject.transform.position.x, gameObject.transform.position.y, gameObject.transform.position.z );
         RaycastHit hit;
-        Ray rayUp = new Ray(templateCenter, new Vector3(0,0,1f));
-        Ray rayRight = new Ray(templateCenter, new Vector3(1f,0,0));
-        Ray rayDown = new Ray(templateCenter, new Vector3(0,0,-1f));
-        Ray rayLeft = new Ray(templateCenter, new Vector3(-1f,0,0));
-
+        Ray rayUp = new Ray(templateCenter, Vector3.forward);
+        Ray rayRight = new Ray(templateCenter, Vector3.right);
+        Ray rayDown = new Ray(templateCenter, Vector3.back);
+        Ray rayLeft = new Ray(templateCenter, Vector3.left);
+        
         if (Physics.Raycast(rayUp, out hit, 1f, LayerMasks.Instance.ATTACKABLE)
-        && hit.collider.gameObject.tag == "Pipes")
+        && hit.collider.gameObject.tag.Contains("Pipe")
+        && hit.collider.gameObject.GetComponent<PipeState>().CheckIfPipeAligns(Vector3.forward))
         {
             Debug.Log("kekw");
             isUp = true;
         }
         if (Physics.Raycast(rayRight, out hit, 1f, LayerMasks.Instance.ATTACKABLE)
-        && hit.collider.gameObject.tag == "Pipes")
+        && hit.collider.gameObject.tag.Contains("Pipe")
+        && hit.collider.gameObject.GetComponent<PipeState>().CheckIfPipeAligns(Vector3.right))
         {
             Debug.Log("kekw");
             isRight = true;
         }
         if (Physics.Raycast(rayDown, out hit, 1f, LayerMasks.Instance.ATTACKABLE)
-        && hit.collider.gameObject.tag == "Pipes")
+        && hit.collider.gameObject.tag.Contains("Pipe")
+        && hit.collider.gameObject.GetComponent<PipeState>().CheckIfPipeAligns(Vector3.back))
         {
             isDown = true;
             Debug.Log("kekw");
         }
         if (Physics.Raycast(rayLeft, out hit, 1f, LayerMasks.Instance.ATTACKABLE)
-        && hit.collider.gameObject.tag == "Pipes")
+        && hit.collider.gameObject.tag.Contains("Pipe")
+        && hit.collider.gameObject.GetComponent<PipeState>().CheckIfPipeAligns(Vector3.left)) 
         {
             Debug.Log("kekw");
             isLeft = true;
@@ -74,28 +91,57 @@ public class PipeState : MonoBehaviour
         else if (isUp && isLeft)
             return pipes.PipeTopLeft;
 
-
         return gameObject;
-
     }
 }
 
 //DEFAULT PIPEDIRECTION INSTANCE VARIABLES DEPEND ON OBJECT ROTATION, IF YOU CHANGE THE PREFAB OBJECT ROTATION THEY WILL BE WRONG
-public class PipeDirection
+public class ActiveSides
 {
-    enum FromTo
-    {
-        TOP=1,
-        RIGHT=2,
-        BOTTOM=3,
-        LEFT=4
-    }
-    public int From { get; set; }
-    public int To { get; set; }
+    public bool IsTop { get; set; }
+    public bool IsRight { get; set; }
+    public bool IsBottom { get; set; } 
+    public bool IsLeft { get; set; }
 
-    public PipeDirection()
+    public ActiveSides(GameObject gameObject)
     {
-        From = (int)FromTo.LEFT;
-        To = (int)FromTo.RIGHT;
+        switch (gameObject.tag) {
+            case ("PipeTB"):
+                IsTop = true;
+                IsBottom = true;
+                IsLeft = false;
+                IsRight = false;
+                break;
+            case ("PipeLR"):
+                IsTop = false;
+                IsBottom = false;
+                IsLeft = true;
+                IsRight = true;
+                break;
+            case ("PipeTR"):
+                IsTop = true;
+                IsBottom = false;
+                IsLeft = false;
+                IsRight = true;
+                break;
+            case ("PipeBR"):
+                IsTop = false;
+                IsBottom = true;
+                IsLeft = false;
+                IsRight = true;
+                break;
+            case ("PipeBL"):
+                IsTop = false;
+                IsBottom = true;
+                IsLeft = true;
+                IsRight = false;
+                break;
+            case ("PipeTL"):
+                IsTop = true;
+                IsBottom = false;
+                IsLeft = true;
+                IsRight = false;
+                break;
+        }
     }
 }

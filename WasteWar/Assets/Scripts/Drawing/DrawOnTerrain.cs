@@ -17,6 +17,7 @@ public class DrawOnTerrain : MonoBehaviour
     private RaycastHit hit;
     private Ray ray;
     private ResourceGrid Resources;
+    private List<Pipeline> pipelines = new List<Pipeline>();
     private List<GameObject> Structures = new List<GameObject>();
 
     void Start()
@@ -56,8 +57,10 @@ public class DrawOnTerrain : MonoBehaviour
         {
             Vector3 gridPosition = ObjectSnapper.SnapToGridCell(data.mousePos, TemplateStructureSize);
 
-            if (data.TemplateStructure.tag == "Pipes")
-                DestroyPreviousAndCreatePipeTemplate(TemplateStructure.GetComponent<PipeState>().CheckNeighbors(Pipes),gridPosition);
+            if (data.TemplateStructure.tag.Contains("Pipe"))
+            {
+                DestroyPreviousAndCreatePipeTemplate(TemplateStructure.GetComponent<PipeState>().CheckNeighbors(Pipes), gridPosition);
+            }
 
             TemplateStructure.GetComponent<MeshRenderer>().material.SetColor("_Color", Color.white);
             TemplateStructure.layer = LayerMasks.Instance.ATTACKABLE_LAYER;
@@ -114,7 +117,7 @@ public class DrawOnTerrain : MonoBehaviour
             TemplateStructure.transform.Rotate(0f, 90f, 0f, Space.World);
             var temp = TemplateStructure.GetComponent<PipeState>();
             if (temp != null)
-                temp.AdjustDirectionsThroughRotation();
+                temp.Rotate();
         }
     }
 

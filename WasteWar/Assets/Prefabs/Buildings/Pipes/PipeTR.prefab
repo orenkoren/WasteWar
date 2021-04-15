@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 2444682894257063141}
   m_Layer: 9
   m_Name: PipeTR
-  m_TagString: Pipes
+  m_TagString: PipeTR
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
