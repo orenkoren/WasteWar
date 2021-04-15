@@ -2,6 +2,7 @@ using Unity.Collections;
 using Unity.Entities;
 using Unity.Jobs;
 using Unity.Mathematics;
+using Unity.Physics;
 using Unity.Rendering;
 using Unity.Transforms;
 
@@ -9,42 +10,28 @@ public class EnemySpawnerSystem : SystemBase
 {
     private Random random;
     private EnemySpawnerComponent spawner;
-    private RenderMesh m_renderer;
+    private EntityCommandBufferSystem m_ecbWorld;
 
     protected override void OnCreate()
     {
         base.OnCreate();
         random = new Random(56);
+        m_ecbWorld = World.GetOrCreateSystem<EntityCommandBufferSystem>();
     }
 
     protected override void OnStartRunning()
     {
         base.OnStartRunning();
         PopulateFields();
-        var buffer = new EntityCommandBuffer(Allocator.TempJob);
-        var desc = new RenderMeshDescription(m_renderer.mesh, m_renderer.material,
-                                            UnityEngine.Rendering.ShadowCastingMode.Off, receiveShadows: false);
-        var prototype = EntityManager.CreateEntity();
-        RenderMeshUtility.AddComponents(
-            prototype,
-            EntityManager,
-            desc);
-        EntityManager.AddComponentData(prototype, new LocalToWorld());
-        EntityManager.AddComponentData(prototype, new Translation());
-        EntityManager.AddComponentData(prototype, new AttackerComponent { speed = 7 });
-
-        var parallelBuffer = buffer.AsParallelWriter();
+        var buffer = m_ecbWorld.CreateCommandBuffer().AsParallelWriter();
         var spawnJob = new SpawnEntitiesJob
         {
-            ecb = parallelBuffer,
-            entity = prototype,
+            ecb = buffer,
+            entity = spawner.prefabEnemy,
             random = random
         };
 
         spawnJob.Schedule(spawner.spawnAmount, 128).Complete();
-        buffer.Playback(EntityManager);
-        buffer.Dispose();
-        EntityManager.DestroyEntity(prototype);
     }
 
     private void PopulateFields()
@@ -55,15 +42,6 @@ public class EnemySpawnerSystem : SystemBase
             {
                 spawner = prefab;
             }).Run();
-        m_renderer = EntityManager.GetSharedComponentData<RenderMesh>(spawner.prefabEnemy);
-        //foreach (var item in EntityManager.GetComponentTypes(spawner.prefabEnemy))
-        //{
-        //    if(item.GetType() == typeof(IComponentData))
-        //    {
-        //        IComponentData typeData = (IComponentData)item.GetType();
-        //        EntityManager.GetComponentData(spawner.prefabEnemy);
-        //    }
-        //}
     }
 
     [BurstCompatible]
@@ -85,6 +63,16 @@ public class EnemySpawnerSystem : SystemBase
 
     protected override void OnUpdate()
     {
+        var buffer = m_ecbWorld.CreateCommandBuffer().AsParallelWriter();
+
+        Dependency = Entities
+            .WithAll<Disabled>()
+            .ForEach((int entityInQueryIndex, in Entity e) =>
+            {
+                buffer.DestroyEntity(entityInQueryIndex, e);
+            }).ScheduleParallel(Dependency);
+
+        m_ecbWorld.AddJobHandleForProducer(Dependency);
 
     }
 }
