@@ -16,22 +16,7 @@ public class PipeState : MonoBehaviour
         activeSides.IsTop = !activeSides.IsTop;
         activeSides.IsRight = !activeSides.IsRight;
         activeSides.IsBottom = !activeSides.IsBottom;
-        activeSides.IsLeft = !activeSides.IsLeft;
-        
-        if(gameObject.transform.rotation.eulerAngles.y == 0f)
-        {
-            gameObject.transform.rotation = Quaternion.Euler(
-                gameObject.transform.rotation.eulerAngles.x,
-                90f,
-                gameObject.transform.rotation.eulerAngles.z);
-        }
-        else if (gameObject.transform.rotation.eulerAngles.y == 90f)
-        {
-            gameObject.transform.rotation = Quaternion.Euler(
-                gameObject.transform.rotation.eulerAngles.x,
-                0f,
-                gameObject.transform.rotation.eulerAngles.z);
-        }
+        activeSides.IsLeft = !activeSides.IsLeft; 
     }
     
     public bool CheckIfPipeAligns(Vector3 dir)
@@ -45,6 +30,7 @@ public class PipeState : MonoBehaviour
         else if (dir == Vector3.left)
             return activeSides.IsRight;
         return false;
+
     }
 
     public GameObject CheckNeighbors(Prefabs pipes)
@@ -67,14 +53,14 @@ public class PipeState : MonoBehaviour
         && hit.collider.gameObject.tag.Contains("Pipe")
         && hit.collider.gameObject.GetComponent<PipeState>().CheckIfPipeAligns(Vector3.forward))
         {
-            Debug.Log("kekwU");
+            Debug.Log("kekw");
             isUp = true;
         }
         if (Physics.Raycast(rayRight, out hit, 1f, LayerMasks.Instance.ATTACKABLE)
         && hit.collider.gameObject.tag.Contains("Pipe")
         && hit.collider.gameObject.GetComponent<PipeState>().CheckIfPipeAligns(Vector3.right))
         {
-            Debug.Log("kekwR");
+            Debug.Log("kekw");
             isRight = true;
         }
         if (Physics.Raycast(rayDown, out hit, 1f, LayerMasks.Instance.ATTACKABLE)
@@ -92,16 +78,10 @@ public class PipeState : MonoBehaviour
             isLeft = true;
         }
 
-        if ((isUp && isDown))
-        {
-            Rotate();
-            return gameObject;
-        }
+        if (isUp && isDown)
+            return pipes.PipeTopBottom;
         else if (isLeft && isRight)
-        {
-            Rotate();
-            return gameObject;
-        }
+            return pipes.PipeLeftRight;
         else if (isUp && isRight)
             return pipes.PipeTopRight;
         else if (isDown && isRight)
@@ -125,15 +105,18 @@ public class ActiveSides
 
     public ActiveSides(GameObject gameObject)
     {
-        float yRot = gameObject.transform.rotation.eulerAngles.y;
-
         switch (gameObject.tag) {
-            case ("Pipe"):
-               // if((yRot>=90f && yRot<180f) || (yRot>=270 && yRot<360) )
+            case ("PipeTB"):
                 IsTop = true;
                 IsBottom = true;
                 IsLeft = false;
                 IsRight = false;
+                break;
+            case ("PipeLR"):
+                IsTop = false;
+                IsBottom = false;
+                IsLeft = true;
+                IsRight = true;
                 break;
             case ("PipeTR"):
                 IsTop = true;

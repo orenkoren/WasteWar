@@ -112,14 +112,13 @@ public class DrawOnTerrain : MonoBehaviour
 
     private void RotateTemplate90Deg(object sender, int i)
     {
-        if (TemplateStructure.tag.Contains("Pipe"))
+        if (TemplateStructure)
         {
+            TemplateStructure.transform.Rotate(0f, 90f, 0f, Space.World);
             var temp = TemplateStructure.GetComponent<PipeState>();
             if (temp != null)
                 temp.Rotate();
         }
-        else if (TemplateStructure)
-            TemplateStructure.transform.Rotate(0f, 90f, 0f, Space.World);
     }
 
     private void SetTemplateStructureColor(Color color)
