@@ -220,7 +220,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
 --- !u!1001 &351426050
 PrefabInstance:
@@ -313,6 +313,12 @@ PrefabInstance:
       propertyPath: cam
       value: 
       objectReference: {fileID: 21086383}
+    - target: {fileID: 2703366156014014718, guid: 6da8982367c9d0543aace75a27ccf1a3,
+        type: 3}
+      propertyPath: prefabPipe
+      value: 
+      objectReference: {fileID: 1640220751725414168, guid: 11f59dca36004e949a27c77209b4bdfa,
+        type: 3}
     - target: {fileID: 7244664136176254164, guid: 6da8982367c9d0543aace75a27ccf1a3,
         type: 3}
       propertyPath: m_RootOrder
@@ -395,7 +401,7 @@ PrefabInstance:
     - target: {fileID: 1849861851773692176, guid: d6d2e458b16140b4c91811f4c792bc87,
         type: 3}
       propertyPath: m_RootOrder
-      value: 3
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 1849861851773692176, guid: d6d2e458b16140b4c91811f4c792bc87,
         type: 3}

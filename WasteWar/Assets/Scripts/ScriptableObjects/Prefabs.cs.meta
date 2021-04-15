@@ -4,10 +4,7 @@ MonoImporter:
   externalObjects: {}
   serializedVersion: 2
   defaultReferences:
-  - PipeTopBottom: {fileID: 1204170484558185469, guid: 6f045b0835802f543b5c6fa5a7b9d921,
-      type: 3}
-  - PipeLeftRight: {fileID: 1640220751725414168, guid: 11f59dca36004e949a27c77209b4bdfa,
-      type: 3}
+  - Pipe: {fileID: 1640220751725414168, guid: 11f59dca36004e949a27c77209b4bdfa, type: 3}
   - PipeTopRight: {fileID: 2285820695021637778, guid: 3a759a7c42f28954aa1d37956c18b0ae,
       type: 3}
   - PipeBottomRight: {fileID: 3300147603384379968, guid: dc620b7b8a8fcf7438d75f86e7aaa840,
