@@ -7,4 +7,5 @@ public struct TurretComponent : IComponentData
     public int DetectionRadius;
     public LayerMask HostileMask;
     public int HitsPerSecond;
+    public Entity currentTarget;
 }
