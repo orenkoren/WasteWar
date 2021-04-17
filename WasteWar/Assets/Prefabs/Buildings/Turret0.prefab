@@ -45,6 +45,7 @@ GameObject:
   - component: {fileID: 1654771747}
   - component: {fileID: 1420241451}
   - component: {fileID: 165292783}
+  - component: {fileID: 433240388}
   m_Layer: 9
   m_Name: Turret0
   m_TagString: Untagged
@@ -313,6 +314,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ParticleSystem: {fileID: 100006, guid: f47cb9d88f4bc6c4bb7441e962c2c1a5, type: 3}
   SpawnPosition: {fileID: 778192355916375876}
+--- !u!114 &433240388
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1221063325293802509}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d36c15d1c31159468bb896c4da8ea97, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  DetectionRadius: 100000
+  HostileMask:
+    serializedVersion: 2
+    m_Bits: 1024
+  HitsPerSecond: 1
 --- !u!1001 &1642277714134749574
 PrefabInstance:
   m_ObjectHideFlags: 0
