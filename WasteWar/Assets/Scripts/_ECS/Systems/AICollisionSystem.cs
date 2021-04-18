@@ -59,6 +59,7 @@ public class AICollisionSystem : SystemBase
 
             if (isBodyADynamic)
             {
+                // TODO: dynamic buffers?
                 Ecb.AddComponent<Disabled>(entityA.Index, entityA);
             }
             else if (isBodyBDynamic)
