@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 7580999019790872431}
   - component: {fileID: 4973008015358406701}
   - component: {fileID: 7188851045391162137}
+  - component: {fileID: 3112150143485887358}
   m_Layer: 9
   m_Name: PipeTL
   m_TagString: PipeTL
@@ -92,7 +93,19 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  m_Radius: 0.499999
-  m_Height: 2
+  m_Radius: 0.4999
+  m_Height: 1.9999
   m_Direction: 1
   m_Center: {x: 0.000000059604645, y: 0, z: -0.00000008940697}
+--- !u!114 &3112150143485887358
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6743702958633291630}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 80ef16711d18b8e4da471f52a362c597, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

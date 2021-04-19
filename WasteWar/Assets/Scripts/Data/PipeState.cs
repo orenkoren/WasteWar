@@ -10,14 +10,6 @@ public class PipeState : MonoBehaviour
         Full = false;
         activeSides = new ActiveSides(gameObject);
     }
-   
-    public void Rotate()
-    {
-        activeSides.IsTop = !activeSides.IsTop;
-        activeSides.IsRight = !activeSides.IsRight;
-        activeSides.IsBottom = !activeSides.IsBottom;
-        activeSides.IsLeft = !activeSides.IsLeft; 
-    }
     
     public bool CheckIfPipeAligns(Vector3 dir)
     {
@@ -30,7 +22,6 @@ public class PipeState : MonoBehaviour
         else if (dir == Vector3.left)
             return activeSides.IsRight;
         return false;
-
     }
 
     public GameObject CheckNeighbors(Prefabs pipes)
@@ -53,14 +44,14 @@ public class PipeState : MonoBehaviour
         && hit.collider.gameObject.tag.Contains("Pipe")
         && hit.collider.gameObject.GetComponent<PipeState>().CheckIfPipeAligns(Vector3.forward))
         {
-            Debug.Log("kekw");
+            Debug.Log("kekwU");
             isUp = true;
         }
         if (Physics.Raycast(rayRight, out hit, 1f, LayerMasks.Instance.ATTACKABLE)
         && hit.collider.gameObject.tag.Contains("Pipe")
         && hit.collider.gameObject.GetComponent<PipeState>().CheckIfPipeAligns(Vector3.right))
         {
-            Debug.Log("kekw");
+            Debug.Log("kekwR");
             isRight = true;
         }
         if (Physics.Raycast(rayDown, out hit, 1f, LayerMasks.Instance.ATTACKABLE)

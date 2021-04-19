@@ -24,11 +24,11 @@ public class DrawOnTerrain : MonoBehaviour
     {
         Resources = new ResourceGrid(terrain.terrainData.size);
 
-        GameEvents.TemplateSelectedListeners += DestroyPreviousAndPrepareNewTemplate;
+        GameEvents.TemplateSelectedListeners += DestroyOldAndCreateNewTemplate;
         GameEvents.LeftClickPressedListeners += DrawStructure;
         GameEvents.RightClickPressedListeners += DeleteStructure;
         GameEvents.MouseOverListeners += Resources.ShowCurrentResourceAmount;
-        GameEvents.BuildingRotationListeners += RotateTemplate90Deg;
+        GameEvents.BuildingRotationListeners += RotateTemplate;
 
         GameEvents.FireLoadingTerrainTextures(this, Resources);
     }
@@ -55,19 +55,17 @@ public class DrawOnTerrain : MonoBehaviour
     {
         if (data.TemplateStructure != null && CheckIfLocationIsFree())
         {
-            Vector3 gridPosition = ObjectSnapper.SnapToGridCell(data.mousePos, TemplateStructureSize);
-
             if (data.TemplateStructure.tag.Contains("Pipe"))
             {
-                DestroyPreviousAndCreatePipeTemplate(TemplateStructure.GetComponent<PipeState>().CheckNeighbors(Pipes), gridPosition);
+                TemplateInstantiator(TemplateStructure.GetComponent<PipeState>().CheckNeighbors(Pipes),data.mousePos);
             }
 
             TemplateStructure.GetComponent<MeshRenderer>().material.SetColor("_Color", Color.white);
             TemplateStructure.layer = LayerMasks.Instance.ATTACKABLE_LAYER;
+            
+            GameObject Structure = null;
+            TemplateInstantiator(TemplateStructure, data.mousePos, ref Structure);
 
-            var Structure = Instantiate(TemplateStructure,
-                    gridPosition,
-                    TemplateStructure.transform.rotation);
             if (data.TemplateStructure.tag == "Building")
             {
                 Structure.GetComponent<BuildingData>().IsTemplate = false;
@@ -85,39 +83,55 @@ public class DrawOnTerrain : MonoBehaviour
         Destroy(data.collider.gameObject);
     }
 
-    private void DestroyPreviousAndPrepareNewTemplate(object sender, TemplateData data)
+    private void DestroyOldAndCreateNewTemplate(object sender, TemplateData data)
     {
         if (data.TemplateStructure != null)
         {
-            Destroy(TemplateStructure);
-            TemplateStructure = Instantiate(data.TemplateStructure,
-                                ObjectSnapper.SnapToGridCell(data.mousePos),
-                                data.TemplateStructure.transform.rotation);
-            TemplateStructure.layer = LayerMasks.Instance.IGNORE_RAYCAST_LAYER;
-            TemplateStructureSize = TemplateStructure.GetComponent<Renderer>().bounds.size;
+            TemplateInstantiator(data.TemplateStructure, data.mousePos);
         }
         else
             Destroy(TemplateStructure);
     }
-    private void DestroyPreviousAndCreatePipeTemplate(GameObject gameObject, Vector3 gridPosition)
+
+    private void TemplateInstantiator(GameObject Template, Vector3 mousePos)
     {
         Destroy(TemplateStructure);
-        TemplateStructure = Instantiate(gameObject,
-                            gridPosition,
-                            gameObject.transform.rotation);
+        TemplateStructure = Instantiate(Template,
+                            ObjectSnapper.SnapToGridCell(mousePos),
+                            Template.transform.rotation);
+        TemplateStructure.layer = LayerMasks.Instance.IGNORE_RAYCAST_LAYER;
+        TemplateStructureSize = TemplateStructure.GetComponent<Renderer>().bounds.size;
+    }
+    private void TemplateInstantiator(GameObject Template, Vector3 mousePos,ref GameObject StructureBeingAssignedTo)
+    {
+        Destroy(TemplateStructure);
+        StructureBeingAssignedTo = Instantiate(Template,
+                            ObjectSnapper.SnapToGridCell(mousePos,TemplateStructureSize),
+                            Template.transform.rotation);
         TemplateStructure.layer = LayerMasks.Instance.IGNORE_RAYCAST_LAYER;
         TemplateStructureSize = TemplateStructure.GetComponent<Renderer>().bounds.size;
     }
 
 
-    private void RotateTemplate90Deg(object sender, int i)
+    private void RotateTemplate(object sender, int i)
     {
         if (TemplateStructure)
         {
-            TemplateStructure.transform.Rotate(0f, 90f, 0f, Space.World);
+            //TODO quick hack, refactor this
+            var pos = TemplateStructure.transform.position;
             var temp = TemplateStructure.GetComponent<PipeState>();
             if (temp != null)
-                temp.Rotate();
+            {
+                if (TemplateStructure.tag.Equals("PipeTB"))
+                {
+                    TemplateInstantiator(Pipes.PipeLeftRight, pos);
+                }
+
+                else if (TemplateStructure.tag.Equals("PipeLR"))
+                {
+                    TemplateInstantiator(Pipes.PipeTopBottom, pos);
+                }
+            }
         }
     }
 
@@ -139,8 +153,8 @@ public class DrawOnTerrain : MonoBehaviour
 
     private void OnDestroy()
     {  // why unsubscribe here and not inside ResourceGrid destructor??
-        GameEvents.BuildingRotationListeners -= RotateTemplate90Deg;
-        GameEvents.TemplateSelectedListeners -= DestroyPreviousAndPrepareNewTemplate;
+        GameEvents.BuildingRotationListeners -= RotateTemplate;
+        GameEvents.TemplateSelectedListeners -= DestroyOldAndCreateNewTemplate;
         GameEvents.LeftClickPressedListeners -= DrawStructure;
         GameEvents.RightClickPressedListeners -= DeleteStructure;
         GameEvents.MouseOverListeners -= Resources.ShowCurrentResourceAmount;

@@ -24,8 +24,8 @@ public static class GameEvents
                                             NodeUsedUpListeners?.Invoke(sender, locationKey);
     public static void FireLoadingTerrainTextures(object sender, ResourceGrid resources) =>
                                             LoadingTerrainTexturesListeners?.Invoke(sender, resources);
-    public static void FireBuildingRotation(object sender, int kekw) =>
-                                            BuildingRotationListeners?.Invoke(sender,kekw);
+    public static void FireBuildingRotation(object sender, int i) =>
+                                            BuildingRotationListeners?.Invoke(sender,i);
 }
 
 public class TemplateData
