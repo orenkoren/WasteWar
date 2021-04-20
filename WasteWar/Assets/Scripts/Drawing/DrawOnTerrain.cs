@@ -64,10 +64,11 @@ public class DrawOnTerrain : MonoBehaviour
             TemplateStructure.layer = LayerMasks.Instance.ATTACKABLE_LAYER;
             
             GameObject Structure = null;
-            TemplateInstantiator(TemplateStructure, data.mousePos, ref Structure);
+            TemplateInstantiator(data.mousePos, ref Structure);
 
             if (data.TemplateStructure.tag == "Building")
             {
+                Structure.GetComponent<BuildingData>().enabled = true;
                 Structure.GetComponent<BuildingData>().IsTemplate = false;
                 Structure.GetComponent<BuildingData>().Resources = Resources;
             }
@@ -102,18 +103,19 @@ public class DrawOnTerrain : MonoBehaviour
         TemplateStructure.layer = LayerMasks.Instance.IGNORE_RAYCAST_LAYER;
         TemplateStructureSize = TemplateStructure.GetComponent<Renderer>().bounds.size;
     }
-    private void TemplateInstantiator(GameObject Template, Vector3 mousePos,ref GameObject StructureBeingAssignedTo)
+    private void TemplateInstantiator(Vector3 mousePos,ref GameObject StructureBeingAssignedTo)
     {
         //TODO quickhack until the model is fixed (it goes out of bounds of the 1,1,1 cube
-        if (Template.tag.Contains("Pipe") && Template.tag.Length > 4)
+        if (TemplateStructure.tag.Contains("Pipe") && TemplateStructure.tag.Length > 4)
             TemplateStructureSize = new Vector3(1f, 1f, 1f);
 
-        Destroy(TemplateStructure);
-        StructureBeingAssignedTo = Instantiate(Template,
+        StructureBeingAssignedTo = Instantiate(TemplateStructure,
                             ObjectSnapper.SnapToGridCell(mousePos,TemplateStructureSize),
-                            Template.transform.rotation);
+                            TemplateStructure.transform.rotation);
         TemplateStructure.layer = LayerMasks.Instance.IGNORE_RAYCAST_LAYER;
         TemplateStructureSize = TemplateStructure.GetComponent<Renderer>().bounds.size;
+
+        Destroy(TemplateStructure);
     }
 
     private void RotateTemplate(object sender, int i)
