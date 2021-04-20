@@ -9,7 +9,7 @@ public class DrawOnTerrain : MonoBehaviour
     [SerializeField]
     private Terrain terrain;
     [SerializeField]
-    private Prefabs Pipes;
+    private GameObject PipeMethods;
 
     public GameObject TemplateStructure { get; set; }
     public Vector3 TemplateStructureSize { get; private set; }
@@ -17,7 +17,7 @@ public class DrawOnTerrain : MonoBehaviour
     private RaycastHit hit;
     private Ray ray;
     private ResourceGrid Resources;
-    private List<Pipeline> pipelines = new List<Pipeline>();
+    private List<Pipeline> Pipelines = new List<Pipeline>();
     private List<GameObject> Structures = new List<GameObject>();
 
     void Start()
@@ -57,7 +57,7 @@ public class DrawOnTerrain : MonoBehaviour
         {
             if (data.TemplateStructure.tag.Contains("Pipe"))
             {
-                TemplateInstantiator(TemplateStructure.GetComponent<PipeState>().CheckNeighbors(Pipes),data.mousePos);
+                TemplateInstantiator(PipeMethods.GetComponent<PipeLogic>().CheckNeighbors(TemplateStructure),data.mousePos);
             }
 
             TemplateStructure.GetComponent<MeshRenderer>().material.SetColor("_Color", Color.white);
@@ -104,6 +104,10 @@ public class DrawOnTerrain : MonoBehaviour
     }
     private void TemplateInstantiator(GameObject Template, Vector3 mousePos,ref GameObject StructureBeingAssignedTo)
     {
+        //TODO quickhack until the model is fixed (it goes out of bounds of the 1,1,1 cube
+        if (Template.tag.Contains("Pipe") && Template.tag.Length > 4)
+            TemplateStructureSize = new Vector3(1f, 1f, 1f);
+
         Destroy(TemplateStructure);
         StructureBeingAssignedTo = Instantiate(Template,
                             ObjectSnapper.SnapToGridCell(mousePos,TemplateStructureSize),
@@ -111,7 +115,6 @@ public class DrawOnTerrain : MonoBehaviour
         TemplateStructure.layer = LayerMasks.Instance.IGNORE_RAYCAST_LAYER;
         TemplateStructureSize = TemplateStructure.GetComponent<Renderer>().bounds.size;
     }
-
 
     private void RotateTemplate(object sender, int i)
     {
@@ -124,12 +127,12 @@ public class DrawOnTerrain : MonoBehaviour
             {
                 if (TemplateStructure.tag.Equals("PipeTB"))
                 {
-                    TemplateInstantiator(Pipes.PipeLeftRight, pos);
+                    TemplateInstantiator(PipeMethods.GetComponent<PipeLogic>().pipes.LeftRight, pos);
                 }
 
                 else if (TemplateStructure.tag.Equals("PipeLR"))
                 {
-                    TemplateInstantiator(Pipes.PipeTopBottom, pos);
+                    TemplateInstantiator(PipeMethods.GetComponent<PipeLogic>().pipes.TopBottom, pos);
                 }
             }
         }

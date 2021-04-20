@@ -11,11 +11,10 @@ GameObject:
   - component: {fileID: 3368835293384971126}
   - component: {fileID: 7580999019790872431}
   - component: {fileID: 4973008015358406701}
-  - component: {fileID: 7188851045391162137}
-  - component: {fileID: 3112150143485887358}
-  m_Layer: 9
+  - component: {fileID: 7079535336528523979}
+  m_Layer: 0
   m_Name: PipeTL
-  m_TagString: PipeTL
+  m_TagString: PipeBL
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -27,13 +26,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6743702958633291630}
-  m_LocalRotation: {x: -0.2705982, y: 0.2705982, z: 0.65328145, w: -0.65328145}
-  m_LocalPosition: {x: 34.5, y: 0.5000002, z: 11.5}
-  m_LocalScale: {x: 1, y: 0.5, z: 1}
+  m_LocalRotation: {x: -0.5, y: 0.5, z: -0.5, w: -0.5}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 315, z: -90}
+  m_LocalEulerAnglesHint: {x: 90, y: 270, z: 0}
 --- !u!33 &7580999019790872431
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -41,7 +40,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6743702958633291630}
-  m_Mesh: {fileID: 10206, guid: 0000000000000000e000000000000000, type: 0}
+  m_Mesh: {fileID: 1825875415147931077, guid: 230306719de555549a6c72e1f1b5c557, type: 3}
 --- !u!23 &4973008015358406701
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -83,8 +82,8 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!136 &7188851045391162137
-CapsuleCollider:
+--- !u!65 &7079535336528523979
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -93,19 +92,6 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  m_Radius: 0.4999
-  m_Height: 1.9999
-  m_Direction: 1
-  m_Center: {x: 0.000000059604645, y: 0, z: -0.00000008940697}
---- !u!114 &3112150143485887358
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6743702958633291630}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 80ef16711d18b8e4da471f52a362c597, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  serializedVersion: 2
+  m_Size: {x: 0.99, y: 1, z: 0.99}
+  m_Center: {x: 0, y: 0, z: 0}
