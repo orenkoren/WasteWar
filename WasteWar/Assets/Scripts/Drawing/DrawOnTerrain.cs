@@ -56,9 +56,7 @@ public class DrawOnTerrain : MonoBehaviour
         if (data.TemplateStructure != null && CheckIfLocationIsFree())
         {
             if (data.TemplateStructure.tag.Contains("Pipe"))
-            {
                 TemplateInstantiator(PipeMethods.GetComponent<PipeLogic>().CheckNeighbors(TemplateStructure),data.mousePos);
-            }
 
             TemplateStructure.GetComponent<MeshRenderer>().material.SetColor("_Color", Color.white);
             TemplateStructure.layer = LayerMasks.Instance.ATTACKABLE_LAYER;
@@ -66,14 +64,16 @@ public class DrawOnTerrain : MonoBehaviour
             GameObject Structure = null;
             TemplateInstantiator(data.mousePos, ref Structure);
 
+            if (Structure.tag.Contains("Pipe"))
+                GameEvents.FirePipePlaced(this, Structure);
+
             if (data.TemplateStructure.tag == "Building")
             {
-                Structure.GetComponent<BuildingData>().enabled = true;
                 Structure.GetComponent<BuildingData>().IsTemplate = false;
                 Structure.GetComponent<BuildingData>().Resources = Resources;
             }
-            Structures.Add(Structure);
 
+            Structures.Add(Structure);
             Destroy(TemplateStructure);
             data.TemplateStructure= null;
         }
@@ -103,6 +103,7 @@ public class DrawOnTerrain : MonoBehaviour
         TemplateStructure.layer = LayerMasks.Instance.IGNORE_RAYCAST_LAYER;
         TemplateStructureSize = TemplateStructure.GetComponent<Renderer>().bounds.size;
     }
+
     private void TemplateInstantiator(Vector3 mousePos,ref GameObject StructureBeingAssignedTo)
     {
         //TODO quickhack until the model is fixed (it goes out of bounds of the 1,1,1 cube

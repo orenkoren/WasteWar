@@ -11,6 +11,7 @@ public static class GameEvents
     public static event EventHandler<int> NodeUsedUpListeners;
     public static event EventHandler<ResourceGrid> LoadingTerrainTexturesListeners;
     public static event EventHandler<int> BuildingRotationListeners;
+    public static event EventHandler<GameObject> PipePlacedListeners;
    
     public static void FireTemplateSelected(object sender, TemplateData data) => 
                                             TemplateSelectedListeners?.Invoke(sender, data);
@@ -26,6 +27,8 @@ public static class GameEvents
                                             LoadingTerrainTexturesListeners?.Invoke(sender, resources);
     public static void FireBuildingRotation(object sender, int i) =>
                                             BuildingRotationListeners?.Invoke(sender,i);
+    public static void FirePipePlaced(object sender, GameObject structure) =>
+                                      PipePlacedListeners?.Invoke(sender, structure);
 }
 
 public class TemplateData

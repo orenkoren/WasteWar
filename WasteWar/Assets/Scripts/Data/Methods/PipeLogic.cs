@@ -5,6 +5,11 @@ public class PipeLogic : MonoBehaviour
     [SerializeField]
     public Prefabs pipes;
 
+    private void Start()
+    {
+        GameEvents.PipePlacedListeners += ConstructPipeline;
+    }
+
     public bool CheckIfPipeAligns(Vector3 dir, ActiveSides activeSides)
     {
         if (dir == Vector3.forward)
@@ -20,8 +25,6 @@ public class PipeLogic : MonoBehaviour
 
     public GameObject CheckNeighbors(GameObject template)
     {
-        Vector3 templateSize = template.GetComponent<Renderer>().bounds.size;
-
         bool isUp = false;
         bool isRight = false;
         bool isDown = false;
@@ -34,21 +37,14 @@ public class PipeLogic : MonoBehaviour
         Ray rayDown = new Ray(templateCenter, Vector3.back);
         Ray rayLeft = new Ray(templateCenter, Vector3.left);
 
-        if (Physics.Raycast(rayUp, out hit, 1f, LayerMasks.Instance.ATTACKABLE)
-        && hit.collider.gameObject.tag.Contains("Pipe")
-        && CheckIfPipeAligns(Vector3.forward, hit.collider.gameObject.GetComponent<PipeState>().activeSides))
+
+        if(CheckForCondition(rayUp, out hit, Vector3.forward))
             isUp = true;
-        if (Physics.Raycast(rayRight, out hit, 1f, LayerMasks.Instance.ATTACKABLE)
-        && hit.collider.gameObject.tag.Contains("Pipe")
-        && CheckIfPipeAligns(Vector3.right, hit.collider.gameObject.GetComponent<PipeState>().activeSides))
+        if(CheckForCondition(rayRight, out hit, Vector3.right))
             isRight = true;
-        if (Physics.Raycast(rayDown, out hit, 1f, LayerMasks.Instance.ATTACKABLE)
-        && hit.collider.gameObject.tag.Contains("Pipe")
-        && CheckIfPipeAligns(Vector3.back, hit.collider.gameObject.GetComponent<PipeState>().activeSides))
+        if (CheckForCondition(rayDown, out hit, Vector3.back))
             isDown = true;
-        if (Physics.Raycast(rayLeft, out hit, 1f, LayerMasks.Instance.ATTACKABLE)
-        && hit.collider.gameObject.tag.Contains("Pipe")
-        && CheckIfPipeAligns(Vector3.left, hit.collider.gameObject.GetComponent<PipeState>().activeSides))
+        if (CheckForCondition(rayLeft, out hit, Vector3.left))
             isLeft = true;
 
         if (isUp && isDown)
@@ -65,5 +61,32 @@ public class PipeLogic : MonoBehaviour
             return pipes.TopLeft;
 
         return template;
+    }
+
+    public void ConstructPipeline(object sender, GameObject structure)
+    {
+        ActiveSides activeSides = structure.GetComponent<PipeState>().activeSides;
+
+
+
+        //if (!(structure.tag.Contains("Building"))){
+        //    ConstructPipeline(sender, structure);
+        //    ConstructPipeline(sender, structure);
+        //}
+
+    }
+
+    private bool CheckForCondition(Ray rayDirection,out RaycastHit hit,Vector3 directedUnitVector)
+    {
+       return 
+       Physics.Raycast(rayDirection, out hit, 1f, LayerMasks.Instance.ATTACKABLE)
+       && hit.collider.gameObject.tag.Contains("Pipe")
+       && CheckIfPipeAligns(directedUnitVector, hit.collider.gameObject.GetComponent<PipeState>().activeSides) 
+       ? true : false;
+    }
+
+    private void OnDestroy()
+    {
+        GameEvents.PipePlacedListeners -= ConstructPipeline;
     }
 }
