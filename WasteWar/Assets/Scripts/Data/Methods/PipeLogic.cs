@@ -7,7 +7,7 @@ public class PipeLogic : MonoBehaviour
 
     private void Start()
     {
-        GameEvents.PipePlacedListeners += ConstructPipeline;
+        GameEvents.PipePlacedListeners += TraversePipes;
     }
 
     public bool CheckIfPipeAligns(Vector3 dir, ActiveSides activeSides)
@@ -63,10 +63,17 @@ public class PipeLogic : MonoBehaviour
         return template;
     }
 
-    public void ConstructPipeline(object sender, GameObject structure)
+    private void TraversePipes(object sender, GameObject structure)
     {
         ActiveSides activeSides = structure.GetComponent<PipeState>().activeSides;
+        GameObject firstDirection = null;
+        GameObject SecondDirection = null;
 
+        do
+        {
+
+        }
+        while (firstDirection != null || !firstDirection.tag.Contains("Building"));
 
 
         //if (!(structure.tag.Contains("Building"))){
@@ -74,6 +81,50 @@ public class PipeLogic : MonoBehaviour
         //    ConstructPipeline(sender, structure);
         //}
 
+    }
+
+    private GameObject Helper(GameObject pipe,ActiveSides activeSides)
+    {
+        bool isUp = false;
+        bool isRight = false;
+        bool isDown = false;
+        bool isLeft = false;
+        activeSides.
+
+        if(activeSides)
+
+
+        Vector3 pipeCenter = new Vector3(pipe.transform.position.x, pipe.transform.position.y, pipe.transform.position.z);
+        RaycastHit hit;
+        Ray rayUp = new Ray(pipeCenter, Vector3.forward);
+        Ray rayRight = new Ray(pipeCenter, Vector3.right);
+        Ray rayDown = new Ray(pipeCenter, Vector3.back);
+        Ray rayLeft = new Ray(pipeCenter, Vector3.left);
+
+
+        if (CheckForCondition(rayUp, out hit, Vector3.forward))
+            isUp = true;
+        if (CheckForCondition(rayRight, out hit, Vector3.right))
+            isRight = true;
+        if (CheckForCondition(rayDown, out hit, Vector3.back))
+            isDown = true;
+        if (CheckForCondition(rayLeft, out hit, Vector3.left))
+            isLeft = true;
+
+        if (isUp && isDown)
+            return pipes.TopBottom;
+        else if (isLeft && isRight)
+            return pipes.LeftRight;
+        else if (isUp && isRight)
+            return pipes.TopRight;
+        else if (isDown && isRight)
+            return pipes.BottomRight;
+        else if (isDown && isLeft)
+            return pipes.BottomLeft;
+        else if (isUp && isLeft)
+            return pipes.TopLeft;
+
+        return template;
     }
 
     private bool CheckForCondition(Ray rayDirection,out RaycastHit hit,Vector3 directedUnitVector)
@@ -87,6 +138,6 @@ public class PipeLogic : MonoBehaviour
 
     private void OnDestroy()
     {
-        GameEvents.PipePlacedListeners -= ConstructPipeline;
+        GameEvents.PipePlacedListeners -= TraversePipes;
     }
 }
