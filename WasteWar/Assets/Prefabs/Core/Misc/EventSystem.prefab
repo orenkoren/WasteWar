@@ -58,13 +58,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7a9e06832c50fd544afa0f45831f8013, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  pipes: {fileID: 11400000, guid: 639d616f8610c9243af25d9971a12ba4, type: 2}
   prefabBuilding: {fileID: 1578355824271295957, guid: 4347a3dd91d7c65488a728b326222b97,
     type: 3}
   prefabTurret: {fileID: 1221063325293802509, guid: 00874071ff0b09f4fa30e98f9d912ab1,
     type: 3}
   prefabWall: {fileID: 5945110931214094937, guid: 982dba650d3c0314a97d006aeab7f20a,
-    type: 3}
-  prefabPipe: {fileID: 1204170484558185469, guid: 6f045b0835802f543b5c6fa5a7b9d921,
     type: 3}
   prefabPowerPole: {fileID: 8715518470838514847, guid: 70de765d5634d5c47a9b207e48a6c786,
     type: 3}

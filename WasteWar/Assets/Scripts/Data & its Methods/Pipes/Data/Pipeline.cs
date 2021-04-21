@@ -12,9 +12,4 @@ public class Pipeline
         pipes = new List<GameObject>();
         buildings = new List<GameObject>();
     }
-
-    public void CheckIfPipelineExists(GameObject pipe)
-    {
-
-    }
 }

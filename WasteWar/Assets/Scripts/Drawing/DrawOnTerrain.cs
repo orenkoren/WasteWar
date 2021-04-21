@@ -17,7 +17,6 @@ public class DrawOnTerrain : MonoBehaviour
     private RaycastHit hit;
     private Ray ray;
     private ResourceGrid Resources;
-    private List<Pipeline> Pipelines = new List<Pipeline>();
     private List<GameObject> Structures = new List<GameObject>();
 
     void Start()
@@ -56,18 +55,21 @@ public class DrawOnTerrain : MonoBehaviour
         if (data.TemplateStructure != null && CheckIfLocationIsFree())
         {
             if (data.TemplateStructure.tag.Contains("Pipe"))
-                TemplateInstantiator(PipeMethods.GetComponent<PipeLogic>().CheckNeighbors(TemplateStructure),data.mousePos);
+            {
+                TemplateInstantiator(PipeMethods.GetComponent<PipeLogic>().CheckNeighbors(TemplateStructure), data.MousePos);
+                GameEvents.FirePipe2Placed(this, TemplateStructure.tag);
+            }
 
             TemplateStructure.GetComponent<MeshRenderer>().material.SetColor("_Color", Color.white);
             TemplateStructure.layer = LayerMasks.Instance.ATTACKABLE_LAYER;
             
             GameObject Structure = null;
-            TemplateInstantiator(data.mousePos, ref Structure);
+            TemplateInstantiator(data.MousePos, ref Structure);
 
             if (Structure.tag.Contains("Pipe"))
                 GameEvents.FirePipePlaced(this, Structure);
 
-            if (data.TemplateStructure.tag == "Building")
+            if (data.TemplateStructure.CompareTag("Building"))
             {
                 Structure.GetComponent<BuildingData>().IsTemplate = false;
                 Structure.GetComponent<BuildingData>().Resources = Resources;
@@ -88,7 +90,7 @@ public class DrawOnTerrain : MonoBehaviour
     {
         if (data.TemplateStructure != null)
         {
-            TemplateInstantiator(data.TemplateStructure, data.mousePos);
+            TemplateInstantiator(data.TemplateStructure, data.MousePos);
         }
         else
             Destroy(TemplateStructure);
@@ -128,12 +130,12 @@ public class DrawOnTerrain : MonoBehaviour
             var temp = TemplateStructure.GetComponent<PipeState>();
             if (temp != null)
             {
-                if (TemplateStructure.tag.Equals("PipeTB"))
+                if (TemplateStructure.CompareTag("PipeTB"))
                 {
                     TemplateInstantiator(PipeMethods.GetComponent<PipeLogic>().pipes.LeftRight, pos);
                 }
 
-                else if (TemplateStructure.tag.Equals("PipeLR"))
+                else if (TemplateStructure.CompareTag("PipeLR"))
                 {
                     TemplateInstantiator(PipeMethods.GetComponent<PipeLogic>().pipes.TopBottom, pos);
                 }

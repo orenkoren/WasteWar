@@ -1,13 +1,16 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class PipeLogic : MonoBehaviour
 {
-    [SerializeField]
     public Prefabs pipes;
+    public GameObject pipelinesPrefab;
+    private List<Pipeline> pipelines;
 
     private void Start()
     {
-        GameEvents.PipePlacedListeners += TraversePipes;
+        pipelines = pipelinesPrefab.GetComponent<PipelineStorage>().Pipelines;
+        GameEvents.PipePlacedListeners += TraversePipeSegments;
     }
 
     public bool CheckIfPipeAligns(Vector3 dir, ActiveSides activeSides)
@@ -36,7 +39,6 @@ public class PipeLogic : MonoBehaviour
         Ray rayRight = new Ray(templateCenter, Vector3.right);
         Ray rayDown = new Ray(templateCenter, Vector3.back);
         Ray rayLeft = new Ray(templateCenter, Vector3.left);
-
 
         if(CheckForCondition(rayUp, out hit, Vector3.forward))
             isUp = true;
@@ -72,9 +74,14 @@ public class PipeLogic : MonoBehaviour
         }
     }
 
-    private void TraversePipes(object sender, GameObject structure)
+    //TODO Make this work incase the building is placed last, and not a pipe
+    private void TraversePipeSegments(object sender, GameObject structure)
     {
+        Dictionary<int, GameObject> visitedPipes = new Dictionary<int,GameObject>();
+        visitedPipes.Add(0, structure);
         ActiveSides activeSides = structure.GetComponent<PipeState>().activeSides;
+        Pipeline pipeline = new Pipeline();
+
         Vector3 direction1 = Vector3.zero;
         Vector3 direction2 = Vector3.zero;
         GameObject structure1 = structure;
@@ -100,26 +107,39 @@ public class PipeLogic : MonoBehaviour
         else if (activeSides.IsLeft == true)
             direction2 = Vector3.left;
 
-        int i1 = 0;
-        do
-        {
-            structure1= NextPipe(structure1, ref direction1);
-            Debug.Log("dir1 " + i1);
-            i1++;
-        }
-        while (structure1 != null && !structure1.tag.Equals("Building"));
+        int i = 0;
 
-        int i2 = 0;
-        do
-        {
-            structure2 = NextPipe(structure2, ref direction2);
-            Debug.Log("dir2 "+i2);
-            i2++;
+        while (structure1 != null && !structure1.CompareTag("Building")){
+            structure1 = NextPipeSegment(structure1, ref direction1);
+            if (structure1 != null)
+                visitedPipes.Add(--i, structure1);
         }
-        while (structure2 != null && !structure2.tag.Equals("Building"));
+        int n = i;
+        i = 0;
+
+        while (structure2 != null && !structure2.CompareTag("Building")){
+            structure2 = NextPipeSegment(structure2, ref direction2);
+            if (structure2 != null)
+                visitedPipes.Add(++i, structure2);
+        }
+
+        if ((structure1!=null && structure2!=null) && (structure1.CompareTag("Building") && structure2.CompareTag("Building")))
+        {
+            pipeline.buildings.Add(visitedPipes[i--]);
+            while (i > n)
+            {
+                pipeline.pipes.Add(visitedPipes[i--]);
+            }
+            pipeline.buildings.Add(visitedPipes[i]);
+            pipelines.Add(pipeline);
+            foreach (var pipe in pipelines[0].pipes)
+                pipe.GetComponent<MeshRenderer>().material.SetColor("_Color", Color.yellow);
+            foreach (var building in pipelines[0].buildings)
+                building.GetComponent<MeshRenderer>().material.SetColor("_Color", Color.yellow);
+        }
     }
 
-    private GameObject NextPipe(GameObject pipe, ref Vector3 dir)
+    private GameObject NextPipeSegment(GameObject pipe, ref Vector3 dir)
     {
         Vector3 pipeCenter = new Vector3(pipe.transform.position.x, pipe.transform.position.y, pipe.transform.position.z);
         RaycastHit hit;
@@ -133,7 +153,7 @@ public class PipeLogic : MonoBehaviour
                 dir=GetNextDirection(dir);
                 return hit.collider.gameObject;
             }
-            else if (hit.collider.gameObject.tag.Equals("Building"))
+            else if (hit.collider.gameObject.CompareTag("Building"))
                 return hit.collider.gameObject;
 
             return null;
@@ -158,6 +178,6 @@ public class PipeLogic : MonoBehaviour
 
     private void OnDestroy()
     {
-        GameEvents.PipePlacedListeners -= TraversePipes;
+        GameEvents.PipePlacedListeners -= TraversePipeSegments;
     }
 }

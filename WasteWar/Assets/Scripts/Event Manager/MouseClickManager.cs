@@ -29,7 +29,7 @@ public class MouseClickManager : MonoBehaviour
            && MathUtils.CursorIsWithinBounds(hit.point, terrainSize)
            )
         {
-            templateData.mousePos = hit.point;
+            templateData.MousePos = hit.point;
             GameEvents.FireLeftClickPressed(this, templateData);
         }
         else if  (

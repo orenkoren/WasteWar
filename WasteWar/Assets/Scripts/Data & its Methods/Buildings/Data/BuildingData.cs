@@ -7,6 +7,8 @@ public class BuildingData : MonoBehaviour
     [SerializeField]
     private UnityEngine.UI.Text CubeTextComponent;
 
+    public bool IsGenerator { get; private set; } = true;
+
     private const int TOTAL_CAPACITY = 100;
     private const float STARTING_YIELD_SPEED = 1.1f;
 
