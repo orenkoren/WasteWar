@@ -326,11 +326,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d36c15d1c31159468bb896c4da8ea97, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  DetectionRadius: 100
+  DetectionRadius: 50
+  startRange: 5
   HostileMask:
     serializedVersion: 2
     m_Bits: 1024
   HitsPerSecond: 1
+  coneSize: 20
 --- !u!1001 &1642277714134749574
 PrefabInstance:
   m_ObjectHideFlags: 0

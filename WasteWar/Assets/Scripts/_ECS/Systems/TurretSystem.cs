@@ -1,3 +1,4 @@
+using Unity.Collections;
 using Unity.Entities;
 using Unity.Jobs;
 using Unity.Mathematics;
@@ -27,12 +28,12 @@ public class TurretSystem : SystemBase
           .WithReadOnly(pworld)
           .ForEach((ref TurretComponent turret, in Translation translation, in Rotation rotation) =>
           {
-              PerformRaycast(ref turret, translation, rotation, pworld);
-              if (turret.currentTarget != Entity.Null)
+              NativeList<RaycastHit> hits = new NativeList<RaycastHit>(Allocator.Temp);
+              PerformRaycast(ref turret, translation, rotation, pworld, ref hits);
+              foreach(var hit in hits)
               {
                   // add to a native list and consume in different job?
-                  ecb.AddComponent<Disabled>(0, turret.currentTarget);
-                  turret.currentTarget = Entity.Null;
+                  ecb.AddComponent<Disabled>(0, hit.Entity);
               }
           }).ScheduleParallel(Dependency);
 
@@ -40,24 +41,21 @@ public class TurretSystem : SystemBase
     }
 
     private static void PerformRaycast(ref TurretComponent turret,
-                        Translation translation, Rotation rotation, CollisionWorld pworld)
+                        Translation translation, Rotation rotation, CollisionWorld pworld,
+                        ref NativeList<RaycastHit> hits)
     {
-        RaycastHit closestHit;
-        if (turret.currentTarget != Entity.Null) return;
         var rayInput = new RaycastInput
         {
-            Start = translation.Value + new float3 { x = 0, y = 2, z = 0 },
-            End = translation.Value + new float3 { x = 0, y = 2, z = 0 } +
-                                            (math.forward(rotation.Value) * turret.DetectionRadius),
+            // TODO: turret destroys itself if start value is too close.. collisionfilter or change the start value
+            Start = translation.Value + (math.forward(rotation.Value) * turret.startRange),
+            End = translation.Value + (math.forward(rotation.Value) * turret.DetectionRadius),
             Filter = CollisionFilter.Default
         };
-        for (float angle = -45; angle <= 45; angle++)
+        for (float angle = -turret.coneSize; angle <= turret.coneSize; angle++)
         {
-            pworld.CastRay(rayInput, out closestHit);
+            pworld.CastRay(rayInput, ref hits);
             // TODO: math.distance()
-            turret.currentTarget = closestHit.Entity;
-
-            if (closestHit.Entity != Entity.Null) return;
+            if (hits.Length > 0) return;
 
             float3 rayDir = math.mul(quaternion.AxisAngle(new float3(0, 1, 0), math.radians(angle)),
                                     math.forward(rotation.Value));

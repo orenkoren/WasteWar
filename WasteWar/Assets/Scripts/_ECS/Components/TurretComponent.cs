@@ -5,7 +5,8 @@ using UnityEngine;
 public struct TurretComponent : IComponentData
 {
     public int DetectionRadius;
+    public float startRange;
     public LayerMask HostileMask;
     public int HitsPerSecond;
-    public Entity currentTarget;
+    public int coneSize;
 }

@@ -304,6 +304,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Turret0 (2)
       objectReference: {fileID: 0}
+    - target: {fileID: 1221063325293802509, guid: 00874071ff0b09f4fa30e98f9d912ab1,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4232244980109149266, guid: 00874071ff0b09f4fa30e98f9d912ab1,
         type: 3}
       propertyPath: m_RootOrder
@@ -1123,7 +1128,7 @@ PrefabInstance:
     - target: {fileID: 3827050943749171814, guid: cea69143681596441bb7681d57708275,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 44.186802
+      value: 46.230698
       objectReference: {fileID: 0}
     - target: {fileID: 3827050943749171814, guid: cea69143681596441bb7681d57708275,
         type: 3}
@@ -1133,7 +1138,7 @@ PrefabInstance:
     - target: {fileID: 3827050943749171814, guid: cea69143681596441bb7681d57708275,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 22.371874
+      value: 17.480453
       objectReference: {fileID: 0}
     - target: {fileID: 3827050943749171814, guid: cea69143681596441bb7681d57708275,
         type: 3}
@@ -1175,6 +1180,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Camera Parent
       objectReference: {fileID: 0}
+    - target: {fileID: 3827050944390670149, guid: cea69143681596441bb7681d57708275,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -20.9
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: cea69143681596441bb7681d57708275, type: 3}
 --- !u!1001 &5802560123718736473
@@ -1197,7 +1207,7 @@ PrefabInstance:
     - target: {fileID: 4232244980109149266, guid: 00874071ff0b09f4fa30e98f9d912ab1,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 45.92
+      value: 50
       objectReference: {fileID: 0}
     - target: {fileID: 4232244980109149266, guid: 00874071ff0b09f4fa30e98f9d912ab1,
         type: 3}
@@ -1207,7 +1217,7 @@ PrefabInstance:
     - target: {fileID: 4232244980109149266, guid: 00874071ff0b09f4fa30e98f9d912ab1,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 2.6800003
+      value: 50
       objectReference: {fileID: 0}
     - target: {fileID: 4232244980109149266, guid: 00874071ff0b09f4fa30e98f9d912ab1,
         type: 3}
