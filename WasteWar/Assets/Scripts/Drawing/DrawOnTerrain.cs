@@ -113,10 +113,4 @@ public class DrawOnTerrain : MonoBehaviour
         GameEvents.RightClickPressedListeners -= DeleteStructure;
         GameEvents.MouseOverListeners -= Resources.ShowCurrentResourceAmount;
     }
-
-    private void OnDestroy()
-    {
-        GameEvents.TemplateSelectedListeners -= DestroyPreviousAndPrepareNewTemplate;
-        GameEvents.StructurePlacedListeners -= DrawStructure;
-    }
 }
