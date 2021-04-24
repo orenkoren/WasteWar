@@ -1,8 +1,8 @@
 ﻿using UnityEngine;
 
-public static class MathUtilBasic {
+public static class MathUtils{
 
-
+    public const int DICT_KEY_GENERATOR=10000;
 
     /*p1 and p2 are two points that have certain (different) rotation, the function
      interpolates rotation inbetween these two points and gives us a Quaternion to smoothly transition from p1 state to p2 rotation state on our object

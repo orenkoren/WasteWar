@@ -11,9 +11,8 @@ GameObject:
   - component: {fileID: 1849861851773692176}
   - component: {fileID: 1849861851773692177}
   - component: {fileID: 1849861851773692179}
-  - component: {fileID: 1484518420}
   m_Layer: 0
-  m_Name: Building System
+  m_Name: BuildingSystem
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -42,12 +41,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 1849861851773692174}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2aca3e84fe623b5408ccb7ec70f9d070, type: 3}
+  m_Script: {fileID: 11500000, guid: 019e4482eb5a9ea4d88e7ffe147fb1f4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   terrain: {fileID: 0}
   cam: {fileID: 0}
-  drawOnTerrain: {fileID: 1849861851773692179}
 --- !u!114 &1849861851773692179
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -60,25 +58,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a46ef4434e839f4cb6ab795f6a8dd67, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  structurePrefab1: {fileID: 8265789795041056996, guid: e931a1718db21ee4cbb7ebe972ef2598,
-    type: 3}
-  structurePrefab2: {fileID: 5945110931214094937, guid: 982dba650d3c0314a97d006aeab7f20a,
-    type: 3}
---- !u!114 &1484518420
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1849861851773692174}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7a9e06832c50fd544afa0f45831f8013, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  structurePrefab1: {fileID: 8265789795041056996, guid: e931a1718db21ee4cbb7ebe972ef2598,
-    type: 3}
-  structurePrefab2: {fileID: 5945110931214094937, guid: 982dba650d3c0314a97d006aeab7f20a,
-    type: 3}
-  terrain: {fileID: 0}
   cam: {fileID: 0}
+  terrain: {fileID: 0}
