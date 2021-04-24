@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class DrawOnTerrain : MonoBehaviour
 {
+    //DEBUG PURPOSES
+    private static int z= 0;
+
     [SerializeField]
     private Camera cam;
     [SerializeField]
@@ -65,6 +68,8 @@ public class DrawOnTerrain : MonoBehaviour
             
             GameObject Structure = null;
             TemplateInstantiator(data.MousePos, ref Structure);
+            Structure.name = Structure.name + z++;
+
 
             if (Structure.tag.Contains("Pipe"))
                 GameEvents.FirePipePlaced(this, Structure);

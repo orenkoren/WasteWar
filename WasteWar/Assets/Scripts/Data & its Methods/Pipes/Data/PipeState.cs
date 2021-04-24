@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class PipeState : MonoBehaviour
 {
-    public bool Full { get; private set; }
+    public bool Full { get; set; }
     public ActiveSides activeSides;
 
     private void Awake()

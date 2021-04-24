@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using System.Collections;
+
 using UnityEngine;
 
 public class PipeLogic : MonoBehaviour
@@ -77,10 +79,9 @@ public class PipeLogic : MonoBehaviour
     //TODO Make this work incase the building is placed last, and not a pipe
     private void TraversePipeSegments(object sender, GameObject structure)
     {
-        Dictionary<int, GameObject> visitedPipes = new Dictionary<int,GameObject>();
-        visitedPipes.Add(0, structure);
         ActiveSides activeSides = structure.GetComponent<PipeState>().activeSides;
         Pipeline pipeline = new Pipeline();
+        GameObject lastPipeBeforeBuilding = null;
 
         Vector3 direction1 = Vector3.zero;
         Vector3 direction2 = Vector3.zero;
@@ -107,39 +108,130 @@ public class PipeLogic : MonoBehaviour
         else if (activeSides.IsLeft == true)
             direction2 = Vector3.left;
 
-        int i = 0;
 
-        while (structure1 != null && !structure1.CompareTag("Building")){
-            structure1 = NextPipeSegment(structure1, ref direction1);
-            if (structure1 != null)
-                visitedPipes.Add(--i, structure1);
-        }
-        int n = i;
-        i = 0;
+        while (CheckStructureType(structure1))
+            structure1 = NextPipeSegment(structure1, ref direction1, ref lastPipeBeforeBuilding);
+        while (CheckStructureType(structure2))
+            structure2 = NextPipeSegment(structure2, ref direction2, ref lastPipeBeforeBuilding);
 
-        while (structure2 != null && !structure2.CompareTag("Building")){
-            structure2 = NextPipeSegment(structure2, ref direction2);
-            if (structure2 != null)
-                visitedPipes.Add(++i, structure2);
-        }
-
-        if ((structure1!=null && structure2!=null) && (structure1.CompareTag("Building") && structure2.CompareTag("Building")))
-        {
-            pipeline.buildings.Add(visitedPipes[i--]);
-            while (i > n)
+        if (CheckIfStructuresSatisfyPipeline())
+        {     
+            if(structure1.CompareTag("Building"))
             {
-                pipeline.pipes.Add(visitedPipes[i--]);
+                pipeline.buildings.Add(structure1);
+                direction1 = -direction1;
+                structure1 = lastPipeBeforeBuilding;
+                pipeline.pipes.Add(lastPipeBeforeBuilding);
+                while (CheckStructureType(structure1))
+                {
+                    structure1 = NextPipeSegment(structure1, ref direction1, ref lastPipeBeforeBuilding);
+                    pipeline.pipes.Add(structure1);
+                }
+                pipeline.buildings.Add(structure1);
             }
-            pipeline.buildings.Add(visitedPipes[i]);
+            else if(structure2.CompareTag("Building"))
+            {
+                pipeline.buildings.Add(structure2);
+                direction2 = -direction2;
+                structure2 = lastPipeBeforeBuilding;
+                pipeline.pipes.Add(lastPipeBeforeBuilding);
+                while (CheckStructureType(structure2))
+                {
+                    structure2 = NextPipeSegment(structure2, ref direction2, ref lastPipeBeforeBuilding);
+                    if(structure2.tag.Contains("Pipe"))
+                        pipeline.pipes.Add(structure2);
+                }
+                pipeline.buildings.Add(structure2);
+            }
+            pipeline.pipes.Reverse();
+
+            StartCoroutine(StartResourceTransferFrom(pipeline));
+
             pipelines.Add(pipeline);
-            foreach (var pipe in pipelines[0].pipes)
+            foreach (var pipe in pipeline.pipes)
                 pipe.GetComponent<MeshRenderer>().material.SetColor("_Color", Color.yellow);
-            foreach (var building in pipelines[0].buildings)
+            foreach (var building in pipeline.buildings)
                 building.GetComponent<MeshRenderer>().material.SetColor("_Color", Color.yellow);
+        }
+
+        bool CheckStructureType(GameObject structure)
+        {
+            return structure != null && (!structure.CompareTag("Building") && !structure.CompareTag("Base"));
+        }
+        bool CheckIfStructuresSatisfyPipeline()
+        {
+            bool condition1 = structure1 != null && structure2 != null ? true : false;
+
+            if (condition1)
+                return (structure1.CompareTag("Building") && structure2.CompareTag("Base")) ||
+                        (structure1.CompareTag("Base") && structure2.CompareTag("Building"));
+            else 
+                return false;
+        }
+
+    }
+
+    private IEnumerator StartResourceTransferFrom(Pipeline pipeline)
+    {
+        BuildingData giver;
+        BaseData taker;
+
+        giver = pipeline.buildings[0].GetComponent<BuildingData>();
+        taker = pipeline.buildings[1].GetComponent<BaseData>();
+
+        List<GameObject> pipes = pipeline.pipes;
+
+        while (giver.Storage > 0 )
+        {
+            for (int i=0;i<pipeline.pipes.Count-1;i++)
+            {
+                if (pipes[i + 1].GetComponent<PipeState>().Full == true)
+                {
+                    pipes[i].GetComponent<PipeState>().Full = true;
+                    pipes[i + 1].GetComponent<PipeState>().Full = false;
+
+                    pipes[i].GetComponent<MeshRenderer>().material.SetColor("_Color", Color.grey);
+                    pipes[i+1].GetComponent<MeshRenderer>().material.SetColor("_Color", Color.white);
+                }
+            }
+
+            pipes[pipes.Count - 1].GetComponent<PipeState>().Full = true;
+            pipes[pipes.Count - 1].GetComponent<MeshRenderer>().material.SetColor("_Color", Color.grey);
+            pipes[0].GetComponent<PipeState>().Full = false;
+            pipes[0].GetComponent<MeshRenderer>().material.SetColor("_Color", Color.white);
+
+            giver.Storage--;
+            giver.CubeTextComponent.text = giver.Storage.ToString();
+
+            yield return new WaitForSeconds(giver.GetComponent<BuildingData>().YieldFrequency);
+        }
+
+        while (pipes.Find(pipe => pipe.GetComponent<PipeState>().Full == true))
+        {
+            pipes[0].GetComponent<PipeState>().Full = false;
+            pipes[0].GetComponent<MeshRenderer>().material.SetColor("_Color", Color.white);
+
+            for (int i = 0; i < pipeline.pipes.Count - 1; i++)
+            {
+                if (pipes[i + 1].GetComponent<PipeState>().Full == true)
+                {
+                    pipes[i].GetComponent<PipeState>().Full = true;
+                    pipes[i + 1].GetComponent<PipeState>().Full = false;
+
+                    pipes[i].GetComponent<MeshRenderer>().material.SetColor("_Color", Color.grey);
+                    pipes[i + 1].GetComponent<MeshRenderer>().material.SetColor("_Color", Color.white);
+                }
+            }
+
+
+            taker.Storage++;
+            taker.CubeTextComponent.text = taker.Storage.ToString();
+
+            yield return new WaitForSeconds(giver.GetComponent<BuildingData>().YieldFrequency);
         }
     }
 
-    private GameObject NextPipeSegment(GameObject pipe, ref Vector3 dir)
+    private GameObject NextPipeSegment(GameObject pipe, ref Vector3 dir, ref GameObject lastPipeBeforeBuilding)
     {
         Vector3 pipeCenter = new Vector3(pipe.transform.position.x, pipe.transform.position.y, pipe.transform.position.z);
         RaycastHit hit;
@@ -150,11 +242,15 @@ public class PipeLogic : MonoBehaviour
         {
             if (hit.collider.gameObject.tag.Contains("Pipe"))
             {
-                dir=GetNextDirection(dir);
+                dir = GetNextDirection(dir);
                 return hit.collider.gameObject;
             }
-            else if (hit.collider.gameObject.CompareTag("Building"))
+            else if (hit.collider.gameObject.CompareTag("Building") || (hit.collider.gameObject.CompareTag("Base")))
+            { 
+                if (hit.collider.gameObject.CompareTag("Building"))
+                    lastPipeBeforeBuilding = pipe;
                 return hit.collider.gameObject;
+            }
 
             return null;
         }

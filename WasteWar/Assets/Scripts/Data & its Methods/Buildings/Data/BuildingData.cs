@@ -4,9 +4,7 @@ using UnityEngine;
 
 public class BuildingData : MonoBehaviour
 {
-    [SerializeField]
-    private UnityEngine.UI.Text CubeTextComponent;
-
+    public UnityEngine.UI.Text CubeTextComponent;
     public bool IsGenerator { get; private set; } = true;
 
     private const int TOTAL_CAPACITY = 100;
@@ -36,6 +34,17 @@ public class BuildingData : MonoBehaviour
         private set
         {
             _yieldFrequency -= _yieldFrequency * (value / 10);
+        }
+    }
+    public int Storage
+    {
+        get
+        {
+            return _storage;
+        }
+        set
+        {
+            --_storage;
         }
     }
 
