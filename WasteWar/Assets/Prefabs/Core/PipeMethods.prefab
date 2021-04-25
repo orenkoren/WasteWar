@@ -44,3 +44,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pipes: {fileID: 11400000, guid: 639d616f8610c9243af25d9971a12ba4, type: 2}
+  pipelinesPrefab: {fileID: 1222064066081354857, guid: ed89e33040ddf8d4dbe9fe5986e85b51,
+    type: 3}

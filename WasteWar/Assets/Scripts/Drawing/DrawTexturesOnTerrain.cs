@@ -78,5 +78,6 @@ public class DrawTexturesOnTerrain : MonoBehaviour
     private void OnDestroy()
     {
         GameEvents.NodeUsedUpListeners -= UpdateTerrainTexture;
+        GameEvents.LoadingTerrainTexturesListeners -= DrawAllResourceTexturesOnTerrain;
     }
 }
