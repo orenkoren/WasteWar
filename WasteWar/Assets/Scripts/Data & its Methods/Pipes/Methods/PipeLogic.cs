@@ -5,7 +5,6 @@ using UnityEngine;
 public class PipeLogic : MonoBehaviour
 {
     public Prefabs pipes;
-
     public GameObject pipelinesPrefab;
 
     private List<Pipeline> pipelines;
