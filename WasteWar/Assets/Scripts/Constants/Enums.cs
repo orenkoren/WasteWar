@@ -14,6 +14,7 @@ public enum StructureType
     BUILDING,
     TURRET,
     WALL,
-    BELT,
+    PIPE,
+    POWER_POLE,
     NONE
 }

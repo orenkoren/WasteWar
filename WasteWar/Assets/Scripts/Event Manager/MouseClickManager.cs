@@ -24,17 +24,17 @@ public class MouseClickManager : MonoBehaviour
         ray = cam.ScreenPointToRay(Input.mousePosition);
         if (
            Input.GetMouseButtonDown(0)
-           && templateData.StructureType != StructureType.NONE
+           && templateData.TemplateStructure != null
            && Physics.Raycast(ray, out hit, CameraConstants.Instance.RAYCAST_DISTANCE, LayerMasks.Instance.GROUND)
            && MathUtils.CursorIsWithinBounds(hit.point, terrainSize)
            )
         {
-            templateData.mousePos = hit.point;
+            templateData.MousePos = hit.point;
             GameEvents.FireLeftClickPressed(this, templateData);
         }
         else if  (
           Input.GetMouseButtonDown(1)
-          && templateData.StructureType == StructureType.NONE
+          && templateData.TemplateStructure == null
           && Physics.Raycast(ray, out hit, CameraConstants.Instance.RAYCAST_DISTANCE, LayerMasks.Instance.ATTACKABLE)
           && MathUtils.CursorIsWithinBounds(hit.point, terrainSize)
           )

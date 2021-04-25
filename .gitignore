@@ -40,3 +40,5 @@ WasteWar/Assembly-CSharp-Editor.csproj
 WasteWar/EditMode.csproj
 WasteWar/GameAssembly.csproj
 WasteWar/PlayMode.csproj
+
+*.log
