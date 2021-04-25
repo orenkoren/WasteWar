@@ -1,5 +1,35 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &778192355916375876
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6583692049268307155}
+  m_Layer: 9
+  m_Name: MuzzleFlashPosition
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6583692049268307155
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 778192355916375876}
+  m_LocalRotation: {x: -0.28709322, y: -0.08276942, z: -0.041629195, w: 0.95341164}
+  m_LocalPosition: {x: 0, y: 2.241, z: 3.166}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1243050243389896301}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: -33.664, y: -9.26, z: -2.193}
 --- !u!1 &1221063325293802509
 GameObject:
   m_ObjectHideFlags: 0
@@ -13,7 +43,9 @@ GameObject:
   - component: {fileID: 1654771743}
   - component: {fileID: 6129023971681488938}
   - component: {fileID: 1654771747}
-  - component: {fileID: 1618148829317378813}
+  - component: {fileID: 1420241451}
+  - component: {fileID: 165292783}
+  - component: {fileID: 433240388}
   m_Layer: 9
   m_Name: Turret0
   m_TagString: Untagged
@@ -110,7 +142,7 @@ MonoBehaviour:
     m_Template: {fileID: 0}
     m_CollisionResponse:
       m_Override: 0
-      m_Value: 3
+      m_Value: 1
     m_Friction:
       m_Override: 0
       m_Value:
@@ -254,7 +286,7 @@ MonoBehaviour:
     Tag05: 0
     Tag06: 0
     Tag07: 0
---- !u!114 &1618148829317378813
+--- !u!114 &1420241451
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -263,152 +295,44 @@ MonoBehaviour:
   m_GameObject: {fileID: 1221063325293802509}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9be0be142b0801c4d9bcda3cc09a574a, type: 3}
+  m_Script: {fileID: 11500000, guid: 97d43ceb9bc2509418598310671ca830, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &8752535509683542489
+  Health: 40000
+  ShouldDestroyOnDeath: 1
+--- !u!114 &165292783
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1876843468677442775}
+  m_GameObject: {fileID: 1221063325293802509}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b275e5f92732148048d7b77e264ac30e, type: 3}
+  m_Script: {fileID: 11500000, guid: 66e49642388c69b498a5fbec34d4e37d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_ShapeType: 0
-  m_PrimitiveCenter:
-    x: 0
-    y: 1.2216136
-    z: 0.1418128
-  m_PrimitiveSize:
-    x: 5.1709166
-    y: 2.4316387
-    z: 5.454542
-  m_PrimitiveOrientation:
-    Value:
-      x: -0
-      y: 0
-      z: 0
-    RotationOrder: 4
-  m_Capsule:
-    Height: 5.454542
-    Radius: 2.5854583
-    Axis: 2
-  m_Cylinder:
-    Height: 2.4316387
-    Radius: 2.727271
-    Axis: 1
-  m_CylinderSideCount: 20
-  m_SphereRadius: 2.727271
-  m_MinimumSkinnedVertexWeight: 0.1
-  m_ConvexHullGenerationParameters:
-    m_SimplificationTolerance: 0.08181813
-    m_BevelRadius: 0.05
-    m_MinimumAngle: 2.5000002
-  m_CustomMesh: {fileID: 0}
-  m_ForceUnique: 0
-  m_Material:
-    m_SupportsTemplate: 1
-    m_Template: {fileID: 0}
-    m_CollisionResponse:
-      m_Override: 0
-      m_Value: 0
-    m_Friction:
-      m_Override: 0
-      m_Value:
-        Value: 0.5
-        CombineMode: 0
-    m_Restitution:
-      m_Override: 0
-      m_Value:
-        Value: 0
-        CombineMode: 2
-    m_BelongsToCategories:
-      m_Override: 0
-      m_Value:
-        Category00: 1
-        Category01: 1
-        Category02: 1
-        Category03: 1
-        Category04: 1
-        Category05: 1
-        Category06: 1
-        Category07: 1
-        Category08: 1
-        Category09: 1
-        Category10: 1
-        Category11: 1
-        Category12: 1
-        Category13: 1
-        Category14: 1
-        Category15: 1
-        Category16: 1
-        Category17: 1
-        Category18: 1
-        Category19: 1
-        Category20: 1
-        Category21: 1
-        Category22: 1
-        Category23: 1
-        Category24: 1
-        Category25: 1
-        Category26: 1
-        Category27: 1
-        Category28: 1
-        Category29: 1
-        Category30: 1
-        Category31: 1
-    m_CollidesWithCategories:
-      m_Override: 0
-      m_Value:
-        Category00: 1
-        Category01: 1
-        Category02: 1
-        Category03: 1
-        Category04: 1
-        Category05: 1
-        Category06: 1
-        Category07: 1
-        Category08: 1
-        Category09: 1
-        Category10: 1
-        Category11: 1
-        Category12: 1
-        Category13: 1
-        Category14: 1
-        Category15: 1
-        Category16: 1
-        Category17: 1
-        Category18: 1
-        Category19: 1
-        Category20: 1
-        Category21: 1
-        Category22: 1
-        Category23: 1
-        Category24: 1
-        Category25: 1
-        Category26: 1
-        Category27: 1
-        Category28: 1
-        Category29: 1
-        Category30: 1
-        Category31: 1
-    m_CustomMaterialTags:
-      m_Override: 0
-      m_Value:
-        Tag00: 0
-        Tag01: 0
-        Tag02: 0
-        Tag03: 0
-        Tag04: 0
-        Tag05: 0
-        Tag06: 0
-        Tag07: 0
-    m_SerializedVersion: 1
-  m_SerializedVersion: 1
+  ParticleSystem: {fileID: 100006, guid: f47cb9d88f4bc6c4bb7441e962c2c1a5, type: 3}
+  SpawnPosition: {fileID: 778192355916375876}
+--- !u!114 &433240388
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1221063325293802509}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d36c15d1c31159468bb896c4da8ea97, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  DetectionRadius: 50
+  startRange: 5
+  HostileMask:
+    serializedVersion: 2
+    m_Bits: 1024
+  HitsPerSecond: 1
+  coneSize: 20
 --- !u!1001 &1642277714134749574
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -483,12 +407,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e6f7c0a956c4ad94fb602c61b9955f8d, type: 3}
---- !u!1 &1876843468677442775 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: e6f7c0a956c4ad94fb602c61b9955f8d,
-    type: 3}
-  m_PrefabInstance: {fileID: 1642277714134749574}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1243050243389896301 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: e6f7c0a956c4ad94fb602c61b9955f8d,

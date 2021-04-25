@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+<<<<<<< HEAD:WasteWar/Assets/Scripts/UtilMethods/MathUtilECS.cs.meta
+guid: f7b195ed4e8fe764c9c5408f2b63a5dd
+=======
+guid: b57356614c43cc94e904621d7fd171a0
+>>>>>>> main:WasteWar/Assets/Scripts/_ECS/Components/Components/EnemySpawnerComponent.cs.meta
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
