@@ -6,6 +6,14 @@ TagManager:
   tags:
   - Terrain
   - Constants
+  - PipeTB
+  - Building
+  - PipeLR
+  - PipeBL
+  - PipeBR
+  - PipeTL
+  - PipeTR
+  - Base
   layers:
   - Default
   - TransparentFX

@@ -8,6 +8,8 @@ public class DrawOnTerrain : MonoBehaviour
     private Camera cam;
     [SerializeField]
     private Terrain terrain;
+    [SerializeField]
+    private GameObject PipeMethods;
 
     public GameObject TemplateStructure { get; set; }
     public Vector3 TemplateStructureSize { get; private set; }
@@ -17,19 +19,20 @@ public class DrawOnTerrain : MonoBehaviour
     private ResourceGrid Resources;
     private List<GameObject> Structures = new List<GameObject>();
 
-    void Start()
+    private void Start()
     {
         Resources = new ResourceGrid(terrain.terrainData.size);
 
-        GameEvents.TemplateSelectedListeners += DestroyPreviousAndPrepareNewTemplate;
+        GameEvents.TemplateSelectedListeners += DestroyOldAndCreateNewTemplate;
         GameEvents.LeftClickPressedListeners += DrawStructure;
         GameEvents.RightClickPressedListeners += DeleteStructure;
         GameEvents.MouseOverListeners += Resources.ShowCurrentResourceAmount;
+        GameEvents.BuildingRotationListeners += RotateTemplate;
 
         GameEvents.FireLoadingTerrainTextures(this, Resources);
     }
 
-    void Update()
+    private void Update()
     {
         ray = cam.ScreenPointToRay(Input.mousePosition);
         if (Physics.Raycast(ray, out hit, CameraConstants.Instance.RAYCAST_DISTANCE, LayerMasks.Instance.GROUND)
@@ -49,30 +52,96 @@ public class DrawOnTerrain : MonoBehaviour
     //TODO fix placement near edges of the map
     private void DrawStructure(object sender, TemplateData data)
     {
-        if (data.StructureType != StructureType.NONE && CheckIfLocationIsFree())
+        if (data.TemplateStructure != null && CheckIfLocationIsFree())
         {
+            if (data.TemplateStructure.tag.Contains("Pipe"))
+            {
+                TemplateInstantiator(PipeMethods.GetComponent<PipeLogic>().CheckNeighbors(TemplateStructure), data.MousePos);
+                GameEvents.FirePipePlaced2(this, TemplateStructure.tag);
+            }
+
             TemplateStructure.GetComponent<MeshRenderer>().material.SetColor("_Color", Color.white);
             TemplateStructure.layer = LayerMasks.Instance.ATTACKABLE_LAYER;
-            var Structure = Instantiate(TemplateStructure, ObjectSnapper.SnapToGridCell(
-                data.mousePos,
-                GridConstants.Instance.FloatCellSize(), TemplateStructureSize),
-                Quaternion.Euler(GameConstants.Instance.DEFAULT_OBJECT_ROTATION)
-                );
 
-            if (data.StructureType == StructureType.BUILDING)
+            GameObject Structure = null;
+            TemplateInstantiator(data.MousePos, ref Structure);
+
+            if (Structure.tag.Contains("Pipe"))
+                GameEvents.FirePipePlaced(this, Structure);
+
+            if (data.TemplateStructure.CompareTag("Building"))
             {
                 Structure.GetComponent<BuildingData>().IsTemplate = false;
                 Structure.GetComponent<BuildingData>().Resources = Resources;
             }
+
             Structures.Add(Structure);
             Destroy(TemplateStructure);
-            data.StructureType = StructureType.NONE;
+            data.TemplateStructure = null;
         }
     }
+
     private void DeleteStructure(object sender, RaycastHit data)
     {
         Structures.Remove(data.collider.gameObject);
         Destroy(data.collider.gameObject);
+    }
+
+    private void DestroyOldAndCreateNewTemplate(object sender, TemplateData data)
+    {
+        if (data.TemplateStructure != null)
+        {
+            TemplateInstantiator(data.TemplateStructure, data.MousePos);
+        }
+        else
+            Destroy(TemplateStructure);
+    }
+
+    private void TemplateInstantiator(GameObject Template, Vector3 mousePos)
+    {
+        Destroy(TemplateStructure);
+        TemplateStructure = Instantiate(Template,
+                            ObjectSnapper.SnapToGridCell(mousePos),
+                            Template.transform.rotation);
+        TemplateStructure.layer = LayerMasks.Instance.IGNORE_RAYCAST_LAYER;
+        TemplateStructureSize = TemplateStructure.GetComponent<Renderer>().bounds.size;
+    }
+
+    private void TemplateInstantiator(Vector3 mousePos, ref GameObject StructureBeingAssignedTo)
+    {
+        //TODO quickhack until the model is fixed (it goes out of bounds of the 1,1,1 cube,model needs to fit the square basically)
+        if (TemplateStructure.tag.Contains("Pipe") && TemplateStructure.tag.Length > 4)
+            TemplateStructureSize = new Vector3(1f, 1f, 1f);
+
+        StructureBeingAssignedTo = Instantiate(TemplateStructure,
+                            ObjectSnapper.SnapToGridCell(mousePos, TemplateStructureSize),
+                            TemplateStructure.transform.rotation);
+        TemplateStructure.layer = LayerMasks.Instance.IGNORE_RAYCAST_LAYER;
+        TemplateStructureSize = TemplateStructure.GetComponent<Renderer>().bounds.size;
+
+        Destroy(TemplateStructure);
+    }
+
+    private void RotateTemplate(object sender, int i)
+    {
+        if (TemplateStructure)
+        {
+            //TODO quick hack, refactor this
+            var pos = TemplateStructure.transform.position;
+            var temp = TemplateStructure.GetComponent<PipeState>();
+            if (temp != null)
+            {
+                if (TemplateStructure.CompareTag("PipeTB"))
+                {
+                    TemplateInstantiator(PipeMethods.GetComponent<PipeLogic>().pipes.LeftRight, pos);
+                }
+
+                else if (TemplateStructure.CompareTag("PipeLR"))
+                {
+                    TemplateInstantiator(PipeMethods.GetComponent<PipeLogic>().pipes.TopBottom, pos);
+                }
+            }
+        }
     }
 
     private void SetTemplateStructureColor(Color color)
@@ -85,21 +154,6 @@ public class DrawOnTerrain : MonoBehaviour
         TemplateStructure.transform.position = ObjectSnapper.SnapToGridCell(pos, GridConstants.Instance.FloatCellSize(), TemplateStructureSize);
     }
 
-    private void DestroyPreviousAndPrepareNewTemplate(object sender, TemplateData data)
-    {
-        if (data.StructureType != StructureType.NONE)
-        {
-            Destroy(TemplateStructure);
-            TemplateStructure = Instantiate(data.TemplateStructure,
-                                ObjectSnapper.SnapToGridCell(data.mousePos, GridConstants.Instance.FloatCellSize()),
-                                Quaternion.Euler(GameConstants.Instance.DEFAULT_OBJECT_ROTATION));
-            TemplateStructure.layer = LayerMasks.Instance.IGNORE_RAYCAST_LAYER;
-            TemplateStructureSize = TemplateStructure.GetComponent<Renderer>().bounds.size;
-        }
-        else
-            Destroy(TemplateStructure);
-    }
-
     private bool CheckIfLocationIsFree()
     {
         return !Physics.CheckBox(TemplateStructure.GetComponent<Collider>().bounds.center, TemplateStructure.GetComponent<Collider>().bounds.extents,
@@ -107,8 +161,9 @@ public class DrawOnTerrain : MonoBehaviour
     }
 
     private void OnDestroy()
-    {  // why unsubscribe here and not inside ResourceGrid destructor??
-        GameEvents.TemplateSelectedListeners -= DestroyPreviousAndPrepareNewTemplate;
+    {
+        GameEvents.BuildingRotationListeners -= RotateTemplate;
+        GameEvents.TemplateSelectedListeners -= DestroyOldAndCreateNewTemplate;
         GameEvents.LeftClickPressedListeners -= DrawStructure;
         GameEvents.RightClickPressedListeners -= DeleteStructure;
         GameEvents.MouseOverListeners -= Resources.ShowCurrentResourceAmount;

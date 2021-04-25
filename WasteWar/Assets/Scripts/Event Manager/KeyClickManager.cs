@@ -4,23 +4,28 @@ using Constants;
 public class KeyClickManager : MonoBehaviour
 {
     [SerializeField]
+    private Prefabs pipes;
+    [SerializeField]
     private GameObject prefabBuilding;
     [SerializeField]
     private GameObject prefabTurret;
     [SerializeField]
     private GameObject prefabWall;
     [SerializeField]
-    private GameObject prefabBelt;
+    private GameObject prefabPowerPole;
     [SerializeField]
     private Terrain terrain;
     [SerializeField]
     private Camera cam;
 
+    private GameObject prefabPipe;
     private RaycastHit hit;
     private Ray ray;
 
     private void Start()
     {
+        GameEvents.PipePlaced2Listeners += SetPipePrefab;
+        prefabPipe = pipes.TopBottom;
     }
 
     void Update()
@@ -38,24 +43,42 @@ public class KeyClickManager : MonoBehaviour
                     switch (key)
                     {
                         case KeyCode.B:
-                            GameEvents.FireTemplateSelected(this, new TemplateData { TemplateStructure = prefabBuilding, mousePos = hit.point, StructureType = StructureType.BUILDING});
+                            GameEvents.FireTemplateSelected(this, new TemplateData { TemplateStructure = prefabBuilding, MousePos = hit.point});
                             break;
                         //TODO turret placement doesn't work (other placements do) (because of Turret components or something)... fix.
                         case KeyCode.V:
-                            GameEvents.FireTemplateSelected(this, new TemplateData { TemplateStructure = prefabTurret, mousePos = hit.point, StructureType = StructureType.TURRET });
+                            GameEvents.FireTemplateSelected(this, new TemplateData { TemplateStructure = prefabTurret, MousePos = hit.point});
                             break;
                         case KeyCode.C:
-                            GameEvents.FireTemplateSelected(this, new TemplateData { TemplateStructure = prefabWall, mousePos = hit.point, StructureType = StructureType.WALL });
+                            GameEvents.FireTemplateSelected(this, new TemplateData { TemplateStructure = prefabWall, MousePos = hit.point});
                             break;
                         case KeyCode.X:
-                            GameEvents.FireTemplateSelected(this, new TemplateData { TemplateStructure = prefabBelt, mousePos = hit.point, StructureType = StructureType.BELT });
+                            GameEvents.FireTemplateSelected(this, new TemplateData { TemplateStructure = prefabPipe, MousePos = hit.point});
+                            break;
+                        case KeyCode.Z:
+                            GameEvents.FireTemplateSelected(this, new TemplateData { TemplateStructure = prefabPowerPole, MousePos = hit.point});
                             break;
                         case KeyCode.Escape:
-                            GameEvents.FireTemplateSelected(this, new TemplateData { TemplateStructure = null, mousePos = new Vector3( 0, 0, 0 ), StructureType = StructureType.NONE });
+                            GameEvents.FireTemplateSelected(this, new TemplateData { TemplateStructure = null, MousePos = new Vector3( 0, 0, 0 )});
                             break;
                     }
                 }
             }
         }
+        if (Input.GetKeyDown(KeyCode.R))
+            GameEvents.FireBuildingRotation(this,5);
+    }
+
+    private void SetPipePrefab(object sender, string prefabName)
+    {
+        if (prefabName.Equals("PipeTB"))
+            prefabPipe = pipes.TopBottom;
+        else if (prefabName.Equals("PipeLR"))
+            prefabPipe = pipes.LeftRight;
+    }
+
+    private void OnDestroy()
+    {
+        GameEvents.PipePlaced2Listeners -= SetPipePrefab;
     }
 }

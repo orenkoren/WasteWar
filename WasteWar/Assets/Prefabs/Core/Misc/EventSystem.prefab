@@ -1,0 +1,71 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &878997401032653369
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7244664136176254164}
+  - component: {fileID: 8982036096107485974}
+  - component: {fileID: 2703366156014014718}
+  m_Layer: 0
+  m_Name: EventSystem
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7244664136176254164
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 878997401032653369}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8982036096107485974
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 878997401032653369}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d03ec8346c0143c48ad84825e5a1b8b8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  terrain: {fileID: 5953220787626883585, guid: b5bbecf3a312c1c4d9d7ff9b1645ad64, type: 3}
+  cam: {fileID: 0}
+--- !u!114 &2703366156014014718
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 878997401032653369}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a9e06832c50fd544afa0f45831f8013, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pipes: {fileID: 11400000, guid: 639d616f8610c9243af25d9971a12ba4, type: 2}
+  prefabBuilding: {fileID: 1578355824271295957, guid: 4347a3dd91d7c65488a728b326222b97,
+    type: 3}
+  prefabTurret: {fileID: 1221063325293802509, guid: 00874071ff0b09f4fa30e98f9d912ab1,
+    type: 3}
+  prefabWall: {fileID: 5945110931214094937, guid: 982dba650d3c0314a97d006aeab7f20a,
+    type: 3}
+  prefabPowerPole: {fileID: 8715518470838514847, guid: 70de765d5634d5c47a9b207e48a6c786,
+    type: 3}
+  terrain: {fileID: 5953220787626883585, guid: b5bbecf3a312c1c4d9d7ff9b1645ad64, type: 3}
+  cam: {fileID: 0}
