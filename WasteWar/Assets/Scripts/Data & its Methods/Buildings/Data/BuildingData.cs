@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+//TODO SPLIT THE METHODS AWAY FROM THE DATA
+
 public class BuildingData : MonoBehaviour
 {
     public UnityEngine.UI.Text CubeTextComponent;

@@ -4,9 +4,6 @@ using UnityEngine;
 
 public class DrawOnTerrain : MonoBehaviour
 {
-    //DEBUG PURPOSES
-    private static int z= 0;
-
     [SerializeField]
     private Camera cam;
     [SerializeField]
@@ -22,7 +19,7 @@ public class DrawOnTerrain : MonoBehaviour
     private ResourceGrid Resources;
     private List<GameObject> Structures = new List<GameObject>();
 
-    void Start()
+    private void Start()
     {
         Resources = new ResourceGrid(terrain.terrainData.size);
 
@@ -35,7 +32,7 @@ public class DrawOnTerrain : MonoBehaviour
         GameEvents.FireLoadingTerrainTextures(this, Resources);
     }
 
-    void Update()
+    private void Update()
     {
         ray = cam.ScreenPointToRay(Input.mousePosition);
         if (Physics.Raycast(ray, out hit, CameraConstants.Instance.RAYCAST_DISTANCE, LayerMasks.Instance.GROUND)
@@ -60,16 +57,14 @@ public class DrawOnTerrain : MonoBehaviour
             if (data.TemplateStructure.tag.Contains("Pipe"))
             {
                 TemplateInstantiator(PipeMethods.GetComponent<PipeLogic>().CheckNeighbors(TemplateStructure), data.MousePos);
-                GameEvents.FirePipe2Placed(this, TemplateStructure.tag);
+                GameEvents.FirePipePlaced2(this, TemplateStructure.tag);
             }
 
             TemplateStructure.GetComponent<MeshRenderer>().material.SetColor("_Color", Color.white);
             TemplateStructure.layer = LayerMasks.Instance.ATTACKABLE_LAYER;
-            
+
             GameObject Structure = null;
             TemplateInstantiator(data.MousePos, ref Structure);
-            Structure.name = Structure.name + z++;
-
 
             if (Structure.tag.Contains("Pipe"))
                 GameEvents.FirePipePlaced(this, Structure);
@@ -82,9 +77,10 @@ public class DrawOnTerrain : MonoBehaviour
 
             Structures.Add(Structure);
             Destroy(TemplateStructure);
-            data.TemplateStructure= null;
+            data.TemplateStructure = null;
         }
     }
+
     private void DeleteStructure(object sender, RaycastHit data)
     {
         Structures.Remove(data.collider.gameObject);
@@ -111,14 +107,14 @@ public class DrawOnTerrain : MonoBehaviour
         TemplateStructureSize = TemplateStructure.GetComponent<Renderer>().bounds.size;
     }
 
-    private void TemplateInstantiator(Vector3 mousePos,ref GameObject StructureBeingAssignedTo)
+    private void TemplateInstantiator(Vector3 mousePos, ref GameObject StructureBeingAssignedTo)
     {
-        //TODO quickhack until the model is fixed (it goes out of bounds of the 1,1,1 cube
+        //TODO quickhack until the model is fixed (it goes out of bounds of the 1,1,1 cube,model needs to fit the square basically)
         if (TemplateStructure.tag.Contains("Pipe") && TemplateStructure.tag.Length > 4)
             TemplateStructureSize = new Vector3(1f, 1f, 1f);
 
         StructureBeingAssignedTo = Instantiate(TemplateStructure,
-                            ObjectSnapper.SnapToGridCell(mousePos,TemplateStructureSize),
+                            ObjectSnapper.SnapToGridCell(mousePos, TemplateStructureSize),
                             TemplateStructure.transform.rotation);
         TemplateStructure.layer = LayerMasks.Instance.IGNORE_RAYCAST_LAYER;
         TemplateStructureSize = TemplateStructure.GetComponent<Renderer>().bounds.size;
@@ -165,7 +161,7 @@ public class DrawOnTerrain : MonoBehaviour
     }
 
     private void OnDestroy()
-    {  // why unsubscribe here and not inside ResourceGrid destructor??
+    {
         GameEvents.BuildingRotationListeners -= RotateTemplate;
         GameEvents.TemplateSelectedListeners -= DestroyOldAndCreateNewTemplate;
         GameEvents.LeftClickPressedListeners -= DrawStructure;

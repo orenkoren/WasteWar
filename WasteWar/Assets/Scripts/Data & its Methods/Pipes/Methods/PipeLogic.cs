@@ -1,12 +1,13 @@
-using System.Collections.Generic;
 using System.Collections;
-
+using System.Collections.Generic;
 using UnityEngine;
 
 public class PipeLogic : MonoBehaviour
 {
     public Prefabs pipes;
+
     public GameObject pipelinesPrefab;
+
     private List<Pipeline> pipelines;
 
     private void Start()
@@ -42,9 +43,9 @@ public class PipeLogic : MonoBehaviour
         Ray rayDown = new Ray(templateCenter, Vector3.back);
         Ray rayLeft = new Ray(templateCenter, Vector3.left);
 
-        if(CheckForCondition(rayUp, out hit, Vector3.forward))
+        if (CheckForCondition(rayUp, out hit, Vector3.forward))
             isUp = true;
-        if(CheckForCondition(rayRight, out hit, Vector3.right))
+        if (CheckForCondition(rayRight, out hit, Vector3.right))
             isRight = true;
         if (CheckForCondition(rayDown, out hit, Vector3.back))
             isDown = true;
@@ -115,8 +116,19 @@ public class PipeLogic : MonoBehaviour
             structure2 = NextPipeSegment(structure2, ref direction2, ref lastPipeBeforeBuilding);
 
         if (CheckIfStructuresSatisfyPipeline())
-        {     
-            if(structure1.CompareTag("Building"))
+        {
+            GeneratePipeline();
+            StartCoroutine(StartResourceTransferFrom(pipeline));
+
+            foreach (var pipe in pipeline.pipes)
+                pipe.GetComponent<MeshRenderer>().material.SetColor("_Color", Color.yellow);
+            foreach (var building in pipeline.buildings)
+                building.GetComponent<MeshRenderer>().material.SetColor("_Color", Color.yellow);
+        }
+        void GeneratePipeline()
+        {
+            //TODO fix code duplciation
+            if (structure1.CompareTag("Building"))
             {
                 pipeline.buildings.Add(structure1);
                 direction1 = -direction1;
@@ -125,11 +137,12 @@ public class PipeLogic : MonoBehaviour
                 while (CheckStructureType(structure1))
                 {
                     structure1 = NextPipeSegment(structure1, ref direction1, ref lastPipeBeforeBuilding);
-                    pipeline.pipes.Add(structure1);
+                    if (structure1.tag.Contains("Pipe"))
+                        pipeline.pipes.Add(structure1);
                 }
                 pipeline.buildings.Add(structure1);
             }
-            else if(structure2.CompareTag("Building"))
+            else if (structure2.CompareTag("Building"))
             {
                 pipeline.buildings.Add(structure2);
                 direction2 = -direction2;
@@ -138,22 +151,14 @@ public class PipeLogic : MonoBehaviour
                 while (CheckStructureType(structure2))
                 {
                     structure2 = NextPipeSegment(structure2, ref direction2, ref lastPipeBeforeBuilding);
-                    if(structure2.tag.Contains("Pipe"))
+                    if (structure2.tag.Contains("Pipe"))
                         pipeline.pipes.Add(structure2);
                 }
                 pipeline.buildings.Add(structure2);
             }
             pipeline.pipes.Reverse();
-
-            StartCoroutine(StartResourceTransferFrom(pipeline));
-
             pipelines.Add(pipeline);
-            foreach (var pipe in pipeline.pipes)
-                pipe.GetComponent<MeshRenderer>().material.SetColor("_Color", Color.yellow);
-            foreach (var building in pipeline.buildings)
-                building.GetComponent<MeshRenderer>().material.SetColor("_Color", Color.yellow);
         }
-
         bool CheckStructureType(GameObject structure)
         {
             return structure != null && (!structure.CompareTag("Building") && !structure.CompareTag("Base"));
@@ -165,10 +170,9 @@ public class PipeLogic : MonoBehaviour
             if (condition1)
                 return (structure1.CompareTag("Building") && structure2.CompareTag("Base")) ||
                         (structure1.CompareTag("Base") && structure2.CompareTag("Building"));
-            else 
+            else
                 return false;
         }
-
     }
 
     private IEnumerator StartResourceTransferFrom(Pipeline pipeline)
@@ -181,9 +185,9 @@ public class PipeLogic : MonoBehaviour
 
         List<GameObject> pipes = pipeline.pipes;
 
-        while (giver.Storage > 0 )
+        while (giver.Storage > 0)
         {
-            for (int i=0;i<pipeline.pipes.Count-1;i++)
+            for (int i = 0; i < pipeline.pipes.Count - 1; i++)
             {
                 if (pipes[i + 1].GetComponent<PipeState>().Full == true)
                 {
@@ -191,7 +195,7 @@ public class PipeLogic : MonoBehaviour
                     pipes[i + 1].GetComponent<PipeState>().Full = false;
 
                     pipes[i].GetComponent<MeshRenderer>().material.SetColor("_Color", Color.grey);
-                    pipes[i+1].GetComponent<MeshRenderer>().material.SetColor("_Color", Color.white);
+                    pipes[i + 1].GetComponent<MeshRenderer>().material.SetColor("_Color", Color.white);
                 }
             }
 
@@ -223,7 +227,7 @@ public class PipeLogic : MonoBehaviour
                 }
             }
 
-
+            //TODO finish this logic
             taker.Storage++;
             taker.CubeTextComponent.text = taker.Storage.ToString();
 
@@ -246,12 +250,11 @@ public class PipeLogic : MonoBehaviour
                 return hit.collider.gameObject;
             }
             else if (hit.collider.gameObject.CompareTag("Building") || (hit.collider.gameObject.CompareTag("Base")))
-            { 
+            {
                 if (hit.collider.gameObject.CompareTag("Building"))
                     lastPipeBeforeBuilding = pipe;
                 return hit.collider.gameObject;
             }
-
             return null;
         }
         return null;

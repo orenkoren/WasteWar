@@ -6,14 +6,13 @@ public class Move : MonoBehaviour
     private Terrain terrain;
     [SerializeField]
     private Transform cam;
-    
+  
     private Vector3 terrainSize;
 
-    // Start is called before the first frame update
     void Start()
     {
         terrainSize = terrain.terrainData.size;
-        CenterCamera();
+       // CenterCamera();
 
         //this probably won't work if you resize the game window at runtime
         ScreenAndMapValues.Initializer(Screen.height - CameraConstants.Instance.SCREEN_BORDER,

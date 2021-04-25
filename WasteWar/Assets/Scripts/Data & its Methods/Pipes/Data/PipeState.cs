@@ -12,7 +12,6 @@ public class PipeState : MonoBehaviour
     }
 }
 
-//DEFAULT PIPEDIRECTION INSTANCE VARIABLES DEPEND ON OBJECT ROTATION, IF YOU CHANGE THE PREFAB OBJECT ROTATION THEY WILL BE WRONG
 public class ActiveSides
 {
     public bool IsTop { get; set; }
