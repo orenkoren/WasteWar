@@ -64,13 +64,13 @@ public class BuildingData : MonoBehaviour
 
     private IEnumerator MineResource()
     {
-        while (!CheckIfStorageFull() && AvailableResources.Count != 0)
+        while (!CheckIfStorageFull() && AvailableResources.Count > 0)
         {
             CubeTextComponent.text = (++_storage).ToString();
             key = AvailableResources.Peek();
 
             Resources.Nodes[key].Count--;
-            if (Resources.Nodes[key].Count == 0)
+            if (Resources.Nodes[key].Count <= 0)
             {
                 Resources.Nodes.Remove(key);
                 GameEvents.FireNodeUsedUp(this, key);
@@ -87,7 +87,7 @@ public class BuildingData : MonoBehaviour
             for (int j = 0; j <= buildingSize.Y; j++)
             {
                 key = (buildingLoc.X + i) * MathUtils.DICT_KEY_GENERATOR + buildingLoc.Y + j;
-                if (Resources.Nodes.ContainsKey(key) && Resources.Nodes[key].Count != 0)
+                if (Resources.Nodes.ContainsKey(key) && Resources.Nodes[key].Count > 0)
                     AvailableResources.Push(key);
             }
         }
