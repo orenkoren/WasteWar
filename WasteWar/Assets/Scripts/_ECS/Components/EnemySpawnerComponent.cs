@@ -5,6 +5,5 @@ using UnityEngine;
 public struct EnemySpawnerComponent : IComponentData
 {
     public Entity prefabEnemy;
-    public Entity playerBase;
     public int spawnAmount;
 }
