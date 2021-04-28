@@ -5,6 +5,8 @@ using UnityEngine;
 public class DrawOnTerrain : MonoBehaviour
 {
     [SerializeField]
+    private PrefabPlaceable placeablePrefabs;
+    [SerializeField]
     private Camera cam;
     [SerializeField]
     private Terrain terrain;
@@ -54,26 +56,20 @@ public class DrawOnTerrain : MonoBehaviour
     {
         if (data.TemplateStructure != null && CheckIfLocationIsFree())
         {
-            if (data.TemplateStructure.tag.Contains("Pipe"))
+            if (data.TemplateStructure.tag.Contains("Pipe") && data.TemplateStructure.tag.Contains("Template"))
             {
                 TemplateInstantiator(PipeMethods.GetComponent<PipeLogic>().CheckNeighbors(TemplateStructure), data.MousePos);
+                //this event sets rotation of the next pipe
                 GameEvents.FirePipePlaced2(this, TemplateStructure.tag);
             }
 
-            TemplateStructure.GetComponent<MeshRenderer>().material.SetColor("_Color", Color.white);
-            TemplateStructure.layer = LayerMasks.Instance.ATTACKABLE_LAYER;
-
-            GameObject Structure = null;
-            TemplateInstantiator(data.MousePos, ref Structure);
+            GameObject Structure= PlaceablePrefabInstantiator(placeablePrefabs.GetPlaceablePrefab(TemplateStructure), data.MousePos);
 
             if (Structure.tag.Contains("Pipe"))
                 GameEvents.FirePipePlaced(this, Structure);
 
-            if (data.TemplateStructure.CompareTag("Building"))
-            {
-                Structure.GetComponent<BuildingData>().IsTemplate = false;
+            if (Structure.CompareTag("Building"))
                 Structure.GetComponent<BuildingData>().Resources = Resources;
-            }
 
             Structures.Add(Structure);
             Destroy(TemplateStructure);
@@ -107,19 +103,23 @@ public class DrawOnTerrain : MonoBehaviour
         TemplateStructureSize = TemplateStructure.GetComponent<Renderer>().bounds.size;
     }
 
-    private void TemplateInstantiator(Vector3 mousePos, ref GameObject StructureBeingAssignedTo)
+    private GameObject PlaceablePrefabInstantiator(GameObject template, Vector3 mousePos)
     {
-        //TODO quickhack until the model is fixed (it goes out of bounds of the 1,1,1 cube,model needs to fit the square basically)
-        if (TemplateStructure.tag.Contains("Pipe") && TemplateStructure.tag.Length > 4)
-            TemplateStructureSize = new Vector3(1f, 1f, 1f);
+        Vector3 size;
 
-        StructureBeingAssignedTo = Instantiate(TemplateStructure,
-                            ObjectSnapper.SnapToGridCell(mousePos, TemplateStructureSize),
-                            TemplateStructure.transform.rotation);
-        TemplateStructure.layer = LayerMasks.Instance.IGNORE_RAYCAST_LAYER;
-        TemplateStructureSize = TemplateStructure.GetComponent<Renderer>().bounds.size;
+        //TODO quickhack until the model is fixed (it goes out of bounds of the 1,1,1 cube,model needs to fit the square basically)
+        if (template.tag.Contains("Pipe") && TemplateStructure.tag.Length > 4)
+            size = new Vector3(1f, 1f, 1f);
+        else
+            size = template.GetComponent<Renderer>().bounds.size;
+
+       // template.GetComponent<MeshRenderer>().material.SetColor("_Color", Color.white);
+        template.layer = LayerMasks.Instance.ATTACKABLE_LAYER;
 
         Destroy(TemplateStructure);
+        return Instantiate(template,
+                           ObjectSnapper.SnapToGridCell(mousePos, size),
+                           template.transform.rotation);
     }
 
     private void RotateTemplate(object sender, int i)
@@ -128,19 +128,10 @@ public class DrawOnTerrain : MonoBehaviour
         {
             //TODO quick hack, refactor this
             var pos = TemplateStructure.transform.position;
-            var temp = TemplateStructure.GetComponent<PipeState>();
-            if (temp != null)
-            {
-                if (TemplateStructure.CompareTag("PipeTB"))
-                {
-                    TemplateInstantiator(PipeMethods.GetComponent<PipeLogic>().pipes.LeftRight, pos);
-                }
-
-                else if (TemplateStructure.CompareTag("PipeLR"))
-                {
-                    TemplateInstantiator(PipeMethods.GetComponent<PipeLogic>().pipes.TopBottom, pos);
-                }
-            }
+                if (TemplateStructure.CompareTag("PipeTBTemplate"))
+                    TemplateInstantiator(PipeMethods.GetComponent<PipeLogic>().templates.PipeLeftRight, pos);
+                else if (TemplateStructure.CompareTag("PipeLRTemplate"))
+                    TemplateInstantiator(PipeMethods.GetComponent<PipeLogic>().templates.PipeTopBottom, pos);
         }
     }
 

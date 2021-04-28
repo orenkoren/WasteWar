@@ -17,7 +17,6 @@ public class BuildingData : MonoBehaviour
     public int Health { get; private set; } = 100;
     public int Armor { get; private set; } = 1;
     public int Level { get; private set; } = 1;
-    public bool IsTemplate { get; set; } = true;
 
     private int _storage = 0;
     private float _yieldFrequency = STARTING_YIELD_SPEED;
@@ -52,14 +51,11 @@ public class BuildingData : MonoBehaviour
 
     private void Start()
     {
-        if (!IsTemplate)
-        {
             buildingLoc = GridUtils.Vector3ToGridCoord(gameObject.GetComponent<Collider>().bounds.min);
             buildingSize = GridUtils.Vector3ToGridCoord(gameObject.GetComponent<Collider>().bounds.size);
 
             GetResourcesBelowBuilding(buildingLoc, buildingSize);
             StartCoroutine(MineResource());
-        }
     }
 
     private IEnumerator MineResource()
