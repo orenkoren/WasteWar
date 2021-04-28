@@ -1,9 +1,16 @@
 fileFormatVersion: 2
-guid: 8aaa02b4d9cffe040a9057294d5ecb49
+guid: 633b44297c3264f4188c7b80454b33ee
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
   defaultReferences:
+  - Building: {fileID: 1578355824271295957, guid: 4347a3dd91d7c65488a728b326222b97,
+      type: 3}
+  - Turret: {fileID: 1221063325293802509, guid: 00874071ff0b09f4fa30e98f9d912ab1,
+      type: 3}
+  - Wall: {fileID: 5945110931214094937, guid: 982dba650d3c0314a97d006aeab7f20a, type: 3}
+  - PowerPole: {fileID: 8715518470838514847, guid: 70de765d5634d5c47a9b207e48a6c786,
+      type: 3}
   - PipeTopBottom: {fileID: 1204170484558185469, guid: 6f045b0835802f543b5c6fa5a7b9d921,
       type: 3}
   - PipeLeftRight: {fileID: 1640220751725414168, guid: 11f59dca36004e949a27c77209b4bdfa,
