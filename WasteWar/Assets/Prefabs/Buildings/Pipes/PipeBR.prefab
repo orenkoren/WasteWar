@@ -16,7 +16,9 @@ GameObject:
   - component: {fileID: -129207457051681250}
   - component: {fileID: -7126861771797490495}
   - component: {fileID: 1706506284781936252}
-  m_Layer: 0
+  - component: {fileID: 5529163920604940205}
+  - component: {fileID: 4386912490082453193}
+  m_Layer: 9
   m_Name: PipeBR
   m_TagString: PipeBR
   m_Icon: {fileID: 0}
@@ -317,3 +319,27 @@ MonoBehaviour:
         Tag07: 0
     m_SerializedVersion: 1
   m_SerializedVersion: 1
+--- !u!114 &5529163920604940205
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3300147603384379968}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0ea15129a0227f64789e5815220b133d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &4386912490082453193
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3300147603384379968}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7aa03058d08c34c48915c20b2d8813bb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
