@@ -39,7 +39,7 @@ public class HealthSystem : ComponentSystem
 
     private void HandleDeath(Entity entity, bool shouldDestroy)
     {
-        EntityManager.GetComponentObject<BaseData>(entity).ShouldDestroy = true;
+        EntityManager.GetComponentObject<HybridEntitySync>(entity).DestroyHybrid();
         if (shouldDestroy)
         {
             EntityManager.DestroyEntity(entity);

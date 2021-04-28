@@ -197,6 +197,7 @@ GameObject:
   - component: {fileID: 523550187396455934}
   - component: {fileID: 523550187396455935}
   - component: {fileID: 3776302252650522936}
+  - component: {fileID: 4871030790090088284}
   m_Layer: 9
   m_Name: BaseEntity
   m_TagString: Base
@@ -526,3 +527,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Health: 40000
   ShouldDestroyOnDeath: 1
+--- !u!114 &4871030790090088284
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4962235257657328294}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0ea15129a0227f64789e5815220b133d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

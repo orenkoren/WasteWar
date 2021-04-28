@@ -5,8 +5,6 @@ public class BaseData : MonoBehaviour
 {
     public UnityEngine.UI.Text CubeTextComponent;
     public bool IsGenerator { get; private set; } = false;
-    [NonSerialized]
-    public bool ShouldDestroy = false;
     private int _storage = 0;
 
     public int Storage
@@ -19,11 +17,5 @@ public class BaseData : MonoBehaviour
         {
             ++_storage;
         }
-    }
-
-    void Update()
-    {
-        if (ShouldDestroy)
-            Destroy(gameObject);
     }
 }
