@@ -313,13 +313,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6587342931234398741, guid: f8f017fa1836d3c4a89b42f50024e451,
         type: 3}
+      propertyPath: m_LocalScale.y
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 6587342931234398741, guid: f8f017fa1836d3c4a89b42f50024e451,
+        type: 3}
       propertyPath: m_LocalPosition.x
       value: 500
       objectReference: {fileID: 0}
     - target: {fileID: 6587342931234398741, guid: f8f017fa1836d3c4a89b42f50024e451,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.75
+      value: 5.02
       objectReference: {fileID: 0}
     - target: {fileID: 6587342931234398741, guid: f8f017fa1836d3c4a89b42f50024e451,
         type: 3}
@@ -374,6 +379,11 @@ PrefabInstance:
         type: 3}
       propertyPath: MOVE_SPEED
       value: 200
+      objectReference: {fileID: 0}
+    - target: {fileID: 3139353389990836420, guid: cae28d4f55bdaa9498d1a7230f8eec30,
+        type: 3}
+      propertyPath: DEFAULT_CAMERA_ALTITUDE
+      value: 50
       objectReference: {fileID: 0}
     - target: {fileID: 3139353389990836421, guid: cae28d4f55bdaa9498d1a7230f8eec30,
         type: 3}

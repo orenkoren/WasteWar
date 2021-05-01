@@ -6,4 +6,11 @@ public struct EnemySpawnerComponent : IComponentData
 {
     public Entity prefabEnemy;
     public int spawnAmount;
+    public SpawnPattern pattern;
+}
+
+public enum SpawnPattern
+{
+    Asterix,
+    Circle
 }
