@@ -1,3 +1,4 @@
+using Constants;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Jobs;
@@ -28,8 +29,9 @@ public class EnemySpawnerSystem : SystemBase
         {
             ecb = buffer,
             entity = spawner.prefabEnemy,
-            random = random
-        };
+            random = random,
+            playerBasePostion = GameConstants.Instance.PlayerBasePosition
+    };
 
         spawnJob.Schedule(spawner.spawnAmount, 128).Complete();
     }
@@ -50,13 +52,19 @@ public class EnemySpawnerSystem : SystemBase
         public Entity entity;
         public EntityCommandBuffer.ParallelWriter ecb;
         public Random random;
+        public Translation playerBasePostion;
 
         public void Execute(int index)
         {
             var e = ecb.Instantiate(index, entity);
+            var spawnLocation = new float3(random.NextFloat(0, 100), 2, random.NextFloat(0, 100));
             ecb.SetComponent(index, e, new Translation
             {
-                Value = new float3(random.NextFloat(0, 100), 2, random.NextFloat(0, 100))
+                Value = spawnLocation
+            });
+            ecb.SetComponent(index, e, new Rotation
+            {
+                Value = quaternion.LookRotation(playerBasePostion.Value - spawnLocation, math.up())
             });
         }
     }
