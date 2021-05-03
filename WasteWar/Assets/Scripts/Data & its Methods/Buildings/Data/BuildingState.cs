@@ -4,7 +4,7 @@ using UnityEngine;
 
 //TODO SPLIT THE METHODS AWAY FROM THE DATA
 
-public class BuildingData : MonoBehaviour
+public class BuildingState : MonoBehaviour
 {
     public UnityEngine.UI.Text CubeTextComponent;
     public bool IsGenerator { get; private set; } = true;
@@ -82,7 +82,7 @@ public class BuildingData : MonoBehaviour
         {
             for (int j = 0; j <= buildingSize.Y; j++)
             {
-                key = (buildingLoc.X + i) * MathUtils.DICT_KEY_GENERATOR + buildingLoc.Y + j;
+                key = (buildingLoc.X + i) * GridConstants.Instance.CELL_COUNT + buildingLoc.Y + j;
                 if (Resources.Nodes.ContainsKey(key) && Resources.Nodes[key].Count > 0)
                     AvailableResources.Push(key);
             }

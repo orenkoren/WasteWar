@@ -19,7 +19,7 @@ public class DrawTexturesOnTerrain : MonoBehaviour
     {
         DrawTerrainTexture();
         foreach (var resource in resources.Nodes)
-            DrawResourceTextureOnTerrain((float)(resource.Key / MathUtils.DICT_KEY_GENERATOR), (float)(resource.Key % MathUtils.DICT_KEY_GENERATOR));
+            DrawResourceTextureOnTerrain((float)(resource.Key / GridConstants.Instance.CELL_COUNT), (float)(resource.Key % GridConstants.Instance.CELL_COUNT));
     }
 
     private void DrawResourceTextureOnTerrain(float x, float z)
@@ -41,8 +41,8 @@ public class DrawTexturesOnTerrain : MonoBehaviour
     }
     private void UpdateTerrainTexture(object sender, int locationKey)
     {
-        int x = locationKey / MathUtils.DICT_KEY_GENERATOR;
-        int y = locationKey % MathUtils.DICT_KEY_GENERATOR;
+        int x = locationKey / GridConstants.Instance.CELL_COUNT;
+        int y = locationKey % GridConstants.Instance.CELL_COUNT;
         int textureWidth = CELL_TEXTURE_HEIGHT;
         int textureHeight = CELL_TEXTURE_WIDTH;
 

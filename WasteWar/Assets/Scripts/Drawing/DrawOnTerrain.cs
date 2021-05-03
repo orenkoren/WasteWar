@@ -9,13 +9,12 @@ public class DrawOnTerrain : MonoBehaviour
     [SerializeField]
     private Camera cam;
     [SerializeField]
-    private Terrain terrain;
-    [SerializeField]
     private GameObject PipeMethods;
 
     public GameObject TemplateStructure { get; set; }
     public Vector3 TemplateStructureSize { get; private set; }
 
+    private Terrain terrain;
     private RaycastHit hit;
     private Ray ray;
     private ResourceGrid Resources;
@@ -23,6 +22,7 @@ public class DrawOnTerrain : MonoBehaviour
 
     private void Start()
     {
+        terrain = RuntimeGameObjRefs.Instance.TERRAIN;
         Resources = new ResourceGrid(terrain.terrainData.size);
 
         GameEvents.TemplateSelectedListeners += DestroyOldAndCreateNewTemplate;
@@ -69,7 +69,7 @@ public class DrawOnTerrain : MonoBehaviour
                 GameEvents.FirePipePlaced(this, Structure);
 
             if (Structure.CompareTag("Building"))
-                Structure.GetComponent<BuildingData>().Resources = Resources;
+                Structure.GetComponent<BuildingState>().Resources = Resources;
 
             Structures.Add(Structure);
             Destroy(TemplateStructure);

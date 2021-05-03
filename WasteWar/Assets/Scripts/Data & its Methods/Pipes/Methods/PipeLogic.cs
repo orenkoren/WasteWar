@@ -176,10 +176,10 @@ public class PipeLogic : MonoBehaviour
 
     private IEnumerator StartResourceTransferFrom(Pipeline pipeline)
     {
-        BuildingData giver;
+        BuildingState giver;
         BaseData taker;
 
-        giver = pipeline.buildings[0].GetComponent<BuildingData>();
+        giver = pipeline.buildings[0].GetComponent<BuildingState>();
         taker = pipeline.buildings[1].GetComponent<BaseData>();
 
         List<GameObject> pipes = pipeline.pipes;
@@ -206,7 +206,7 @@ public class PipeLogic : MonoBehaviour
             giver.Storage--;
             giver.CubeTextComponent.text = giver.Storage.ToString();
 
-            yield return new WaitForSeconds(giver.GetComponent<BuildingData>().YieldFrequency);
+            yield return new WaitForSeconds(giver.GetComponent<BuildingState>().YieldFrequency);
         }
 
         while (pipes.Find(pipe => pipe.GetComponent<PipeState>().Full == true))
@@ -230,7 +230,7 @@ public class PipeLogic : MonoBehaviour
             taker.Storage++;
             taker.CubeTextComponent.text = taker.Storage.ToString();
 
-            yield return new WaitForSeconds(giver.GetComponent<BuildingData>().YieldFrequency);
+            yield return new WaitForSeconds(giver.GetComponent<BuildingState>().YieldFrequency);
         }
     }
 

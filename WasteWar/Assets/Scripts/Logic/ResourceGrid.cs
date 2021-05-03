@@ -68,25 +68,25 @@ public class ResourceGrid
 
     private void AddCoal(int x, int y)
     {
-        if (!Nodes.ContainsKey((x) * MathUtils.DICT_KEY_GENERATOR+ y))
-            Nodes.Add(x * MathUtils.DICT_KEY_GENERATOR + y, new Coal());
+        if (!Nodes.ContainsKey((x) * GridConstants.Instance.CELL_COUNT + y))
+            Nodes.Add(x * GridConstants.Instance.CELL_COUNT + y, new Coal());
     }
 
     private void AddNeighbours(HashSet<GridUtils.GridCoords> available, int x, int y)
     {
-        if (!Nodes.ContainsKey((x + 1) * MathUtils.DICT_KEY_GENERATOR + y) && checkXYValidity(x + 1, y))
+        if (!Nodes.ContainsKey((x + 1) * GridConstants.Instance.CELL_COUNT + y) && checkXYValidity(x + 1, y))
         {
             available.Add(new GridUtils.GridCoords(x + 1, y));
         }
-        if (!Nodes.ContainsKey((x - 1) * MathUtils.DICT_KEY_GENERATOR + y) && checkXYValidity(x - 1, y))
+        if (!Nodes.ContainsKey((x - 1) * GridConstants.Instance.CELL_COUNT + y) && checkXYValidity(x - 1, y))
         {
             available.Add(new GridUtils.GridCoords(x - 1, y));
         }
-        if (!Nodes.ContainsKey(x * MathUtils.DICT_KEY_GENERATOR + (y + 1)) && checkXYValidity(x, y + 1))
+        if (!Nodes.ContainsKey(x * GridConstants.Instance.CELL_COUNT + (y + 1)) && checkXYValidity(x, y + 1))
         {
             available.Add(new GridUtils.GridCoords(x, y + 1));
         }
-        if (!Nodes.ContainsKey(x * MathUtils.DICT_KEY_GENERATOR + (y - 1)) && checkXYValidity(x, y - 1))
+        if (!Nodes.ContainsKey(x * GridConstants.Instance.CELL_COUNT + (y - 1)) && checkXYValidity(x, y - 1))
         {
             available.Add(new GridUtils.GridCoords(x, y - 1));
         }
@@ -101,9 +101,9 @@ public class ResourceGrid
     public void ShowCurrentResourceAmount(object sender,Vector3 hitPoint)
     {
         var gridCoord = GridUtils.Vector3ToGridCoord(hitPoint);
-        int key = gridCoord.X * MathUtils.DICT_KEY_GENERATOR + gridCoord.Y;
+        int key = gridCoord.X * GridConstants.Instance.CELL_COUNT + gridCoord.Y;
 
         //if (Nodes.ContainsKey(key))
-          //  Debug.Log(Nodes[key].Count);
+        //    Debug.Log(Nodes[key].Count);
     }
 }
