@@ -1,5 +1,6 @@
 using Unity.Collections;
 using Unity.Entities;
+using UnityEngine;
 
 public class HealthSystem : ComponentSystem
 {
@@ -38,8 +39,11 @@ public class HealthSystem : ComponentSystem
 
     private void HandleDeath(Entity entity, bool shouldDestroy)
     {
+        EntityManager.GetComponentObject<HybridEntitySync>(entity).DestroyHybrid();
         if (shouldDestroy)
+        {
             EntityManager.DestroyEntity(entity);
+        }
         else
             EntityManager.AddComponent<Disabled>(entity);
     }

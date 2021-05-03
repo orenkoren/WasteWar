@@ -14,6 +14,15 @@ TagManager:
   - PipeTL
   - PipeTR
   - Base
+  - PipeBRTemplate
+  - BuildingTemplate
+  - PipeBLTemplate
+  - PipeLRTemplate
+  - PipeTBTemplate
+  - PipeTLTemplate
+  - PipeTRTemplate
+  - PowerPoleTemplate
+  - WallTemplate
   layers:
   - Default
   - TransparentFX

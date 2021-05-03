@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PipeLogic : MonoBehaviour
 {
-    public Prefabs pipes;
+    public PrefabTemplates templates;
     public GameObject pipelinesPrefab;
 
     private List<Pipeline> pipelines;
@@ -52,17 +52,17 @@ public class PipeLogic : MonoBehaviour
             isLeft = true;
 
         if (isUp && isDown)
-            return pipes.TopBottom;
+            return templates.PipeTopBottom;
         else if (isLeft && isRight)
-            return pipes.LeftRight;
+            return templates.PipeLeftRight;
         else if (isUp && isRight)
-            return pipes.TopRight;
+            return templates.PipeTopRight;
         else if (isDown && isRight)
-            return pipes.BottomRight;
+            return templates.PipeBottomRight;
         else if (isDown && isLeft)
-            return pipes.BottomLeft;
+            return templates.PipeBottomLeft;
         else if (isUp && isLeft)
-            return pipes.TopLeft;
+            return templates.PipeTopLeft;
 
         return template;
 

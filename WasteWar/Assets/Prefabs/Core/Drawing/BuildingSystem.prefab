@@ -59,6 +59,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a46ef4434e839f4cb6ab795f6a8dd67, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  placeablePrefabs: {fileID: 11400000, guid: 09951923370c6c644b78e53fbdc0a5c1, type: 2}
   cam: {fileID: 0}
   terrain: {fileID: 0}
   PipeMethods: {fileID: 0}
