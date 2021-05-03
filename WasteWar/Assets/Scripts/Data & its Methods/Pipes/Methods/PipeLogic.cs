@@ -117,13 +117,16 @@ public class PipeLogic : MonoBehaviour
         if (CheckIfStructuresSatisfyPipeline())
         {
             GeneratePipeline();
-            StartCoroutine(StartResourceTransferFrom(pipeline));
 
+            //DEBUGOUTPUT
             foreach (var pipe in pipeline.pipes)
-                pipe.GetComponent<MeshRenderer>().material.SetColor("_Color", Color.yellow);
+                pipe.GetComponent<MeshRenderer>().material.color = Color.yellow;
             foreach (var building in pipeline.buildings)
-                building.GetComponent<MeshRenderer>().material.SetColor("_Color", Color.yellow);
+                building.GetComponent<MeshRenderer>().material.color = Color.yellow;
+
+            StartCoroutine(StartResourceTransferFrom(pipeline));
         }
+
         void GeneratePipeline()
         {
             //TODO fix code duplciation
@@ -184,35 +187,61 @@ public class PipeLogic : MonoBehaviour
 
         List<GameObject> pipes = pipeline.pipes;
 
+        bool firstRun = true;
+
         while (giver.Storage > 0)
         {
-            for (int i = 0; i < pipeline.pipes.Count - 1; i++)
+            if (firstRun)
             {
-                if (pipes[i + 1].GetComponent<PipeState>().Full == true)
-                {
-                    pipes[i].GetComponent<PipeState>().Full = true;
-                    pipes[i + 1].GetComponent<PipeState>().Full = false;
+                pipes[pipes.Count - 1].GetComponent<PipeState>().Full = true;
+                pipes[pipes.Count - 1].GetComponent<MeshRenderer>().material.color = Color.grey;
+                giver.Storage--;
+                giver.CubeTextComponent.text = giver.Storage.ToString();
 
-                    pipes[i].GetComponent<MeshRenderer>().material.SetColor("_Color", Color.grey);
-                    pipes[i + 1].GetComponent<MeshRenderer>().material.SetColor("_Color", Color.white);
-                }
+                firstRun = false;
             }
 
-            pipes[pipes.Count - 1].GetComponent<PipeState>().Full = true;
-            pipes[pipes.Count - 1].GetComponent<MeshRenderer>().material.SetColor("_Color", Color.grey);
-            pipes[0].GetComponent<PipeState>().Full = false;
-            pipes[0].GetComponent<MeshRenderer>().material.SetColor("_Color", Color.white);
+            else
+            {
 
-            giver.Storage--;
-            giver.CubeTextComponent.text = giver.Storage.ToString();
+                if (pipes[0].GetComponent<PipeState>().Full == true)
+                {
+                    pipes[0].GetComponent<PipeState>().Full = false;
+                    pipes[0].GetComponent<MeshRenderer>().material.color = Color.white;
+                    taker.Storage++;
+                    taker.CubeTextComponent.text = taker.Storage.ToString();
+                }
 
+                for (int i = 0; i < pipeline.pipes.Count - 1; i++)
+                {
+                    if (pipes[i + 1].GetComponent<PipeState>().Full == true)
+                    {
+                        pipes[i].GetComponent<PipeState>().Full = true;
+                        pipes[i + 1].GetComponent<PipeState>().Full = false;
+
+                        pipes[i].GetComponent<MeshRenderer>().material.color = Color.grey;
+                        pipes[i + 1].GetComponent<MeshRenderer>().material.color = Color.white;
+                    }
+                }
+
+                pipes[pipes.Count - 1].GetComponent<PipeState>().Full = true;
+                pipes[pipes.Count - 1].GetComponent<MeshRenderer>().material.color = Color.grey;
+                giver.Storage--;
+                giver.CubeTextComponent.text = giver.Storage.ToString();
+            }
             yield return new WaitForSeconds(giver.GetComponent<BuildingState>().YieldFrequency);
         }
 
-        while (pipes.Find(pipe => pipe.GetComponent<PipeState>().Full == true))
+        while (giver.Storage <=0 && pipes.Find(pipe => pipe.GetComponent<PipeState>().Full == true))
         {
-            pipes[0].GetComponent<PipeState>().Full = false;
-            pipes[0].GetComponent<MeshRenderer>().material.SetColor("_Color", Color.white);
+
+            if (pipes[0].GetComponent<PipeState>().Full == true)
+            {
+                pipes[0].GetComponent<PipeState>().Full = false;
+                pipes[0].GetComponent<MeshRenderer>().material.color = Color.white;
+                taker.Storage++;
+                taker.CubeTextComponent.text = taker.Storage.ToString();
+            }
 
             for (int i = 0; i < pipeline.pipes.Count - 1; i++)
             {
@@ -221,15 +250,10 @@ public class PipeLogic : MonoBehaviour
                     pipes[i].GetComponent<PipeState>().Full = true;
                     pipes[i + 1].GetComponent<PipeState>().Full = false;
 
-                    pipes[i].GetComponent<MeshRenderer>().material.SetColor("_Color", Color.grey);
-                    pipes[i + 1].GetComponent<MeshRenderer>().material.SetColor("_Color", Color.white);
+                    pipes[i].GetComponent<MeshRenderer>().material.color = Color.grey;
+                    pipes[i + 1].GetComponent<MeshRenderer>().material.color = Color.white;
                 }
             }
-
-            //TODO finish this logic
-            taker.Storage++;
-            taker.CubeTextComponent.text = taker.Storage.ToString();
-
             yield return new WaitForSeconds(giver.GetComponent<BuildingState>().YieldFrequency);
         }
     }

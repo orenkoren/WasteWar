@@ -1,5 +1,4 @@
-﻿using Constants;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class DrawOnTerrain : MonoBehaviour
@@ -9,7 +8,7 @@ public class DrawOnTerrain : MonoBehaviour
     [SerializeField]
     private Camera cam;
     [SerializeField]
-    private GameObject PipeMethods;
+    private GameObject pipeMethods;
 
     public GameObject TemplateStructure { get; set; }
     public Vector3 TemplateStructureSize { get; private set; }
@@ -17,21 +16,21 @@ public class DrawOnTerrain : MonoBehaviour
     private Terrain terrain;
     private RaycastHit hit;
     private Ray ray;
-    private ResourceGrid Resources;
-    private List<GameObject> Structures = new List<GameObject>();
+    private ResourceGrid resources;
+    private List<GameObject> structures = new List<GameObject>();
 
     private void Start()
     {
         terrain = RuntimeGameObjRefs.Instance.TERRAIN;
-        Resources = new ResourceGrid(terrain.terrainData.size);
+        resources = new ResourceGrid(terrain.terrainData.size);
 
         GameEvents.TemplateSelectedListeners += DestroyOldAndCreateNewTemplate;
         GameEvents.LeftClickPressedListeners += DrawStructure;
         GameEvents.RightClickPressedListeners += DeleteStructure;
-        GameEvents.MouseOverListeners += Resources.ShowCurrentResourceAmount;
+        GameEvents.MouseOverListeners += resources.ShowCurrentResourceAmount;
         GameEvents.BuildingRotationListeners += RotateTemplate;
 
-        GameEvents.FireLoadingTerrainTextures(this, Resources);
+        GameEvents.FireLoadingTerrainTextures(this, resources);
     }
 
     private void Update()
@@ -51,14 +50,14 @@ public class DrawOnTerrain : MonoBehaviour
         SetTemplateStructurePos(loc);
     }
 
-    //TODO fix placement near edges of the map
+    //TODO make placement near edges of the map smoother
     private void DrawStructure(object sender, TemplateData data)
     {
         if (data.TemplateStructure != null && CheckIfLocationIsFree())
         {
             if (data.TemplateStructure.tag.Contains("Pipe") && data.TemplateStructure.tag.Contains("Template"))
             {
-                TemplateInstantiator(PipeMethods.GetComponent<PipeLogic>().CheckNeighbors(TemplateStructure), data.MousePos);
+                TemplateInstantiator(pipeMethods.GetComponent<PipeLogic>().CheckNeighbors(TemplateStructure), data.MousePos);
                 //this event sets rotation of the next pipe
                 GameEvents.FirePipePlaced2(this, TemplateStructure.tag);
             }
@@ -67,19 +66,19 @@ public class DrawOnTerrain : MonoBehaviour
 
             if (Structure.tag.Contains("Pipe"))
                 GameEvents.FirePipePlaced(this, Structure);
+            else if (Structure.CompareTag("Building"))
+            {
+                Structure.GetComponent<BuildingState>().Resources = resources;
+                GameEvents.FireBuildingPlaced(this, Structure);
+            }
 
-            if (Structure.CompareTag("Building"))
-                Structure.GetComponent<BuildingState>().Resources = Resources;
-
-            Structures.Add(Structure);
-            Destroy(TemplateStructure);
-            data.TemplateStructure = null;
+            structures.Add(Structure);
         }
     }
 
     private void DeleteStructure(object sender, RaycastHit data)
     {
-        Structures.Remove(data.collider.gameObject);
+        structures.Remove(data.collider.gameObject);
         Destroy(data.collider.gameObject);
     }
 
@@ -113,10 +112,8 @@ public class DrawOnTerrain : MonoBehaviour
         else
             size = template.GetComponent<Renderer>().bounds.size;
 
-       // template.GetComponent<MeshRenderer>().material.SetColor("_Color", Color.white);
         template.layer = LayerMasks.Instance.ATTACKABLE_LAYER;
 
-        Destroy(TemplateStructure);
         return Instantiate(template,
                            ObjectSnapper.SnapToGridCell(mousePos, size),
                            template.transform.rotation);
@@ -129,15 +126,15 @@ public class DrawOnTerrain : MonoBehaviour
             //TODO quick hack, refactor this
             var pos = TemplateStructure.transform.position;
                 if (TemplateStructure.CompareTag("PipeTBTemplate"))
-                    TemplateInstantiator(PipeMethods.GetComponent<PipeLogic>().templates.PipeLeftRight, pos);
+                    TemplateInstantiator(pipeMethods.GetComponent<PipeLogic>().templates.PipeLeftRight, pos);
                 else if (TemplateStructure.CompareTag("PipeLRTemplate"))
-                    TemplateInstantiator(PipeMethods.GetComponent<PipeLogic>().templates.PipeTopBottom, pos);
+                    TemplateInstantiator(pipeMethods.GetComponent<PipeLogic>().templates.PipeTopBottom, pos);
         }
     }
 
     private void SetTemplateStructureColor(Color color)
     {
-        TemplateStructure.GetComponent<MeshRenderer>().material.SetColor("_Color", color);
+        TemplateStructure.GetComponent<MeshRenderer>().material.color = color;
     }
 
     private void SetTemplateStructurePos(Vector3 pos)
@@ -157,6 +154,6 @@ public class DrawOnTerrain : MonoBehaviour
         GameEvents.TemplateSelectedListeners -= DestroyOldAndCreateNewTemplate;
         GameEvents.LeftClickPressedListeners -= DrawStructure;
         GameEvents.RightClickPressedListeners -= DeleteStructure;
-        GameEvents.MouseOverListeners -= Resources.ShowCurrentResourceAmount;
+        GameEvents.MouseOverListeners -= resources.ShowCurrentResourceAmount;
     }
 }

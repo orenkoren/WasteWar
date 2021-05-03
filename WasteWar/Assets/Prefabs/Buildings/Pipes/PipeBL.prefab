@@ -18,7 +18,7 @@ GameObject:
   - component: {fileID: -2177445495945909889}
   - component: {fileID: 8077180291737456157}
   - component: {fileID: -8395523452521100727}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: PipeBL
   m_TagString: PipeBL
   m_Icon: {fileID: 0}

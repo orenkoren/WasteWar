@@ -1,30 +1,22 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
-
-//TODO SPLIT THE METHODS AWAY FROM THE DATA
 
 public class BuildingState : MonoBehaviour
 {
+    public readonly int TOTAL_CAPACITY = 100;
+    public const float INITIAL_YIELD_SPEED = 1.1f;
+
     public UnityEngine.UI.Text CubeTextComponent;
     public bool IsGenerator { get; private set; } = true;
-
-    private const int TOTAL_CAPACITY = 100;
-    private const float STARTING_YIELD_SPEED = 1.1f;
-
     public ResourceGrid Resources { get; set; } = null;
     public int PollutionIndex { get; private set; } = 1;
     public int Health { get; private set; } = 100;
     public int Armor { get; private set; } = 1;
     public int Level { get; private set; } = 1;
-
-    private int _storage = 0;
-    private float _yieldFrequency = STARTING_YIELD_SPEED;
-    private Stack<int> AvailableResources = new Stack<int>();
-
-    private GridUtils.GridCoords buildingLoc;
-    private GridUtils.GridCoords buildingSize;
-    private int key;
+    public int _storage = 0;
+    public float _yieldFrequency = INITIAL_YIELD_SPEED;
+    public Stack<int> AvailableResources = new Stack<int>();
+    public int key;
 
     public float YieldFrequency
     {
@@ -47,50 +39,5 @@ public class BuildingState : MonoBehaviour
         {
             --_storage;
         }
-    }
-
-    private void Start()
-    {
-            buildingLoc = GridUtils.Vector3ToGridCoord(gameObject.GetComponent<Collider>().bounds.min);
-            buildingSize = GridUtils.Vector3ToGridCoord(gameObject.GetComponent<Collider>().bounds.size);
-
-            GetResourcesBelowBuilding(buildingLoc, buildingSize);
-            StartCoroutine(MineResource());
-    }
-
-    private IEnumerator MineResource()
-    {
-        while (!CheckIfStorageFull() && AvailableResources.Count > 0)
-        {
-            CubeTextComponent.text = (++_storage).ToString();
-            key = AvailableResources.Peek();
-
-            Resources.Nodes[key].Count--;
-            if (Resources.Nodes[key].Count <= 0)
-            {
-                Resources.Nodes.Remove(key);
-                GameEvents.FireNodeUsedUp(this, key);
-                AvailableResources.Pop();
-            }
-            yield return new WaitForSeconds(YieldFrequency);
-        }
-    }
-
-    private void GetResourcesBelowBuilding(GridUtils.GridCoords buildingLoc, GridUtils.GridCoords buildingSize)
-    {
-        for (int i = 0; i <= buildingSize.X; i++)
-        {
-            for (int j = 0; j <= buildingSize.Y; j++)
-            {
-                key = (buildingLoc.X + i) * GridConstants.Instance.CELL_COUNT + buildingLoc.Y + j;
-                if (Resources.Nodes.ContainsKey(key) && Resources.Nodes[key].Count > 0)
-                    AvailableResources.Push(key);
-            }
-        }
-    }
-
-    private bool CheckIfStorageFull()
-    {
-        return _storage >= TOTAL_CAPACITY;
     }
 }
