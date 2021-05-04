@@ -9,7 +9,6 @@ public class DisabledComponentConversionSystem : GameObjectConversionSystem
     {
         Entities.ForEach((Entity e, HybridEntitySync syncComp) =>
         {
-            Debug.Log("adding syncComp for" + e.Index.ToString());
             AddHybridComponent(syncComp);
         });
     }

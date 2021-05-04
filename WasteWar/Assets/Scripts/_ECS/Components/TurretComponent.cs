@@ -7,6 +7,9 @@ public struct TurretComponent : IComponentData
     public int DetectionRadius;
     public float startRange;
     public LayerMask HostileMask;
-    public int HitsPerSecond;
-    public int coneSize;
+    public int RechargeTime;
+    public int detectionConeSize;
+    public int hitWidth;
+    [HideInInspector]
+    public float rechargeTimer;
 }

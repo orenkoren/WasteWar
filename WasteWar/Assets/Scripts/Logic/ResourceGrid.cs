@@ -20,13 +20,13 @@ public class ResourceGrid
 
     private void GenerateResourceNodes()
     {
-        do
-        {
-            int x = Random.Range(gridSize.X / 3, 2 * gridSize.X / 3);
-            int y = Random.Range(gridSize.Y / 3, 2 * gridSize.Y /3);
-            GenerateOneBlockOfResourcesAt(new GridUtils.GridCoords(x, y));
-        }
-        while ((Random.Range(0f, 1f) < (1 - STOPPING_PROBABILITY_MAP)));
+        //do
+        //{
+        //    int x = Random.Range(gridSize.X / 3, 2 * gridSize.X / 3);
+        //    int y = Random.Range(gridSize.Y / 3, 2 * gridSize.Y /3);
+        //    GenerateOneBlockOfResourcesAt(new GridUtils.GridCoords(x, y));
+        //}
+        //while ((Random.Range(0f, 1f) < (1 - STOPPING_PROBABILITY_MAP)));
     }
 
     private void GenerateOneBlockOfResourcesAt(GridUtils.GridCoords loc)

@@ -1,3 +1,4 @@
+using Constants;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
@@ -5,7 +6,6 @@ using Unity.Transforms;
 [UpdateAfter(typeof(EnemySpawnerSystem))]
 public class EnemyPatternSystem : SystemBase
 {
-    EntityCommandBufferSystem m_ecb;
     private bool shouldSkipAFrame = true;
 
     protected override void OnCreate()
@@ -19,21 +19,16 @@ public class EnemyPatternSystem : SystemBase
         if (!shouldSkipAFrame)
             EntityManager.DestroyEntity(GetSingletonEntity<EnemyPatternSystemEnabler>());
         shouldSkipAFrame = false;
+        var playerBasePosition = GameConstants.Instance.PlayerBasePosition;
         Random random = new Random(56);
-        m_ecb = World.GetOrCreateSystem<EntityCommandBufferSystem>();
-        var ecb = m_ecb.CreateCommandBuffer().AsParallelWriter();
         Entities
           .WithAll<AttackerComponent>()
-          .ForEach((int entityInQueryIndex, Entity e, ref Rotation rotation) =>
+          .ForEach((int entityInQueryIndex, Entity e, ref Translation translation, ref Rotation rotation) =>
           {
-              ecb.SetComponent(entityInQueryIndex, e, new Translation
-              {
-                  //Value = new float3(450, 0, 450)
-                  Value = new float3(random.NextFloat(0, 1000), 2, random.NextFloat(0, 1000))
-              });
+              var spawnLocation = new float3(random.NextFloat(0, 1000), 1, random.NextFloat(900, 1000));
+              translation.Value = spawnLocation;
+              rotation.Value = quaternion.LookRotation(
+                  new float3(playerBasePosition.Value.x, 0, playerBasePosition.Value.z) - spawnLocation, math.up());
           }).ScheduleParallel();
-
-        m_ecb.AddJobHandleForProducer(Dependency);
-
     }
 }
