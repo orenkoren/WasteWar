@@ -19,15 +19,17 @@ public class EnemyPatternSystem : SystemBase
         if (!shouldSkipAFrame)
             EntityManager.DestroyEntity(GetSingletonEntity<EnemyPatternSystemEnabler>());
         shouldSkipAFrame = false;
+        Random random = new Random(56);
         m_ecb = World.GetOrCreateSystem<EntityCommandBufferSystem>();
         var ecb = m_ecb.CreateCommandBuffer().AsParallelWriter();
         Entities
           .WithAll<AttackerComponent>()
-          .ForEach((int entityInQueryIndex, Entity e) =>
+          .ForEach((int entityInQueryIndex, Entity e, ref Rotation rotation) =>
           {
               ecb.SetComponent(entityInQueryIndex, e, new Translation
               {
-                  Value = new float3(450, 0, 450)
+                  //Value = new float3(450, 0, 450)
+                  Value = new float3(random.NextFloat(0, 1000), 2, random.NextFloat(0, 1000))
               });
           }).ScheduleParallel();
 

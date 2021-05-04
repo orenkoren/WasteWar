@@ -1,9 +1,34 @@
 fileFormatVersion: 2
 guid: e6f7c0a956c4ad94fb602c61b9955f8d
 ModelImporter:
-  serializedVersion: 19301
+  serializedVersion: 20200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: BarrelGuard_default2Mat
+    second: {fileID: 2100000, guid: 56e816517fda39c4f91108c5dba488f5, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Base_default4Mat
+    second: {fileID: 2100000, guid: 1925a17ef37064048953e0f74ba5bd40, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Base_default6Mat
+    second: {fileID: 2100000, guid: fcfd972e08522a643b87ef25b05620a4, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Gun_default3Mat
+    second: {fileID: 2100000, guid: 9e4a0aff9634dde4eb5b0f25c70bd253, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Motor_default5Mat
+    second: {fileID: 2100000, guid: 6f018128f55a7514b9e193797403dc5c, type: 2}
   materials:
     materialImportMode: 1
     materialName: 0
@@ -49,6 +74,7 @@ ModelImporter:
     useFileUnits: 1
     keepQuads: 0
     weldVertices: 1
+    bakeAxisConversion: 0
     preserveHierarchy: 0
     skinWeightsMode: 0
     maxBonesPerVertex: 4
@@ -58,6 +84,9 @@ ModelImporter:
     secondaryUVAngleDistortion: 8
     secondaryUVAreaDistortion: 15.000001
     secondaryUVHardAngle: 88
+    secondaryUVMarginMethod: 1
+    secondaryUVMinLightmapResolution: 40
+    secondaryUVMinObjectScale: 1
     secondaryUVPackMargin: 4
     useFileScale: 1
   tangentSpace:
@@ -91,6 +120,7 @@ ModelImporter:
   animationType: 2
   humanoidOversampling: 1
   avatarSetup: 0
+  addHumanoidExtraRootOnlyWhenUsingAvatar: 0
   additionalBone: 0
   userData: 
   assetBundleName: 

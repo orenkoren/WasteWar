@@ -34,6 +34,7 @@ public class EnemySpawnerSystem : SystemBase
         };
 
         spawnJob.Schedule(spawner.spawnAmount, 128).Complete();
+        
         EntityManager.CreateEntity(typeof(EnemyPatternSystemEnabler));
     }
 

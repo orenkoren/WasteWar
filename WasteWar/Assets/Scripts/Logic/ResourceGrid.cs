@@ -5,7 +5,7 @@ using System.Collections.Generic;
 public class ResourceGrid
 {
     private const float STOPPING_PROBABILITY_BLOCK = 0.01f;
-    private const float STOPPING_PROBABILITY_MAP = 0.5f;
+    private const float STOPPING_PROBABILITY_MAP = 0.05f;
     private const int MIN_NODES = 50;
 
     public Dictionary<int, Resource> Nodes { get; private set; } = new Dictionary<int, Resource>();
@@ -22,8 +22,8 @@ public class ResourceGrid
     {
         do
         {
-            int x = Random.Range((int)CameraConstants.Instance.WORLD_BORDER, gridSize.X - (int)CameraConstants.Instance.WORLD_BORDER);
-            int y = Random.Range((int)CameraConstants.Instance.WORLD_BORDER, gridSize.Y - (int)CameraConstants.Instance.WORLD_BORDER);
+            int x = Random.Range(gridSize.X / 3, 2 * gridSize.X / 3);
+            int y = Random.Range(gridSize.Y / 3, 2 * gridSize.Y /3);
             GenerateOneBlockOfResourcesAt(new GridUtils.GridCoords(x, y));
         }
         while ((Random.Range(0f, 1f) < (1 - STOPPING_PROBABILITY_MAP)));
