@@ -2,17 +2,21 @@ using UnityEngine;
 
 public class DrawTexturesOnTerrain : MonoBehaviour
 {
-    [SerializeField]
     private Terrain terrain;
 
-    private const int CELL_TEXTURE_WIDTH = 6;
-    private const int CELL_TEXTURE_HEIGHT = 6;
+    private const int CELL_TEXTURE_WIDTH = 1;
+    private const int CELL_TEXTURE_HEIGHT = 1;
     private const int TEXTURE_LAYER_COUNT = 2;
 
     private void Start()
     {
+        terrain = RuntimeGameObjRefs.Instance.TERRAIN;
         GameEvents.NodeUsedUpListeners += UpdateTerrainTexture;
         GameEvents.LoadingTerrainTexturesListeners += DrawAllResourceTexturesOnTerrain;
+
+        terrain.terrainData.alphamapResolution = (int)terrain.terrainData.size.x;
+        terrain.terrainData.baseMapResolution = (int)terrain.terrainData.size.x;
+        terrain.terrainData.heightmapResolution = (int)(terrain.terrainData.size.x + 1);
     }
 
     private void DrawAllResourceTexturesOnTerrain(object sender, ResourceGrid resources)
@@ -32,12 +36,11 @@ public class DrawTexturesOnTerrain : MonoBehaviour
     }
 
     //has to be called on every run, because otherwise the terrain texture doesn't reset
+    //IMPORTANT alphamap size needs to be a multiple of 2^x
     private void DrawTerrainTexture()
     {
-        int textureWidth = 512;
-        int textureHeight = 512;
-
-        TexturePlacer(new GridUtils.GridCoords(0, 0), new GridUtils.GridCoords(textureWidth, textureHeight), true);
+        TexturePlacer(new GridUtils.GridCoords(0, 0), 
+                      new GridUtils.GridCoords(terrain.terrainData.alphamapWidth, terrain.terrainData.alphamapHeight), true);
     }
     private void UpdateTerrainTexture(object sender, int locationKey)
     {

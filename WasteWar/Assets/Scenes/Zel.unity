@@ -524,6 +524,11 @@ PrefabInstance:
       propertyPath: terrain
       value: 
       objectReference: {fileID: 1321402549}
+    - target: {fileID: 8459859427578807367, guid: d460303dd73f3b44fb5fde87a121973d,
+        type: 3}
+      propertyPath: shouldAllowMouseMovement
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d460303dd73f3b44fb5fde87a121973d, type: 3}
 --- !u!1001 &8460824764232383862

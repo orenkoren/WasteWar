@@ -8,11 +8,13 @@ public class PipeLogic : MonoBehaviour
     public GameObject pipelinesPrefab;
 
     private List<Pipeline> pipelines;
+    private Dictionary<Pipeline,Coroutine> coroutineDict = new Dictionary<Pipeline,Coroutine>();
 
     private void Start()
     {
         pipelines = pipelinesPrefab.GetComponent<PipelineStorage>().Pipelines;
         GameEvents.PipePlacedListeners += TraversePipeSegments;
+        GameEvents.PipeDeletedListeners += DeletePipeline;
     }
 
     public bool CheckIfPipeAligns(Vector3 dir, ActiveSides activeSides)
@@ -75,7 +77,6 @@ public class PipeLogic : MonoBehaviour
             ? true : false;
         }
     }
-
     //TODO Make this work incase the building is placed last, and not a pipe
     private void TraversePipeSegments(object sender, GameObject structure)
     {
@@ -118,13 +119,13 @@ public class PipeLogic : MonoBehaviour
         {
             GeneratePipeline();
 
-            //DEBUGOUTPUT
-            foreach (var pipe in pipeline.pipes)
-                pipe.GetComponent<MeshRenderer>().material.color = Color.yellow;
-            foreach (var building in pipeline.buildings)
-                building.GetComponent<MeshRenderer>().material.color = Color.yellow;
+            //DEBUGOUTPUTs
+            //foreach (var pipe in pipeline.pipes)
+            //    pipe.GetComponent<MeshRenderer>().material.color = Color.yellow;
+            //foreach (var building in pipeline.buildings)
+            //    building.GetComponent<MeshRenderer>().material.color = Color.yellow;
 
-            StartCoroutine(StartResourceTransferFrom(pipeline));
+            coroutineDict.Add(pipeline,StartCoroutine(StartResourceTransferFrom(pipeline)));
         }
 
         void GeneratePipeline()
@@ -297,9 +298,27 @@ public class PipeLogic : MonoBehaviour
             return dir;
         }
     }
+    
+    private void DeletePipeline(object sender,GameObject deletedPipe)
+    {
+        //IMPORTANT not a list because for now a pipe can be a part of one pipeline at the same time
+        Pipeline pipelineToDelete=null;
+
+        foreach (var pipeline in pipelines)
+        {
+            if (pipeline.pipes.Find(pipe => pipe == deletedPipe))
+                pipelineToDelete = pipeline;  
+        }
+        if (pipelineToDelete != null)
+        {   
+            StopCoroutine(coroutineDict[pipelineToDelete]);
+            pipelines.Remove(pipelineToDelete);
+        }
+}
 
     private void OnDestroy()
     {
         GameEvents.PipePlacedListeners -= TraversePipeSegments;
+        GameEvents.PipeDeletedListeners -= DeletePipeline;
     }
 }

@@ -3,10 +3,9 @@
 public class MouseClickManager : MonoBehaviour
 {
     [SerializeField]
-    private Terrain terrain;
-    [SerializeField]
     private Camera cam;
 
+    private Terrain terrain;
     private RaycastHit hit;
     private Ray ray;
     private Vector3 terrainSize;
@@ -14,6 +13,7 @@ public class MouseClickManager : MonoBehaviour
 
     void Start()
     {
+        terrain = RuntimeGameObjRefs.Instance.TERRAIN;
         templateData = new TemplateData();
         terrainSize = terrain.terrainData.size;
         GameEvents.TemplateSelectedListeners += SetTemplateData;
@@ -52,5 +52,4 @@ public class MouseClickManager : MonoBehaviour
     {
         GameEvents.TemplateSelectedListeners -= SetTemplateData;
     }
-
 }

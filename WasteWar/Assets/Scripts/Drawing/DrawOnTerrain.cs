@@ -78,8 +78,9 @@ public class DrawOnTerrain : MonoBehaviour
 
     private void DeleteStructure(object sender, RaycastHit data)
     {
-        structures.Remove(data.collider.gameObject);
+        GameEvents.FirePipeDeleted(this, data.collider.gameObject);
         Destroy(data.collider.gameObject);
+        structures.Remove(data.collider.gameObject);
     }
 
     private void DestroyOldAndCreateNewTemplate(object sender, TemplateData data)

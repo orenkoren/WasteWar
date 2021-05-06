@@ -6,6 +6,7 @@ public static class GameEvents
     public static event EventHandler<TemplateData> TemplateSelectedListeners;
     public static event EventHandler<int> BuildingRotationListeners;
     public static event EventHandler<GameObject> PipePlacedListeners;
+    public static event EventHandler<GameObject> PipeDeletedListeners;
     public static event EventHandler<GameObject> BuildingPlacedListeners;
     //used to memorize previous pipe rotation when spawning next pipe
     public static event EventHandler<string> PipePlaced2Listeners;
@@ -23,6 +24,8 @@ public static class GameEvents
                                         BuildingRotationListeners?.Invoke(sender, i);
     public static void FirePipePlaced(object sender, GameObject structure) =>
                                       PipePlacedListeners?.Invoke(sender, structure);
+    public static void FirePipeDeleted(object sender, GameObject structure) =>
+                                  PipeDeletedListeners?.Invoke(sender, structure);
     public static void FireBuildingPlaced(object sender, GameObject structure) =>
                                       BuildingPlacedListeners?.Invoke(sender, structure);
     public static void FirePipePlaced2(object sender, string prefabName) =>

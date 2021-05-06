@@ -6,16 +6,16 @@ public class KeyClickManager : MonoBehaviour
     [SerializeField]
     private PrefabTemplates templates;
     [SerializeField]
-    private Terrain terrain;
-    [SerializeField]
     private Camera cam;
 
+    private Terrain terrain;
     private GameObject prefabPipe;
     private RaycastHit hit;
     private Ray ray;
 
     private void Start()
     {
+        terrain = RuntimeGameObjRefs.Instance.TERRAIN;
         GameEvents.PipePlaced2Listeners += SetPipePrefab;
         prefabPipe = templates.PipeTopBottom;
     }

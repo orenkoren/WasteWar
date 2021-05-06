@@ -9,6 +9,7 @@ public class RuntimeGameObjRefs : MonoBehaviour
     {
         if (Instance == null)
         {
+
             Instance = this;
             DontDestroyOnLoad(gameObject);
         }

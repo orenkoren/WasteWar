@@ -28,16 +28,19 @@ public class GridConstants : MonoBehaviour
     public static GridConstants Instance { get; private set; }
 
     private void Awake()
-    {
+    {///qegfmqekgjlqgje
         if (Instance == null)
         {
             Instance = this;
-            CELL_COUNT = (int)RuntimeGameObjRefs.Instance.TERRAIN.terrainData.size.x * (int)RuntimeGameObjRefs.Instance.TERRAIN.terrainData.size.z;
+         CELL_COUNT = (int)RuntimeGameObjRefs.Instance.TERRAIN.terrainData.size.x * (int)RuntimeGameObjRefs.Instance.TERRAIN.terrainData.size.z;
             DontDestroyOnLoad(gameObject);
         }
         else
         {
             Destroy(gameObject);
         }
+    }
+    private void Start()
+    {
     }
 }
