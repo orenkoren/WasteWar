@@ -136,10 +136,25 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1075168910400768874, guid: f8f017fa1836d3c4a89b42f50024e451,
+        type: 3}
+      propertyPath: m_Layer
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 4514774305240621204, guid: f8f017fa1836d3c4a89b42f50024e451,
+        type: 3}
+      propertyPath: m_Layer
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 4962235257657328294, guid: f8f017fa1836d3c4a89b42f50024e451,
         type: 3}
       propertyPath: m_Name
       value: BaseEntity
+      objectReference: {fileID: 0}
+    - target: {fileID: 4962235257657328294, guid: f8f017fa1836d3c4a89b42f50024e451,
+        type: 3}
+      propertyPath: m_Layer
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 6587342931234398741, guid: f8f017fa1836d3c4a89b42f50024e451,
         type: 3}
@@ -362,12 +377,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1849670349 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 3709432699692018762, guid: e381dc8b855589a40b2a57665100794b,
-    type: 3}
-  m_PrefabInstance: {fileID: 8460824764232383862}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &5035339239263798065
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -538,36 +547,16 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 5227847111266242986, guid: e381dc8b855589a40b2a57665100794b,
-        type: 3}
-      propertyPath: terrain
-      value: 
-      objectReference: {fileID: 1321402549}
     - target: {fileID: 7838203742187533557, guid: e381dc8b855589a40b2a57665100794b,
-        type: 3}
-      propertyPath: cam
-      value: 
-      objectReference: {fileID: 21086383}
-    - target: {fileID: 7838203742187533557, guid: e381dc8b855589a40b2a57665100794b,
-        type: 3}
-      propertyPath: terrain
-      value: 
-      objectReference: {fileID: 1321402549}
-    - target: {fileID: 7838203742187533557, guid: e381dc8b855589a40b2a57665100794b,
-        type: 3}
-      propertyPath: pipeMethods
-      value: 
-      objectReference: {fileID: 1849670349}
-    - target: {fileID: 7838203742187533559, guid: e381dc8b855589a40b2a57665100794b,
         type: 3}
       propertyPath: cam
       value: 
       objectReference: {fileID: 21086383}
     - target: {fileID: 7838203742187533559, guid: e381dc8b855589a40b2a57665100794b,
         type: 3}
-      propertyPath: terrain
+      propertyPath: cam
       value: 
-      objectReference: {fileID: 1321402549}
+      objectReference: {fileID: 21086383}
     - target: {fileID: 8460824764228317852, guid: e381dc8b855589a40b2a57665100794b,
         type: 3}
       propertyPath: m_Name
@@ -628,6 +617,5 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 9191340732275835074, guid: e381dc8b855589a40b2a57665100794b, type: 3}
+    m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e381dc8b855589a40b2a57665100794b, type: 3}

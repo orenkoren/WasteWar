@@ -119,9 +119,10 @@ GameObject:
   - component: {fileID: 3522886112850277917}
   - component: {fileID: 5322569862503174892}
   - component: {fileID: 6092484354662983343}
+  - component: {fileID: 4107321242315171474}
   m_Layer: 9
   m_Name: Coal
-  m_TagString: Building
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -461,6 +462,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7aa03058d08c34c48915c20b2d8813bb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &4107321242315171474
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4384423777135194493}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a328314bcdcee454cb2ff0afeebfdf28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &5740310361309664360

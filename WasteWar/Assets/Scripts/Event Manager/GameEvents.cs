@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public static class GameEvents
@@ -16,7 +17,8 @@ public static class GameEvents
     public static event EventHandler<Vector3> MouseOverListeners;
 
     public static event EventHandler<int> NodeUsedUpListeners;
-    public static event EventHandler<ResourceGrid> LoadingTerrainTexturesListeners;
+    public static event EventHandler<int> EraseResourceGameObjectListeners;
+    public static event EventHandler<Dictionary<int, Resource>> ResourcesGeneratedListeners;
 
     public static void FireTemplateSelected(object sender, TemplateData data) =>
                                             TemplateSelectedListeners?.Invoke(sender, data);
@@ -38,8 +40,10 @@ public static class GameEvents
                                             MouseOverListeners?.Invoke(sender, hitPoint);
     public static void FireNodeUsedUp(object sender, int locationKey) =>
                                             NodeUsedUpListeners?.Invoke(sender, locationKey);
-    public static void FireLoadingTerrainTextures(object sender, ResourceGrid resources) =>
-                                            LoadingTerrainTexturesListeners?.Invoke(sender, resources);
+    public static void FireEraseResourceGameObject(object sender, int locationKey) =>
+                                            EraseResourceGameObjectListeners?.Invoke(sender, locationKey);
+    public static void FireResourcesGenerated(object sender, Dictionary<int, Resource> resources) =>
+                                            ResourcesGeneratedListeners?.Invoke(sender, resources);
 }
 
 public class TemplateData

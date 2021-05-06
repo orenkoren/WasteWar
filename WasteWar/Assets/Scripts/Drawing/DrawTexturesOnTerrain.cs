@@ -1,35 +1,29 @@
 using UnityEngine;
 
+/// <summary>
+/// work in progress not used rn
+/// </summary>
+
 public class DrawTexturesOnTerrain : MonoBehaviour
 {
     private Terrain terrain;
 
-    private const int CELL_TEXTURE_WIDTH = 1;
-    private const int CELL_TEXTURE_HEIGHT = 1;
     private const int TEXTURE_LAYER_COUNT = 2;
 
     private void Start()
     {
         terrain = RuntimeGameObjRefs.Instance.TERRAIN;
-        GameEvents.NodeUsedUpListeners += UpdateTerrainTexture;
-        GameEvents.LoadingTerrainTexturesListeners += DrawAllResourceTexturesOnTerrain;
-
-        terrain.terrainData.alphamapResolution = (int)terrain.terrainData.size.x;
-        terrain.terrainData.baseMapResolution = (int)terrain.terrainData.size.x;
-        terrain.terrainData.heightmapResolution = (int)(terrain.terrainData.size.x + 1);
     }
 
     private void DrawAllResourceTexturesOnTerrain(object sender, ResourceGrid resources)
     {
         DrawTerrainTexture();
-        foreach (var resource in resources.Nodes)
-            DrawResourceTextureOnTerrain((float)(resource.Key / GridConstants.Instance.CELL_COUNT), (float)(resource.Key % GridConstants.Instance.CELL_COUNT));
     }
 
     private void DrawResourceTextureOnTerrain(float x, float z)
     {
-        int textureWidth = CELL_TEXTURE_HEIGHT;
-        int textureHeight = CELL_TEXTURE_WIDTH;
+        int textureWidth = 1;
+        int textureHeight = 1;
 
         GridUtils.GridCoords start = MapTextureCoordToWorldCoord(x, z);
         TexturePlacer(start, new GridUtils.GridCoords(textureWidth, textureHeight), false);
@@ -41,16 +35,6 @@ public class DrawTexturesOnTerrain : MonoBehaviour
     {
         TexturePlacer(new GridUtils.GridCoords(0, 0), 
                       new GridUtils.GridCoords(terrain.terrainData.alphamapWidth, terrain.terrainData.alphamapHeight), true);
-    }
-    private void UpdateTerrainTexture(object sender, int locationKey)
-    {
-        int x = locationKey / GridConstants.Instance.CELL_COUNT;
-        int y = locationKey % GridConstants.Instance.CELL_COUNT;
-        int textureWidth = CELL_TEXTURE_HEIGHT;
-        int textureHeight = CELL_TEXTURE_WIDTH;
-
-        GridUtils.GridCoords start = MapTextureCoordToWorldCoord(x, y);
-        TexturePlacer(start, new GridUtils.GridCoords(textureWidth, textureHeight), true);
     }
 
     private void TexturePlacer(GridUtils.GridCoords start, GridUtils.GridCoords dimensions, bool resource)
@@ -78,9 +62,4 @@ public class DrawTexturesOnTerrain : MonoBehaviour
         return new GridUtils.GridCoords(mapX, mapY);
     }
 
-    private void OnDestroy()
-    {
-        GameEvents.NodeUsedUpListeners -= UpdateTerrainTexture;
-        GameEvents.LoadingTerrainTexturesListeners -= DrawAllResourceTexturesOnTerrain;
-    }
 }

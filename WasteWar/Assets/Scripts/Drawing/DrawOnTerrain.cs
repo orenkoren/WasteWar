@@ -15,22 +15,17 @@ public class DrawOnTerrain : MonoBehaviour
 
     private Terrain terrain;
     private RaycastHit hit;
-    private Ray ray;
-    private ResourceGrid resources;
+    private Ray ray;    
     private List<GameObject> structures = new List<GameObject>();
 
     private void Start()
     {
         terrain = RuntimeGameObjRefs.Instance.TERRAIN;
-        resources = new ResourceGrid(terrain.terrainData.size);
 
         GameEvents.TemplateSelectedListeners += DestroyOldAndCreateNewTemplate;
         GameEvents.LeftClickPressedListeners += DrawStructure;
         GameEvents.RightClickPressedListeners += DeleteStructure;
-        GameEvents.MouseOverListeners += resources.ShowCurrentResourceAmount;
         GameEvents.BuildingRotationListeners += RotateTemplate;
-
-        GameEvents.FireLoadingTerrainTextures(this, resources);
     }
 
     private void Update()
@@ -67,10 +62,7 @@ public class DrawOnTerrain : MonoBehaviour
             if (Structure.tag.Contains("Pipe"))
                 GameEvents.FirePipePlaced(this, Structure);
             else if (Structure.CompareTag("Building"))
-            {
-                Structure.GetComponent<BuildingState>().Resources = resources;
                 GameEvents.FireBuildingPlaced(this, Structure);
-            }
 
             structures.Add(Structure);
         }
@@ -145,8 +137,25 @@ public class DrawOnTerrain : MonoBehaviour
 
     private bool CheckIfLocationIsFree()
     {
-        return !Physics.CheckBox(TemplateStructure.GetComponent<Collider>().bounds.center, TemplateStructure.GetComponent<Collider>().bounds.extents,
-            TemplateStructure.transform.rotation, LayerMasks.Instance.ATTACKABLE);
+        https://gyazo.com/d7bca8a2098f36b1deb686ddd22978b9
+        if (TemplateStructure.tag.Contains("Building")) {
+
+            Vector3 lowerBound = TemplateStructure.GetComponent<Collider>().bounds.min;
+            Vector3 upperBound = TemplateStructure.GetComponent<Collider>().bounds.max;
+            
+            //elevate the Vectors so that the raycast works properly
+            lowerBound.y += 1;
+            upperBound.y += 1;
+
+            Ray rayOne = new Ray(lowerBound, Vector3.down);
+            Ray rayTwo = new Ray(upperBound, Vector3.down);
+
+            return Physics.Raycast(rayOne, CameraConstants.Instance.RAYCAST_DISTANCE, LayerMasks.Instance.RESOURCE) &&
+                   Physics.Raycast(rayTwo, CameraConstants.Instance.RAYCAST_DISTANCE, LayerMasks.Instance.RESOURCE);
+        }
+        else
+            return !Physics.CheckBox(TemplateStructure.GetComponent<Collider>().bounds.center, TemplateStructure.GetComponent<Collider>().bounds.extents,
+                TemplateStructure.transform.rotation, LayerMasks.Instance.ATTACKABLE);
     }
 
     private void OnDestroy()
@@ -155,6 +164,5 @@ public class DrawOnTerrain : MonoBehaviour
         GameEvents.TemplateSelectedListeners -= DestroyOldAndCreateNewTemplate;
         GameEvents.LeftClickPressedListeners -= DrawStructure;
         GameEvents.RightClickPressedListeners -= DeleteStructure;
-        GameEvents.MouseOverListeners -= resources.ShowCurrentResourceAmount;
     }
 }

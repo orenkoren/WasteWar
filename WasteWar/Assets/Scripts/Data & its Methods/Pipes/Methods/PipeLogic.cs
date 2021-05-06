@@ -119,7 +119,7 @@ public class PipeLogic : MonoBehaviour
         {
             GeneratePipeline();
 
-            //DEBUGOUTPUTs
+            //DEBUGOUTPUT
             //foreach (var pipe in pipeline.pipes)
             //    pipe.GetComponent<MeshRenderer>().material.color = Color.yellow;
             //foreach (var building in pipeline.buildings)

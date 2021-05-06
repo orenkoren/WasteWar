@@ -1,26 +1,23 @@
 ﻿using Unity.Transforms;
 using UnityEngine;
 
-namespace Constants
+public class GameConstants : MonoBehaviour
 {
-    public class GameConstants : MonoBehaviour
+    public Vector3 DEFAULT_OBJECT_ROTATION;
+    public Translation PlayerBasePosition { get; set; }
+
+    public static GameConstants Instance { get; private set; }
+
+    private void Awake()
     {
-        public Vector3 DEFAULT_OBJECT_ROTATION;
-        public Translation PlayerBasePosition { get; set; }
-
-        public static GameConstants Instance { get; private set; }
-
-        private void Awake()
+        if (Instance == null)
         {
-            if (Instance == null)
-            {
-                Instance = this;
-                DontDestroyOnLoad(gameObject);
-            }
-            else
-            {
-                Destroy(gameObject);
-            }
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
         }
     }
 }

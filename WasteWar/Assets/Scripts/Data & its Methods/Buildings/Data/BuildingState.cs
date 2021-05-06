@@ -8,15 +8,14 @@ public class BuildingState : MonoBehaviour
 
     public UnityEngine.UI.Text CubeTextComponent;
     public bool IsGenerator { get; private set; } = true;
-    public ResourceGrid Resources { get; set; } = null;
     public int PollutionIndex { get; private set; } = 1;
     public int Health { get; private set; } = 100;
     public int Armor { get; private set; } = 1;
     public int Level { get; private set; } = 1;
     public int _storage = 0;
     public float _yieldFrequency = INITIAL_YIELD_SPEED;
-    public Stack<int> AvailableResources = new Stack<int>();
-    public int key;
+    public Resource AvailableResources { get; set; }
+    public int KeyOfNodeBeingUsed { get; set; }
 
     public float YieldFrequency
     {

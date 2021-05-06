@@ -131,7 +131,6 @@ MonoBehaviour:
   CubeTextComponent: {fileID: 3593971961412784105}
   _storage: 0
   _yieldFrequency: 1.1
-  key: 0
 --- !u!114 &-4097587755481093019
 MonoBehaviour:
   m_ObjectHideFlags: 0
