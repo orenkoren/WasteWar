@@ -1,5 +1,4 @@
-﻿using System;
-using Random = UnityEngine.Random;
+﻿using Random = UnityEngine.Random;
 
 public class Resource
 {

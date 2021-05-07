@@ -2,15 +2,19 @@
 
 public class Move : MonoBehaviour
 {
-    [SerializeField]
+
+    public bool shouldAllowMouseMovement = true;
     private Terrain terrain;
     [SerializeField]
     private Transform cam;
-  
+    [SerializeField]
+    RuntimeGameObjRefs runtimeGameObjRefs;
+
     private Vector3 terrainSize;
 
     void Start()
     {
+        terrain = runtimeGameObjRefs.terrain;
         terrainSize = terrain.terrainData.size;
        // CenterCamera();
 
@@ -35,25 +39,25 @@ public class Move : MonoBehaviour
 
     private void TryToMoveForward()
     {
-        if (Input.GetKey(KeyCode.W) || Input.mousePosition.y >= ScreenAndMapValues.TOP_SCREEN_EDGE)
+        if (Input.GetKey(KeyCode.W) ||( Input.mousePosition.y >= ScreenAndMapValues.TOP_SCREEN_EDGE && shouldAllowMouseMovement))
             cam.position = MoveXZ(cam.position, cam.forward);
     }
 
     private void TryToMoveBack()
     {
-        if (Input.GetKey(KeyCode.S) || Input.mousePosition.y <= ScreenAndMapValues.BOTTOM_SCREEN_EDGE)
+        if (Input.GetKey(KeyCode.S) || (Input.mousePosition.y <= ScreenAndMapValues.BOTTOM_SCREEN_EDGE && shouldAllowMouseMovement))
             cam.position = MoveXZ(cam.position, -cam.forward);
     }
 
     private void TryToMoveRight()
     {
-        if (Input.GetKey(KeyCode.D) || Input.mousePosition.x >= ScreenAndMapValues.RIGHT_SCREEN_EDGE)
+        if (Input.GetKey(KeyCode.D) || (Input.mousePosition.x >= ScreenAndMapValues.RIGHT_SCREEN_EDGE && shouldAllowMouseMovement))
             cam.position = MoveXZ(cam.position, cam.right);
     }
 
     private void TryToMoveLeft()
     {
-        if (Input.GetKey(KeyCode.A) || Input.mousePosition.x <= ScreenAndMapValues.LEFT_SCREEN_EDGE)
+        if (Input.GetKey(KeyCode.A) || (Input.mousePosition.x <= ScreenAndMapValues.LEFT_SCREEN_EDGE && shouldAllowMouseMovement))
             cam.position = MoveXZ(cam.position, -cam.right);
     }
 
