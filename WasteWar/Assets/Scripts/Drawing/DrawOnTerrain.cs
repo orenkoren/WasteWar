@@ -12,8 +12,6 @@ public class DrawOnTerrain : MonoBehaviour
     private GameObject pipeMethods;
     [SerializeField]
     RuntimeGameObjRefs runtimeGameObjRefs;
-    Coroutine kekw;
-
 
     public GameObject TemplateStructure { get; set; }
     public Vector3 TemplateStructureSize { get; private set; }
@@ -64,9 +62,7 @@ public class DrawOnTerrain : MonoBehaviour
             structures.Add(Structure);
         }
         else if(data.TemplateStructure != null && !CheckIfLocationIsFree())
-        {
-            kekw=StartCoroutine(ShakeTemplateForXSec());
-        }
+            StartCoroutine(ShakeTemplateForXSec());
     }
     private void DrawStructuresConsecutively(object sender, TemplateData data)
     {
