@@ -9,6 +9,9 @@ public class DrawOnTerrain : MonoBehaviour
     private Camera cam;
     [SerializeField]
     private GameObject pipeMethods;
+    [SerializeField]
+    RuntimeGameObjRefs runtimeGameObjRefs;
+
 
     public GameObject TemplateStructure { get; set; }
     public Vector3 TemplateStructureSize { get; private set; }
@@ -21,7 +24,7 @@ public class DrawOnTerrain : MonoBehaviour
 
     private void Start()
     {
-        terrain = RuntimeGameObjRefs.Instance.TERRAIN;
+        terrain = runtimeGameObjRefs.terrain;
 
         GameEvents.BuildingRotationListeners += RotateTemplate;
         GameEvents.TemplateSelectedListeners += DestroyOldAndCreateNewTemplate;

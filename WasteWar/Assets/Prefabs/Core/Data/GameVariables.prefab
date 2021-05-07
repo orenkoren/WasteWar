@@ -73,6 +73,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CELL_SIZE: 3
+  CELL_COUNT: 0
+  runtimeGameObjRefs: {fileID: 11400000, guid: c9ed2ca021f60cf4d9cdf92da6c15cdf, type: 2}
 --- !u!114 &3139353389990836416
 MonoBehaviour:
   m_ObjectHideFlags: 0

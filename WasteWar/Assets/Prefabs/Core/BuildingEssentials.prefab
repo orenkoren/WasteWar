@@ -46,6 +46,7 @@ MonoBehaviour:
   minimumDistance: 10
   nodeCountMinMax: {x: 5, y: 10}
   distanceFromMapEdgeInPercentile: 0.184
+  runtimeGameObjRefs: {fileID: 11400000, guid: c9ed2ca021f60cf4d9cdf92da6c15cdf, type: 2}
 --- !u!114 &541141948
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -421,9 +422,21 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -4762582495274316724, guid: d6d2e458b16140b4c91811f4c792bc87,
         type: 3}
+      propertyPath: refs
+      value: 
+      objectReference: {fileID: 11400000, guid: c9ed2ca021f60cf4d9cdf92da6c15cdf,
+        type: 2}
+    - target: {fileID: -4762582495274316724, guid: d6d2e458b16140b4c91811f4c792bc87,
+        type: 3}
       propertyPath: terrain
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: -4762582495274316724, guid: d6d2e458b16140b4c91811f4c792bc87,
+        type: 3}
+      propertyPath: runtimeGameObjRefs
+      value: 
+      objectReference: {fileID: 11400000, guid: c9ed2ca021f60cf4d9cdf92da6c15cdf,
+        type: 2}
     - target: {fileID: 1849861851773692174, guid: d6d2e458b16140b4c91811f4c792bc87,
         type: 3}
       propertyPath: m_Name
@@ -494,6 +507,12 @@ PrefabInstance:
       propertyPath: terrain
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 1849861851773692177, guid: d6d2e458b16140b4c91811f4c792bc87,
+        type: 3}
+      propertyPath: runtimeGameObjRefs
+      value: 
+      objectReference: {fileID: 11400000, guid: c9ed2ca021f60cf4d9cdf92da6c15cdf,
+        type: 2}
     - target: {fileID: 1849861851773692179, guid: d6d2e458b16140b4c91811f4c792bc87,
         type: 3}
       propertyPath: cam
@@ -514,6 +533,12 @@ PrefabInstance:
       propertyPath: pipeMethods
       value: 
       objectReference: {fileID: 3709432699692018762}
+    - target: {fileID: 1849861851773692179, guid: d6d2e458b16140b4c91811f4c792bc87,
+        type: 3}
+      propertyPath: runtimeGameObjRefs
+      value: 
+      objectReference: {fileID: 11400000, guid: c9ed2ca021f60cf4d9cdf92da6c15cdf,
+        type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d6d2e458b16140b4c91811f4c792bc87, type: 3}
 --- !u!1 &7838203742187533544 stripped

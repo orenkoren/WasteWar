@@ -7,6 +7,8 @@ public class KeyClickManager : MonoBehaviour
     private PrefabTemplates templates;
     [SerializeField]
     private Camera cam;
+    [SerializeField]
+    RuntimeGameObjRefs runtimeGameObjRefs;
 
     private Terrain terrain;
     private GameObject prefabPipe;
@@ -17,7 +19,7 @@ public class KeyClickManager : MonoBehaviour
 
     private void Start()
     {
-        terrain = RuntimeGameObjRefs.Instance.TERRAIN;
+        terrain = runtimeGameObjRefs.terrain;
         GameEvents.PipePlaced2Listeners += SetPipePrefab;
         prefabPipe = templates.PipeTopBottom;
     }

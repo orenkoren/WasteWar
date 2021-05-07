@@ -7,12 +7,14 @@ using UnityEngine;
 public class DrawTexturesOnTerrain : MonoBehaviour
 {
     private Terrain terrain;
+    [SerializeField]
+    private RuntimeGameObjRefs runtimeGameObjRefs;
 
     private const int TEXTURE_LAYER_COUNT = 2;
 
     private void Start()
     {
-        terrain = RuntimeGameObjRefs.Instance.TERRAIN;
+        terrain = runtimeGameObjRefs.terrain;
     }
 
     private void DrawAllResourceTexturesOnTerrain(object sender, ResourceGrid resources)

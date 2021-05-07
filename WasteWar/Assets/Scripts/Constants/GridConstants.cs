@@ -4,6 +4,8 @@ public class GridConstants : MonoBehaviour
     public CellSize CELL_SIZE;
     [HideInInspector]
     public int CELL_COUNT;
+    [SerializeField]
+    private RuntimeGameObjRefs runtimeGameObjRefs;
 
     public float FloatCellSize()
     {
@@ -32,7 +34,7 @@ public class GridConstants : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
-            CELL_COUNT = (int)RuntimeGameObjRefs.Instance.TERRAIN.terrainData.size.x * (int)RuntimeGameObjRefs.Instance.TERRAIN.terrainData.size.z;
+            CELL_COUNT = (int)runtimeGameObjRefs.terrain.terrainData.size.x * (int)runtimeGameObjRefs.terrain.terrainData.size.z;
             DontDestroyOnLoad(gameObject);
         }
         else

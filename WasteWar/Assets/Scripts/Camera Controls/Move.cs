@@ -7,12 +7,14 @@ public class Move : MonoBehaviour
     private Terrain terrain;
     [SerializeField]
     private Transform cam;
-  
+    [SerializeField]
+    RuntimeGameObjRefs runtimeGameObjRefs;
+
     private Vector3 terrainSize;
 
     void Start()
     {
-        terrain = RuntimeGameObjRefs.Instance.TERRAIN;
+        terrain = runtimeGameObjRefs.terrain;
         terrainSize = terrain.terrainData.size;
        // CenterCamera();
 

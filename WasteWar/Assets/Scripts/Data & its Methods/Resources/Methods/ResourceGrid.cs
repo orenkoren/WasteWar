@@ -13,6 +13,8 @@ public class ResourceGrid : MonoBehaviour
     [SerializeField]
     [Range(0.1f,0.49f)]
     private float distanceFromMapEdgeInPercentile;
+    [SerializeField]
+    RuntimeGameObjRefs runtimeGameObjRefs;
 
     public Dictionary<int, Resource> Nodes { get; private set; } = new Dictionary<int, Resource>();
 
@@ -26,7 +28,7 @@ public class ResourceGrid : MonoBehaviour
         else
             nodeCount = Random.Range(nodeCountMinMax.y, nodeCountMinMax.x);
 
-        gridSize = GridUtils.Vector3ToGridCoord(RuntimeGameObjRefs.Instance.TERRAIN.terrainData.size);
+        gridSize = GridUtils.Vector3ToGridCoord(runtimeGameObjRefs.terrain.terrainData.size);
         GenerateResourceNodes();
 
         GameEvents.MouseOverListeners += ShowCurrentResourceAmount;

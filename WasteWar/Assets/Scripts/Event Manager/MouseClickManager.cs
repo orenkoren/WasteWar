@@ -4,6 +4,8 @@ public class MouseClickManager : MonoBehaviour
 {
     [SerializeField]
     private Camera cam;
+    [SerializeField]
+    RuntimeGameObjRefs runtimeGameObjRefs;
 
     private Terrain terrain;
     private RaycastHit hit;
@@ -13,7 +15,7 @@ public class MouseClickManager : MonoBehaviour
 
     private void Start()
     {
-        terrain = RuntimeGameObjRefs.Instance.TERRAIN;
+        terrain = runtimeGameObjRefs.terrain;
         templateData = new TemplateData();
         terrainSize = terrain.terrainData.size;
         GameEvents.TemplateSelectedListeners += SetTemplateData;
