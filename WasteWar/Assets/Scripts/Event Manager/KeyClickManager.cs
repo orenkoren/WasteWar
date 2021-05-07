@@ -6,16 +6,20 @@ public class KeyClickManager : MonoBehaviour
     [SerializeField]
     private PrefabTemplates templates;
     [SerializeField]
-    private Terrain terrain;
-    [SerializeField]
     private Camera cam;
+    [SerializeField]
+    RuntimeGameObjRefs runtimeGameObjRefs;
 
+    private Terrain terrain;
     private GameObject prefabPipe;
     private RaycastHit hit;
     private Ray ray;
 
+    private bool isCurvedRotationModeOn = false;
+
     private void Start()
     {
+        terrain = runtimeGameObjRefs.terrain;
         GameEvents.PipePlaced2Listeners += SetPipePrefab;
         prefabPipe = templates.PipeTopBottom;
     }
@@ -57,7 +61,23 @@ public class KeyClickManager : MonoBehaviour
             }
         }
         if (Input.GetKeyDown(KeyCode.R))
-            GameEvents.FireBuildingRotation(this, 5);
+            GameEvents.FireBuildingRotation(this, isCurvedRotationModeOn);
+        if (Input.GetKeyDown(KeyCode.M))
+        {
+            if (!isCurvedRotationModeOn)
+            {
+                prefabPipe = templates.PipeTopRight;
+                GameEvents.FireTemplateSelected(this, new TemplateData { TemplateStructure = prefabPipe, MousePos = hit.point });
+                isCurvedRotationModeOn = true;
+            }
+            //something doesn't work well, because of the scuffed curved pipe model, also implement rotation resetter
+            else
+            {
+                prefabPipe = templates.PipeLeftRight;
+                GameEvents.FireTemplateSelected(this, new TemplateData { TemplateStructure = prefabPipe, MousePos = hit.point });
+                isCurvedRotationModeOn = false;
+            }
+        }
     }
 
     private void SetPipePrefab(object sender, string prefabName)
@@ -66,10 +86,13 @@ public class KeyClickManager : MonoBehaviour
             prefabPipe = templates.PipeTopBottom;
         else if (prefabName.Equals("PipeLRTemplate"))
             prefabPipe = templates.PipeLeftRight;
-    }
-
-    private void OnDestroy()
-    {
-        GameEvents.PipePlaced2Listeners -= SetPipePrefab;
+        else if (prefabName.Equals("PipeTRTemplate"))
+            prefabPipe = templates.PipeTopRight;
+        else if (prefabName.Equals("PipeBRTemplate"))
+            prefabPipe = templates.PipeBottomRight;
+        else if (prefabName.Equals("PipeBLTemplate"))
+            prefabPipe = templates.PipeBottomLeft;
+        else if (prefabName.Equals("PipeTLTemplate"))
+            prefabPipe = templates.PipeTopLeft;
     }
 }

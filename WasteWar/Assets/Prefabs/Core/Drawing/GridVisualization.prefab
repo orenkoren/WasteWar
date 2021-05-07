@@ -39,7 +39,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5035339239777450417}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -85,4 +85,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 91935ee83f9d19b46b18cc95bc2b4953, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  terrain: {fileID: 5953220787626883585, guid: b5bbecf3a312c1c4d9d7ff9b1645ad64, type: 3}
+  terrain: {fileID: 0}
