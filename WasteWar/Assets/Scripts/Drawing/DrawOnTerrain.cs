@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class DrawOnTerrain : MonoBehaviour
@@ -11,6 +12,7 @@ public class DrawOnTerrain : MonoBehaviour
     private GameObject pipeMethods;
     [SerializeField]
     RuntimeGameObjRefs runtimeGameObjRefs;
+    Coroutine kekw;
 
 
     public GameObject TemplateStructure { get; set; }
@@ -60,6 +62,10 @@ public class DrawOnTerrain : MonoBehaviour
                GameEvents.FireBuildingPlaced(this, Structure);
            
             structures.Add(Structure);
+        }
+        else if(data.TemplateStructure != null && !CheckIfLocationIsFree())
+        {
+            kekw=StartCoroutine(ShakeTemplateForXSec());
         }
     }
     private void DrawStructuresConsecutively(object sender, TemplateData data)
@@ -226,6 +232,33 @@ public class DrawOnTerrain : MonoBehaviour
         else
             return !Physics.CheckBox(TemplateStructure.GetComponent<Collider>().bounds.center, TemplateStructure.GetComponent<Collider>().bounds.extents,
                 TemplateStructure.transform.rotation, LayerMasks.Instance.ATTACKABLE);
+    }
+
+    private IEnumerator ShakeTemplateForXSec()
+    {
+        float countdown = 0.66f;
+        Vector3 tempPos = new Vector3(TemplateStructure.transform.position.x, TemplateStructure.transform.position.y, TemplateStructure.transform.position.z);
+        float time = 0;
+
+        while (countdown >= 0)
+        {
+            ShakeTemplate();
+            countdown -= Time.deltaTime;
+            yield return null;
+        }
+        TemplateStructure.transform.position = tempPos;
+
+        void ShakeTemplate()
+        {
+             float speed = 50f;
+             float amount = 0.1f;
+
+            TemplateStructure.transform.position = new Vector3(TemplateStructure.transform.position.x + Mathf.Sin(time * speed) * amount,
+                                                               TemplateStructure.transform.position.y,
+                                                               TemplateStructure.transform.position.z + Mathf.Sin(time * speed) * amount
+                                                               );
+            time += Time.deltaTime;
+        }
     }
 
     private void OnDestroy()
