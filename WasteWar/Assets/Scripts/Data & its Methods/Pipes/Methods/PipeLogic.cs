@@ -7,76 +7,97 @@ public class PipeLogic : MonoBehaviour
     public PrefabTemplates templates;
     public GameObject pipelinesPrefab;
 
+    public List<GameObject> pipeList = new List<GameObject>();
     private List<Pipeline> pipelines;
-    private Dictionary<Pipeline,Coroutine> coroutineDict = new Dictionary<Pipeline,Coroutine>();
+    private Dictionary<Pipeline, Coroutine> coroutineDict = new Dictionary<Pipeline, Coroutine>();
 
     private void Start()
     {
         pipelines = pipelinesPrefab.GetComponent<PipelineStorage>().Pipelines;
         GameEvents.PipePlacedListeners += TraversePipeSegments;
         GameEvents.PipeDeletedListeners += DeletePipeline;
+        GameEvents.LeftClickUpListeners += ResetContinuousPipe;
     }
 
-    public bool CheckIfPipeAligns(Vector3 dir, ActiveSides activeSides)
+    public GameObject ChooseNextPipe(GameObject currPipe, Vector3 mousePos)
     {
-        if (dir == Vector3.forward)
-            return activeSides.IsBottom;
-        else if (dir == Vector3.right)
-            return activeSides.IsLeft;
-        else if (dir == Vector3.back)
-            return activeSides.IsTop;
-        else if (dir == Vector3.left)
-            return activeSides.IsRight;
-        return false;
-    }
-
-    public GameObject CheckNeighbors(GameObject template)
-    {
-        bool isUp = false;
-        bool isRight = false;
-        bool isDown = false;
-        bool isLeft = false;
-
-        Vector3 templateCenter = new Vector3(template.transform.position.x, template.transform.position.y, template.transform.position.z);
-        RaycastHit hit;
-        Ray rayUp = new Ray(templateCenter, Vector3.forward);
-        Ray rayRight = new Ray(templateCenter, Vector3.right);
-        Ray rayDown = new Ray(templateCenter, Vector3.back);
-        Ray rayLeft = new Ray(templateCenter, Vector3.left);
-
-        if (CheckForCondition(rayUp, out hit, Vector3.forward))
-            isUp = true;
-        if (CheckForCondition(rayRight, out hit, Vector3.right))
-            isRight = true;
-        if (CheckForCondition(rayDown, out hit, Vector3.back))
-            isDown = true;
-        if (CheckForCondition(rayLeft, out hit, Vector3.left))
-            isLeft = true;
-
-        if (isUp && isDown)
-            return templates.PipeTopBottom;
-        else if (isLeft && isRight)
-            return templates.PipeLeftRight;
-        else if (isUp && isRight)
-            return templates.PipeTopRight;
-        else if (isDown && isRight)
-            return templates.PipeBottomRight;
-        else if (isDown && isLeft)
-            return templates.PipeBottomLeft;
-        else if (isUp && isLeft)
-            return templates.PipeTopLeft;
-
-        return template;
-
-        bool CheckForCondition(Ray rayDirection, out RaycastHit hit, Vector3 directedUnitVector)
+        pipeList.Add(currPipe);
+        if (pipeList.Count < 3)
         {
-            return
-            Physics.Raycast(rayDirection, out hit, 1f, LayerMasks.Instance.ATTACKABLE)
-            && hit.collider.gameObject.tag.Contains("Pipe")
-            && CheckIfPipeAligns(directedUnitVector, hit.collider.gameObject.GetComponent<PipeState>().activeSides)
-            ? true : false;
+            return null;
+        }
+        else
+        {
+            bool isLeftRight;
+            bool isTopBottom;
+            GameObject previousPipe = pipeList[pipeList.Count - 2];
+            GameObject prevprevPipe = pipeList[pipeList.Count - 3];
+
+
+            Vector3 prevPos = previousPipe.GetComponent<Renderer>().bounds.min;
+            Vector3 prevprevPos = pipeList[pipeList.Count - 3].GetComponent<Renderer>().bounds.min;
+            Vector3 currPos = ObjectSnapper.SnapToGridCell(mousePos);
+
+            if (prevPos.x > prevprevPos.x)
+                isLeftRight = true;
+            else
+                isLeftRight = false;
+            if (prevPos.z > prevprevPos.z)
+                isTopBottom = false;
+            else
+                isTopBottom = true;
+
+
+            //top bottom
+            if (previousPipe.tag.Equals("PipeTB") && currPipe.tag.Equals("PipeLR"))
+            {
+                if (!isTopBottom)
+                {
+                    if (prevPos.x > currPos.x && prevPos.z == currPos.z)
+                        return templates.PipeBottomLeft;
+                    else if (prevPos.x < currPos.x && prevPos.z == currPos.z)
+                        return templates.PipeBottomRight;
+                }
+                else
+                {
+                    if (prevPos.x > currPos.x && prevPos.z == currPos.z)
+                        return templates.PipeTopLeft;
+                    else if (prevPos.x < currPos.x && prevPos.z == currPos.z)
+                        return templates.PipeTopRight;
+                }
+            }
+            //left right
+            else if (previousPipe.tag.Equals("PipeLR") && currPipe.tag.Equals("PipeTB"))
+            {
+                if (!isLeftRight)
+                {
+                    if (prevPos.z > currPos.z && prevPos.x == currPos.x)
+                        return templates.PipeBottomRight;
+                    else if (prevPos.z < currPos.z && prevPos.x == currPos.x)
+                        return templates.PipeTopRight;
+                }
+                else
+                {
+                    if (prevPos.z > currPos.z && prevPos.x == currPos.x)
+                        return templates.PipeBottomLeft;
+                    else if (prevPos.z < currPos.z && prevPos.x == currPos.x)
+                        return templates.PipeTopLeft;
+                }
+            }
+            else
+            {
+                return null;
+            }
+
+            return null;
         }
     }
+
+    private void ResetContinuousPipe(object sender, int i)
+    {
+        pipeList.Clear();
+    }
+
     //TODO Make this work incase the building is placed last, and not a pipe
     private void TraversePipeSegments(object sender, GameObject structure)
     {
@@ -125,7 +146,7 @@ public class PipeLogic : MonoBehaviour
             //foreach (var building in pipeline.buildings)
             //    building.GetComponent<MeshRenderer>().material.color = Color.yellow;
 
-            coroutineDict.Add(pipeline,StartCoroutine(StartResourceTransferFrom(pipeline)));
+            coroutineDict.Add(pipeline, StartCoroutine(StartResourceTransferFrom(pipeline)));
         }
 
         void GeneratePipeline()
@@ -233,7 +254,7 @@ public class PipeLogic : MonoBehaviour
             yield return new WaitForSeconds(giver.GetComponent<BuildingState>().YieldFrequency);
         }
 
-        while (giver.Storage <=0 && pipes.Find(pipe => pipe.GetComponent<PipeState>().Full == true))
+        while (giver.Storage <= 0 && pipes.Find(pipe => pipe.GetComponent<PipeState>().Full == true))
         {
 
             if (pipes[0].GetComponent<PipeState>().Full == true)
@@ -298,27 +319,28 @@ public class PipeLogic : MonoBehaviour
             return dir;
         }
     }
-    
-    private void DeletePipeline(object sender,GameObject deletedPipe)
+
+    private void DeletePipeline(object sender, GameObject deletedPipe)
     {
         //IMPORTANT not a list because for now a pipe can be a part of one pipeline at the same time
-        Pipeline pipelineToDelete=null;
+        Pipeline pipelineToDelete = null;
 
         foreach (var pipeline in pipelines)
         {
             if (pipeline.pipes.Find(pipe => pipe == deletedPipe))
-                pipelineToDelete = pipeline;  
+                pipelineToDelete = pipeline;
         }
         if (pipelineToDelete != null)
-        {   
+        {
             StopCoroutine(coroutineDict[pipelineToDelete]);
             pipelines.Remove(pipelineToDelete);
         }
-}
+    }
 
     private void OnDestroy()
     {
         GameEvents.PipePlacedListeners -= TraversePipeSegments;
         GameEvents.PipeDeletedListeners -= DeletePipeline;
+        GameEvents.LeftClickUpListeners -= ResetContinuousPipe;
     }
 }

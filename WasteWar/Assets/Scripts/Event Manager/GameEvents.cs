@@ -5,7 +5,7 @@ using UnityEngine;
 public static class GameEvents
 {
     public static event EventHandler<TemplateData> TemplateSelectedListeners;
-    public static event EventHandler<int> BuildingRotationListeners;
+    public static event EventHandler<bool> BuildingRotationListeners;
     public static event EventHandler<GameObject> PipePlacedListeners;
     public static event EventHandler<GameObject> PipeDeletedListeners;
     public static event EventHandler<GameObject> BuildingPlacedListeners;
@@ -13,6 +13,8 @@ public static class GameEvents
     public static event EventHandler<string> PipePlaced2Listeners;
 
     public static event EventHandler<TemplateData> LeftClickPressedListeners;
+    public static event EventHandler<int> LeftClickUpListeners;
+    public static event EventHandler<TemplateData> ContinuousLeftClickPressListeners;
     public static event EventHandler<RaycastHit> RightClickPressedListeners;
     public static event EventHandler<Vector3> MouseOverListeners;
 
@@ -22,8 +24,8 @@ public static class GameEvents
 
     public static void FireTemplateSelected(object sender, TemplateData data) =>
                                             TemplateSelectedListeners?.Invoke(sender, data);
-    public static void FireBuildingRotation(object sender, int i) =>
-                                        BuildingRotationListeners?.Invoke(sender, i);
+    public static void FireBuildingRotation(object sender, bool isCurvedModeOn) =>
+                                        BuildingRotationListeners?.Invoke(sender, isCurvedModeOn);
     public static void FirePipePlaced(object sender, GameObject structure) =>
                                       PipePlacedListeners?.Invoke(sender, structure);
     public static void FirePipeDeleted(object sender, GameObject structure) =>
@@ -34,8 +36,12 @@ public static class GameEvents
                                   PipePlaced2Listeners?.Invoke(sender, prefabName);
     public static void FireLeftClickPressed(object sender, TemplateData data) =>
                                             LeftClickPressedListeners?.Invoke(sender, data);
+    public static void FireLeftClickUp(object sender, int i) =>
+                                            LeftClickUpListeners?.Invoke(sender, i);
     public static void FireRightClickPressed(object sender, RaycastHit data) =>
                                             RightClickPressedListeners?.Invoke(sender, data);
+    public static void FireContinuousLeftClickPress(object sender, TemplateData data) =>
+                                             ContinuousLeftClickPressListeners?.Invoke(sender, data);
     public static void FireMouseOver(object sender, Vector3 hitPoint) =>
                                             MouseOverListeners?.Invoke(sender, hitPoint);
     public static void FireNodeUsedUp(object sender, int locationKey) =>
@@ -44,6 +50,7 @@ public static class GameEvents
                                             EraseResourceGameObjectListeners?.Invoke(sender, locationKey);
     public static void FireResourcesGenerated(object sender, Dictionary<int, Resource> resources) =>
                                             ResourcesGeneratedListeners?.Invoke(sender, resources);
+
 }
 
 public class TemplateData

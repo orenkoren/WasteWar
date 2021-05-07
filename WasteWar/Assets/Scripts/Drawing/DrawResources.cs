@@ -8,7 +8,7 @@ public class DrawResources : MonoBehaviour
     private List<GameObject> resourceStructures = new List<GameObject>();
 
 
-    private void Start()
+    private void Awake()
     {
         GameEvents.ResourcesGeneratedListeners += InstantiateResourceGameObjects;
         GameEvents.EraseResourceGameObjectListeners += UnInstantiateStructure;
