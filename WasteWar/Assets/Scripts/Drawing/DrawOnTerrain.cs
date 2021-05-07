@@ -114,6 +114,8 @@ public class DrawOnTerrain : MonoBehaviour
     //necessary because our pipes (the ones made in blender) are not 1x1x1
     private void TemplateInstantiatorForCurvedPipes(GameObject template, Vector3 mousePos)
     {
+        Vector3 size;
+
         //TODO quickhack until the model is fixed (it goes out of bounds of the 1,1,1 cube,model needs to fit the square basically)
         Vector3 size = new Vector3(1f, 1f, 1f);
 
