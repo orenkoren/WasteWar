@@ -16,10 +16,20 @@ public class EnemyPatternSystem : SystemBase
 
     protected override void OnUpdate()
     {
-        if (!shouldSkipAFrame)
-            EntityManager.DestroyEntity(GetSingletonEntity<EnemyPatternSystemEnabler>());
-        shouldSkipAFrame = false;
+        if (shouldSkipAFrame)
+        {
+            shouldSkipAFrame = false;
+            return;
+        }
+        EntityManager.DestroyEntity(GetSingletonEntity<EnemyPatternSystemEnabler>());
         var playerBasePosition = GameConstants.Instance.PlayerBasePosition;
+        int spawnAmount = 0;
+        Entities
+            .WithAll<EnemySpawnerComponent>()
+            .ForEach((in EnemySpawnerComponent spawner) =>
+            {
+                spawnAmount = spawner.spawnAmount;
+            }).Run();
         Random random = new Random(56);
         Entities
           .WithAll<AttackerComponent>()
