@@ -492,16 +492,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 4608435333195003665, guid: e381dc8b855589a40b2a57665100794b,
-        type: 3}
-      propertyPath: minimumDistance
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 4608435333195003665, guid: e381dc8b855589a40b2a57665100794b,
-        type: 3}
-      propertyPath: nodeCountMinMax.x
-      value: 5
-      objectReference: {fileID: 0}
     - target: {fileID: 7838203742187533557, guid: e381dc8b855589a40b2a57665100794b,
         type: 3}
       propertyPath: cam

@@ -43,7 +43,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f64b3b739ca85c54fa2b678495f4a7fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  minimumDistance: 10
+  minimumDistance: 4
   nodeCountMinMax: {x: 5, y: 10}
   distanceFromMapEdgeInPercentile: 0.184
   runtimeGameObjRefs: {fileID: 11400000, guid: c9ed2ca021f60cf4d9cdf92da6c15cdf, type: 2}
