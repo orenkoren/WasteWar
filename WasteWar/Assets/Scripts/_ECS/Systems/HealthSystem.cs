@@ -23,15 +23,15 @@ public class HealthSystem : ComponentSystem
 
         foreach (var entity in entitiesToTakeDamage)
         {
-            if (healthComps.HasComponent(entity))
+            if (EntityManager.HasComponent<HealthComponent>(entity))
             {
-                healthComps[entity] = new HealthComponent
+                HealthComponent healthComp = EntityManager.GetComponentData<HealthComponent>(entity);
+                healthComp.Health--;
+                EntityManager.SetComponentData<HealthComponent>(entity, healthComp);
+                if (healthComp.Health <= 0)
                 {
-                    Health = healthComps[entity].Health - 1,
-                    ShouldDestroyOnDeath = healthComps[entity].ShouldDestroyOnDeath
-                };
-                if (healthComps[entity].Health <= 0)
-                    HandleDeath(entity, healthComps[entity].ShouldDestroyOnDeath);
+                    HandleDeath(entity, healthComp.ShouldDestroyOnDeath);
+                }
             }
         }
         entitiesToTakeDamage.Clear();
@@ -39,7 +39,8 @@ public class HealthSystem : ComponentSystem
 
     private void HandleDeath(Entity entity, bool shouldDestroy)
     {
-        EntityManager.GetComponentObject<HybridEntitySync>(entity).DestroyHybrid();
+        if (EntityManager.HasComponent<HybridEntitySync>(entity))
+            EntityManager.GetComponentObject<HybridEntitySync>(entity).DestroyHybrid();
         if (shouldDestroy)
         {
             EntityManager.DestroyEntity(entity);

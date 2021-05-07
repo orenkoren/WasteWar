@@ -21,7 +21,7 @@ public class TurretSystem : SystemBase
     protected override void OnUpdate()
     {
         CollisionWorld pworld = m_physicsWorld.PhysicsWorld.CollisionWorld;
-        var ecb= m_ecbSystem.CreateCommandBuffer().AsParallelWriter();
+        var ecb = m_ecbSystem.CreateCommandBuffer().AsParallelWriter();
         var deltaTime = Time.DeltaTime;
         Dependency = Entities
           .WithBurst()
@@ -58,62 +58,56 @@ public class TurretSystem : SystemBase
             Filter = CollisionFilter.Default
         };
 
-        var firstTargetAngle = ScanForTargets(turret, translation, rotation, pworld, ref hits, rayInput);
-        if(firstTargetAngle != -999)
+        var firstTargetAngle = ScanForTargets(turret, translation, rotation, pworld, rayInput);
+        if (firstTargetAngle != -999)
         {
             for (float hitAngle = firstTargetAngle; hitAngle <= firstTargetAngle + turret.hitWidth / 2; hitAngle++)
             {
-                NativeList<RaycastHit> oneAngleHits = new NativeList<RaycastHit>(Allocator.Temp);
-                float3 rayDir = math.mul(quaternion.AxisAngle(new float3(0, 1, 0), math.radians(hitAngle)),
-                                    math.forward(rotation.Value));
-                rayInput.End = translation.Value + new float3 { x = 0, y = 2, z = 0 } +
-                                (rayDir * turret.DetectionRadius);
-                pworld.CastRay(rayInput, ref oneAngleHits);
+                NativeList<RaycastHit> oneAngleHits = GetSingleAngleHits(turret, translation, rotation, ref pworld, ref rayInput, hitAngle);
                 UnityEngine.Debug.DrawLine(rayInput.Start, rayInput.End);
-                UnityEngine.Debug.Log("degree" + hitAngle + "amount" + oneAngleHits.Length);
                 hits.AddRange(oneAngleHits);
             }
 
             for (float hitAngle = firstTargetAngle; hitAngle >= firstTargetAngle - turret.hitWidth / 2; hitAngle--)
             {
-                NativeList<RaycastHit> oneAngleHits = new NativeList<RaycastHit>(Allocator.Temp);
-                float3 rayDir = math.mul(quaternion.AxisAngle(new float3(0, 1, 0), math.radians(hitAngle)),
-                                    math.forward(rotation.Value));
-                rayInput.End = translation.Value + new float3 { x = 0, y = 2, z = 0 } +
-                                (rayDir * turret.DetectionRadius);
-                pworld.CastRay(rayInput, ref oneAngleHits);
+                NativeList<RaycastHit> oneAngleHits = GetSingleAngleHits(turret, translation, rotation, ref pworld, ref rayInput, hitAngle);
                 UnityEngine.Debug.DrawLine(rayInput.Start, rayInput.End);
-                UnityEngine.Debug.Log("degree" + hitAngle + "amount" + oneAngleHits.Length);
                 hits.AddRange(oneAngleHits);
             }
         }
-        UnityEngine.Debug.Log(hits.Length);
     }
 
-    private static float ScanForTargets(TurretComponent turret, Translation translation, Rotation rotation, CollisionWorld pworld, ref NativeList<RaycastHit> hits, RaycastInput rayInput)
+    private static NativeList<RaycastHit> GetSingleAngleHits(TurretComponent turret, Translation translation, Rotation rotation, ref CollisionWorld pworld, ref RaycastInput rayInput, float hitAngle)
     {
+        NativeList<RaycastHit> oneAngleHits = new NativeList<RaycastHit>(Allocator.Temp);
+        rayInput = ChangeRayDirection(turret, translation, rotation, rayInput, hitAngle);
+        pworld.CastRay(rayInput, ref oneAngleHits);
+        return oneAngleHits;
+    }
+
+    private static float ScanForTargets(TurretComponent turret, Translation translation, Rotation rotation,
+     CollisionWorld pworld, RaycastInput rayInput)
+    {
+
         for (float angle = 0; angle >= -turret.detectionConeSize; angle--)
         {
-            float3 rayDir = math.mul(quaternion.AxisAngle(new float3(0, 1, 0), math.radians(angle)),
-                                    math.forward(rotation.Value));
-            rayInput.End = translation.Value + new float3 { x = 0, y = 2, z = 0 } +
-                            (rayDir * turret.DetectionRadius);
-            //pworld.CastRay(rayInput, ref hits);
-            //// TODO: math.distance()
-            //if (hits.Length > 0) return angle;
+            rayInput = ChangeRayDirection(turret, translation, rotation, rayInput, angle);
             if (pworld.CastRay(rayInput)) return angle;
         }
         for (float angle = 0; angle <= turret.detectionConeSize; angle++)
         {
-            float3 rayDir = math.mul(quaternion.AxisAngle(new float3(0, 1, 0), math.radians(angle)),
-                                    math.forward(rotation.Value));
-            rayInput.End = translation.Value + new float3 { x = 0, y = 2, z = 0 } +
-                            (rayDir * turret.DetectionRadius);
-            //pworld.CastRay(rayInput, ref hits);
-            //// TODO: math.distance()
-            //if (hits.Length > 0) return angle;
+            rayInput = ChangeRayDirection(turret, translation, rotation, rayInput, angle);
             if (pworld.CastRay(rayInput)) return angle;
         }
         return -999;
+    }
+
+    private static RaycastInput ChangeRayDirection(TurretComponent turret, Translation translation, Rotation rotation, RaycastInput rayInput, float angle)
+    {
+        float3 rayDir = math.mul(quaternion.AxisAngle(new float3(0, 1, 0), math.radians(angle)),
+                                            math.forward(rotation.Value));
+        rayInput.End = translation.Value + new float3 { x = 0, y = 2, z = 0 } +
+                        (rayDir * turret.DetectionRadius);
+        return rayInput;
     }
 }

@@ -268,7 +268,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97d43ceb9bc2509418598310671ca830, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Health: 40000
+  Health: 3
   ShouldDestroyOnDeath: 1
 --- !u!114 &165292783
 MonoBehaviour:
@@ -296,13 +296,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d36c15d1c31159468bb896c4da8ea97, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  DetectionRadius: 50
+  DetectionRadius: 400
   startRange: 5
   HostileMask:
     serializedVersion: 2
     m_Bits: 1024
-  HitsPerSecond: 1
-  coneSize: 20
+  RechargeTime: 1
+  detectionConeSize: 30
+  hitWidth: 10
+  rechargeTimer: 0
 --- !u!1001 &8222285839355978517
 PrefabInstance:
   m_ObjectHideFlags: 0
