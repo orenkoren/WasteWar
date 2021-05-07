@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 2455112625307782034}
   - component: {fileID: 2551646053681093742}
   - component: {fileID: 1990628650391572741}
-  m_Layer: 5
+  m_Layer: 10
   m_Name: Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -111,7 +111,7 @@ GameObject:
   - component: {fileID: 5695831318627792376}
   - component: {fileID: 3002071129868757029}
   - component: {fileID: 4746788728094427337}
-  m_Layer: 5
+  m_Layer: 10
   m_Name: Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -199,7 +199,7 @@ GameObject:
   - component: {fileID: 276000904}
   - component: {fileID: 1104693697522697948}
   - component: {fileID: 8795695038377293706}
-  m_Layer: 9
+  m_Layer: 10
   m_Name: BaseEntity
   m_TagString: Base
   m_Icon: {fileID: 0}
@@ -477,7 +477,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97d43ceb9bc2509418598310671ca830, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Health: 20000
+  Health: 30000
   ShouldDestroyOnDeath: 1
 --- !u!114 &4871030790090088284
 MonoBehaviour:

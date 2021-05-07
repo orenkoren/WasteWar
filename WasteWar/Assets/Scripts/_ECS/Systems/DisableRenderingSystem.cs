@@ -20,6 +20,7 @@ public class DisableRenderingSystem : SystemBase
           .ForEach((ref Entity e) =>
           {
               ecb.AddComponent<DisableRendering>(0, e);
+              // ecb.RemoveComponent<RenderMesh>(0, e);
           }).ScheduleParallel(Dependency);
 
         m_ecbSystem.AddJobHandleForProducer(Dependency);
