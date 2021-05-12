@@ -9,7 +9,6 @@ public class DisabledEntitiesCleanupSystem : SystemBase
 
     protected override void OnCreate()
     {
-        Enabled = false;
         base.OnCreate();
         m_ecbWorld = World.GetOrCreateSystem<EntityCommandBufferSystem>();
     }
