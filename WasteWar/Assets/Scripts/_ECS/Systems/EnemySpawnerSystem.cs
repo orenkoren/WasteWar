@@ -14,24 +14,8 @@ public class EnemySpawnerSystem : SystemBase
     {
         base.OnCreate();
         m_ecbWorld = World.GetOrCreateSystem<EntityCommandBufferSystem>();
+        RequireSingletonForUpdate<EnemySpawnerSystemEnabler>();
     }
-
-    protected override void OnStartRunning()
-    {
-        base.OnStartRunning();
-        PopulateFields();
-        EntityCommandBuffer.ParallelWriter buffer = m_ecbWorld.CreateCommandBuffer().AsParallelWriter();
-        var spawnJob = new SpawnEntitiesJob
-        {
-            ecb = buffer,
-            entity = spawner.prefabEnemy,
-        };
-
-        spawnJob.Schedule(spawner.spawnAmount, 128).Complete();
-
-        EntityManager.CreateEntity(typeof(EnemyPatternSystemEnabler));
-    }
-
     private void PopulateFields()
     {
         Entities
@@ -56,16 +40,18 @@ public class EnemySpawnerSystem : SystemBase
 
     protected override void OnUpdate()
     {
-        var buffer = m_ecbWorld.CreateCommandBuffer().AsParallelWriter();
+        m_ecbWorld = World.GetOrCreateSystem<EntityCommandBufferSystem>();
+        PopulateFields();
+        EntityCommandBuffer.ParallelWriter buffer = m_ecbWorld.CreateCommandBuffer().AsParallelWriter();
+        var spawnJob = new SpawnEntitiesJob
+        {
+            ecb = buffer,
+            entity = spawner.prefabEnemy,
+        };
 
-        Dependency = Entities
-            .WithAll<Disabled>()
-            .ForEach((int entityInQueryIndex, in Entity e) =>
-            {
-                buffer.DestroyEntity(entityInQueryIndex, e);
-            }).ScheduleParallel(Dependency);
+        spawnJob.Schedule(spawner.spawnAmount, 128).Complete();
 
-        m_ecbWorld.AddJobHandleForProducer(Dependency);
-
+        EntityManager.CreateEntity(typeof(EnemyPatternSystemEnabler));
+        EntityManager.DestroyEntity(GetSingletonEntity<EnemySpawnerSystemEnabler>());
     }
 }

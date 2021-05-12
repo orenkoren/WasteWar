@@ -34,6 +34,7 @@ public class EnemyPatternSystem : SystemBase
             SpawnZAttack(playerBasePosition, random);
         if (spawnerComponent.pattern == SpawnPattern.Square)
             SpawnSquare(playerBasePosition, random);
+        shouldSkipAFrame = true;
     }
 
     private void SpawnZAttack(Translation playerBasePosition, Random random)
