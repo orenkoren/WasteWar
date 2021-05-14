@@ -10,6 +10,7 @@ public class TurretSystem : SystemBase
 {
     private BuildPhysicsWorld m_physicsWorld;
     private EntityCommandBufferSystem m_ecbSystem;
+    public NativeList<Entity> entitiesToSpawnBeams = new NativeList<Entity>(Allocator.Persistent);
 
     protected override void OnStartRunning()
     {
@@ -22,12 +23,13 @@ public class TurretSystem : SystemBase
     {
         CollisionWorld pworld = m_physicsWorld.PhysicsWorld.CollisionWorld;
         var ecb = m_ecbSystem.CreateCommandBuffer().AsParallelWriter();
+        var entitiesToSpawnBeamsThisFrame = entitiesToSpawnBeams.AsParallelWriter();
         var deltaTime = Time.DeltaTime;
         Dependency = Entities
           .WithBurst()
           .WithAll<TurretComponent>()
           .WithReadOnly(pworld)
-          .ForEach((ref TurretComponent turret, in Translation translation, in Rotation rotation) =>
+          .ForEach((ref TurretComponent turret, ref Entity e, in Translation translation, in Rotation rotation) =>
           {
               turret.rechargeTimer += deltaTime;
               if (turret.rechargeTimer >= turret.RechargeTime)
@@ -35,6 +37,8 @@ public class TurretSystem : SystemBase
                   turret.rechargeTimer = 0;
                   NativeList<RaycastHit> hits = new NativeList<RaycastHit>(Allocator.Temp);
                   PerformRaycast(ref turret, translation, rotation, pworld, ref hits);
+                  if (hits.Length > 0)
+                      entitiesToSpawnBeamsThisFrame.AddNoResize(e);
                   foreach (var hit in hits)
                   {
                       // add to a native list and consume in different job?
@@ -109,5 +113,11 @@ public class TurretSystem : SystemBase
         rayInput.End = translation.Value + new float3 { x = 0, y = 2, z = 0 } +
                         (rayDir * turret.DetectionRadius);
         return rayInput;
+    }
+
+    protected override void OnDestroy()
+    {
+        base.OnDestroy();
+        entitiesToSpawnBeams.Dispose();
     }
 }
