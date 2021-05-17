@@ -10,6 +10,8 @@ public struct TurretComponent : IComponentData
     public int RechargeTime;
     public int detectionConeSize;
     public int hitWidth;
+    public Entity projectile;
+    public float projectileSpeed;
     [HideInInspector]
     public float rechargeTimer;
 }
