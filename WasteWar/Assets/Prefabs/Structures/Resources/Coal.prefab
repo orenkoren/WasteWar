@@ -113,7 +113,6 @@ GameObject:
   - component: {fileID: 5245758419062584448}
   - component: {fileID: 4042769509757165475}
   - component: {fileID: 3806103125233403342}
-  - component: {fileID: 1735485825706265999}
   - component: {fileID: 7128438377814917513}
   - component: {fileID: 8444832429983758214}
   - component: {fileID: 3522886112850277917}
@@ -202,7 +201,7 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 0.99, y: 1, z: 0.99}
+  m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &3806103125233403342
 MonoBehaviour:
@@ -217,22 +216,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ConversionMode: 1
---- !u!114 &1735485825706265999
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4384423777135194493}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e85a12e7b7e16a04185fdfce87aa8fac, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  CubeTextComponent: {fileID: 3314469697588261156}
-  _storage: 0
-  _yieldFrequency: 1.1
-  key: 13893695
 --- !u!114 &7128438377814917513
 MonoBehaviour:
   m_ObjectHideFlags: 0

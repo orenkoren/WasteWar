@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 7227376476317366090}
   - component: {fileID: 7939720095085284829}
   - component: {fileID: 5295376505792398670}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: PipeLRTemplate
   m_TagString: PipeLRTemplate
   m_Icon: {fileID: 0}

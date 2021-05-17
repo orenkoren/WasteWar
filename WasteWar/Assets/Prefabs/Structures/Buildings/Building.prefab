@@ -14,7 +14,6 @@ GameObject:
   - component: {fileID: 9083326559213360649}
   - component: {fileID: 6384205570660084388}
   - component: {fileID: 5084789694586623008}
-  - component: {fileID: 4455243778859924735}
   - component: {fileID: -4097587755481093019}
   - component: {fileID: -6418704722039826234}
   - component: {fileID: -9127977813190125748}
@@ -132,24 +131,6 @@ MonoBehaviour:
   CubeTextComponent: {fileID: 3593971961412784105}
   _storage: 0
   _yieldFrequency: 1.1
---- !u!114 &4455243778859924735
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1578355824271295957}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5fea29bb7c508c244a1f805a5fd3fc4d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  outlineMode: 0
-  outlineColor: {r: 0.0044054748, g: 0.31132078, b: 0.06256478, a: 1}
-  outlineWidth: 1
-  precomputeOutline: 0
-  bakeKeys: []
-  bakeValues: []
 --- !u!114 &-4097587755481093019
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -393,7 +374,7 @@ GameObject:
   - component: {fileID: 3786655649960210212}
   - component: {fileID: 4625628868615119893}
   - component: {fileID: 1980999587481883493}
-  m_Layer: 5
+  m_Layer: 10
   m_Name: Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -492,7 +473,7 @@ GameObject:
   - component: {fileID: 4462703723367145223}
   - component: {fileID: 2464818264340796857}
   - component: {fileID: 3593971961412784105}
-  m_Layer: 5
+  m_Layer: 10
   m_Name: Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}

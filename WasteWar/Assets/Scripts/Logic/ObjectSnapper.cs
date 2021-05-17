@@ -14,7 +14,7 @@ public static class ObjectSnapper
     public static Vector3 SnapToGridCell(Vector3 currPos,Vector3 objectSize)
     {
         float x = Mathf.Floor(currPos.x)+ objectSize.x / 2;
-        float y = objectSize.y / 2;
+        float y = 0 + objectSize.y / 2;
         float z = Mathf.Floor(currPos.z) + objectSize.z / 2;
 
         return new Vector3(x, y, z);

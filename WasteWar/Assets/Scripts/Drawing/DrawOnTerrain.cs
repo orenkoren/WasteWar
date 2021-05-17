@@ -111,7 +111,7 @@ public class DrawOnTerrain : MonoBehaviour
                             ObjectSnapper.SnapToGridCell(mousePos),
                             template.transform.rotation);
         TemplateStructure.layer = LayerMasks.Instance.IGNORE_RAYCAST_LAYER;
-        TemplateStructureSize = TemplateStructure.GetComponent<Renderer>().bounds.size;
+        TemplateStructureSize = TemplateStructure.GetComponent<Collider>().bounds.size;
     }
     //necessary because our pipes (the ones made in blender) are not 1x1x1
     private void TemplateInstantiatorForCurvedPipes(GameObject template, Vector3 mousePos)
@@ -135,7 +135,7 @@ public class DrawOnTerrain : MonoBehaviour
         if (template.tag.Contains("PipeB") || (template.tag.Equals("PipeTL") || template.tag.Equals("PipeTR")))
             size = new Vector3(1f, 1f, 1f);
         else
-            size = template.GetComponent<Renderer>().bounds.size;
+            size = template.GetComponent<Collider>().bounds.size;
 
         template.layer = LayerMasks.Instance.ATTACKABLE_LAYER;
 
@@ -152,7 +152,7 @@ public class DrawOnTerrain : MonoBehaviour
         if (template.tag.Contains("Pipe") && TemplateStructure.tag.Length > 4)
             size = new Vector3(1f, 1f, 1f);
         else
-            size = template.GetComponent<Renderer>().bounds.size;
+            size = template.GetComponent<Collider>().bounds.size;
 
         template.layer = LayerMasks.Instance.ATTACKABLE_LAYER;
 
@@ -199,12 +199,13 @@ public class DrawOnTerrain : MonoBehaviour
 
     private void SetTemplateStructureColor(Color color)
     {
+        if(TemplateStructure.GetComponent<MeshRenderer>() !=null)
         TemplateStructure.GetComponent<MeshRenderer>().material.color = color;
     }
 
     private void SetTemplateStructurePos(Vector3 pos)
     {
-        TemplateStructure.transform.position = ObjectSnapper.SnapToGridCell(pos, GridConstants.Instance.FloatCellSize(), TemplateStructureSize);
+        TemplateStructure.transform.position = ObjectSnapper.SnapToGridCell(pos, TemplateStructureSize);
     }
 
     private bool CheckIfLocationIsFree()
