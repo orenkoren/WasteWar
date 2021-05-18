@@ -12,21 +12,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8aaa02b4d9cffe040a9057294d5ecb49, type: 3}
   m_Name: PrefabTemplates
   m_EditorClassIdentifier: 
-  Building: {fileID: 7302597726097407234, guid: 04ceb1762ae88294f80a5747cd4b8a5f,
+  Building: {fileID: 7493879914296332116, guid: 76322997e983cff45949ac6033e4e3ad,
     type: 3}
-  Turret: {fileID: 1221063325293802509, guid: 00874071ff0b09f4fa30e98f9d912ab1, type: 3}
-  Wall: {fileID: 7702579826222558135, guid: dc941365e3e466e4aa67a241788316ea, type: 3}
+  Turret: {fileID: 3624576728779246166, guid: 9d3eb73d888528a41833e90c45063090, type: 3}
+  Wall: {fileID: 8462921255549495720, guid: 93f26afb81ac2c841853f2ca6e0708a8, type: 3}
   PowerPole: {fileID: 388309288318050291, guid: 9c6ebd8a16c6d924b9792f35628a34e8,
     type: 3}
-  PipeTopBottom: {fileID: 7889698450338574688, guid: ab23f6d183fcfa54b961f0c5f044d668,
+  PipeTopBottom: {fileID: 1488039502002584358, guid: f6e2eb0a91389184aa8c01d14ce08577,
     type: 3}
-  PipeLeftRight: {fileID: 3585581784430820232, guid: 416bc490f4bad234190c960eac869b87,
+  PipeLeftRight: {fileID: 6933850828348262417, guid: a485646b7b5978744b9cac2844a8c8cc,
     type: 3}
-  PipeTopRight: {fileID: 2255172132261739711, guid: c9cb9fccac318584a98f3e60999216bf,
+  PipeTopRight: {fileID: 3079938522194387376, guid: 73c6a6603e9b0ab4b9bbc43e4e5c605c,
     type: 3}
-  PipeBottomRight: {fileID: 4079820264603960820, guid: 7f0a3b926468d3f458d093ed17f7675b,
+  PipeBottomRight: {fileID: 8944007687634457051, guid: 88244293c79f0ba449f66e4f169c6499,
     type: 3}
-  PipeBottomLeft: {fileID: 3630566671884692310, guid: 227ac0040daf80448bc10009bbd5bbcc,
+  PipeBottomLeft: {fileID: 788859222579231650, guid: ea7d9d8ac14ec6343b9df8f7eb18a887,
     type: 3}
-  PipeTopLeft: {fileID: 4813391419510438643, guid: 1274a205296e1d44b98e8018df2c7138,
+  PipeTopLeft: {fileID: 5594748016852419262, guid: 09cab1b201da55b4aa1adcf3a981f6b9,
     type: 3}

@@ -7,6 +7,8 @@ public class MouseClickManager : MonoBehaviour
     [SerializeField]
     RuntimeGameObjRefs runtimeGameObjRefs;
 
+
+    private bool isCursorLocked = false;
     private Terrain terrain;
     private RaycastHit hit;
     private Ray ray;
@@ -52,14 +54,32 @@ public class MouseClickManager : MonoBehaviour
             && MathUtils.CursorIsWithinBounds(hit.point, terrainSize)
            )
         {
-            templateData.MousePos = hit.point;
+            if (!isCursorLocked)
+            {
+                isCursorLocked = true;
+                templateData.MousePos = hit.point;
+            }
+            else
+            {
+                if (Mathf.Abs(hit.point.x - templateData.MousePos.x) < 2 && templateData.TemplateStructure.CompareTag("PipeTBTemplate"))
+                {
+                    templateData.MousePos = new Vector3(templateData.MousePos.x, hit.point.y, hit.point.z);
+                }
+                else if (Mathf.Abs(hit.point.z - templateData.MousePos.z) < 2 && templateData.TemplateStructure.CompareTag("PipeLRTemplate"))
+                {
+                    templateData.MousePos = new Vector3(hit.point.x, hit.point.y, templateData.MousePos.z);
+                }
+                else
+                    templateData.MousePos = hit.point;
+            }
+
             GameEvents.FireContinuousLeftClickPress(this, templateData);
         }
 
         if (Input.GetMouseButtonUp(0)
             && templateData.TemplateStructure != null
             && templateData.TemplateStructure.tag.Contains("Pipe"))
-            GameEvents.FireLeftClickUp(this, 5);
+            isCursorLocked = false;
     }
 
     private void SetTemplateData(object sender, TemplateData data)

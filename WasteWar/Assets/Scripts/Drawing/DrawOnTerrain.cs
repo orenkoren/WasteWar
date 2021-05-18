@@ -44,9 +44,9 @@ public class DrawOnTerrain : MonoBehaviour
     public void DrawTemplateStructureAt(Vector3 loc)
     {
         if (CheckIfLocationIsFree())
-            SetTemplateStructureColor(Color.green);
+            TemplateStructure.GetComponent<PaintModel>().Paint("placement", true);
         else
-            SetTemplateStructureColor(Color.red);
+            TemplateStructure.GetComponent<PaintModel>().Paint("placement", false);
         SetTemplateStructurePos(loc);
     }
 
@@ -55,7 +55,7 @@ public class DrawOnTerrain : MonoBehaviour
     {
         if (data.TemplateStructure != null && CheckIfLocationIsFree())
         {
-            GameObject Structure= PlaceablePrefabInstantiator(placeablePrefabs.GetPlaceablePrefab(TemplateStructure), data.MousePos);
+            GameObject Structure= PlaceablePrefabInstantiator(placeablePrefabs.GetPlaceablePrefab(TemplateStructure), data.MousePos,TemplateStructure.transform.rotation);
             if (Structure.CompareTag("Building"))
                GameEvents.FireBuildingPlaced(this, Structure);
            
@@ -71,17 +71,6 @@ public class DrawOnTerrain : MonoBehaviour
             GameObject Structure = PlaceablePrefabInstantiator(placeablePrefabs.GetPlaceablePrefab(TemplateStructure), data.MousePos);
         
             structures.Add(Structure);
-
-            GameObject curvedPipeTemplate = pipeMethods.GetComponent<PipeLogic>().ChooseNextPipe(structures[structures.Count - 1], data.MousePos);
-
-            if (curvedPipeTemplate != null)
-            {
-                //TODO refactor for performance (always going to the end of the list)
-                Vector3 prevPos = structures[structures.Count - 2].transform.position;
-                Destroy(structures[structures.Count - 2]);
-                structures[structures.Count - 2] = PlaceablePrefabInstantiatorWithKnownPos(placeablePrefabs.GetPlaceablePrefab(curvedPipeTemplate), prevPos);
-                pipeMethods.GetComponent<PipeLogic>().pipeList[pipeMethods.GetComponent<PipeLogic>().pipeList.Count - 2] = structures[structures.Count - 2];
-            }
 
             GameEvents.FirePipePlaced(this, Structure);  
         }
@@ -111,49 +100,30 @@ public class DrawOnTerrain : MonoBehaviour
                             ObjectSnapper.SnapToGridCell(mousePos),
                             template.transform.rotation);
         TemplateStructure.layer = LayerMasks.Instance.IGNORE_RAYCAST_LAYER;
-        TemplateStructureSize = TemplateStructure.GetComponent<Renderer>().bounds.size;
-    }
-    //necessary because our pipes (the ones made in blender) are not 1x1x1
-    private void TemplateInstantiatorForCurvedPipes(GameObject template, Vector3 mousePos)
-    {
-        //TODO quickhack until the model is fixed (it goes out of bounds of the 1,1,1 cube,model needs to fit the square basically)
-        Vector3 size = new Vector3(1f, 1f, 1f);
-
-        Destroy(TemplateStructure);
-        TemplateStructure = Instantiate(template,
-                            ObjectSnapper.SnapToGridCell(mousePos,size),
-                            template.transform.rotation);
-        TemplateStructure.layer = LayerMasks.Instance.IGNORE_RAYCAST_LAYER;
-        TemplateStructureSize = TemplateStructure.GetComponent<Renderer>().bounds.size;
+        TemplateStructureSize = TemplateStructure.GetComponent<BoxCollider>().size;
     }
 
     private GameObject PlaceablePrefabInstantiator(GameObject template, Vector3 mousePos)
     {
-        Vector3 size;
-
-        //TODO quickhack until the model is fixed (it goes out of bounds of the 1,1,1 cube,model needs to fit the square basically)
-        if (template.tag.Contains("PipeB") || (template.tag.Equals("PipeTL") || template.tag.Equals("PipeTR")))
-            size = new Vector3(1f, 1f, 1f);
-        else
-            size = template.GetComponent<Renderer>().bounds.size;
 
         template.layer = LayerMasks.Instance.ATTACKABLE_LAYER;
 
         return Instantiate(template,
-                           ObjectSnapper.SnapToGridCell(mousePos, size),
+                           ObjectSnapper.SnapToGridCell(mousePos, template.GetComponent<BoxCollider>().size),
                            template.transform.rotation);
+    }
+    private GameObject PlaceablePrefabInstantiator(GameObject template, Vector3 mousePos, Quaternion rotation)
+    {
+
+        template.layer = LayerMasks.Instance.ATTACKABLE_LAYER;
+
+        return Instantiate(template,
+                           ObjectSnapper.SnapToGridCell(mousePos, template.GetComponent<BoxCollider>().size),
+                           rotation);
     }
 
     private GameObject PlaceablePrefabInstantiatorWithKnownPos(GameObject template, Vector3 pos)
     {
-        Vector3 size;
-
-        //TODO quickhack until the model is fixed (it goes out of bounds of the 1,1,1 cube,model needs to fit the square basically)
-        if (template.tag.Contains("Pipe") && TemplateStructure.tag.Length > 4)
-            size = new Vector3(1f, 1f, 1f);
-        else
-            size = template.GetComponent<Renderer>().bounds.size;
-
         template.layer = LayerMasks.Instance.ATTACKABLE_LAYER;
 
         return Instantiate(template,
@@ -179,32 +149,30 @@ public class DrawOnTerrain : MonoBehaviour
                 switch (rotationState)
                 {
                     case 0:
-                        TemplateInstantiatorForCurvedPipes(pipeMethods.GetComponent<PipeLogic>().templates.PipeTopLeft, pos);
+                        TemplateInstantiator(pipeMethods.GetComponent<PipeLogic>().templates.PipeTopLeft, pos);
                         break;
                     case 1:
-                        TemplateInstantiatorForCurvedPipes(pipeMethods.GetComponent<PipeLogic>().templates.PipeTopRight, pos);
+                        TemplateInstantiator(pipeMethods.GetComponent<PipeLogic>().templates.PipeTopRight, pos);
                         break;
                     case 2:
-                        TemplateInstantiatorForCurvedPipes(pipeMethods.GetComponent<PipeLogic>().templates.PipeBottomRight, pos);
+                        TemplateInstantiator(pipeMethods.GetComponent<PipeLogic>().templates.PipeBottomRight, pos);
                         break;
                     case 3:
-                        TemplateInstantiatorForCurvedPipes(pipeMethods.GetComponent<PipeLogic>().templates.PipeBottomLeft, pos);
+                        TemplateInstantiator(pipeMethods.GetComponent<PipeLogic>().templates.PipeBottomLeft, pos);
                         break;
                 }
                 rotationState = (rotationState + 1) % 4;         
             }
             GameEvents.FirePipePlaced2(this, TemplateStructure.tag);
         }
-    }
-
-    private void SetTemplateStructureColor(Color color)
-    {
-        TemplateStructure.GetComponent<MeshRenderer>().material.color = color;
+        else if (TemplateStructure.tag.Contains("Wall")) {
+            TemplateStructure.transform.Rotate(new Vector3(0f, 90f,0f));
+        }
     }
 
     private void SetTemplateStructurePos(Vector3 pos)
     {
-        TemplateStructure.transform.position = ObjectSnapper.SnapToGridCell(pos, GridConstants.Instance.FloatCellSize(), TemplateStructureSize);
+        TemplateStructure.transform.position = ObjectSnapper.SnapToGridCell(pos, TemplateStructureSize);
     }
 
     private bool CheckIfLocationIsFree()
@@ -223,7 +191,10 @@ public class DrawOnTerrain : MonoBehaviour
             Ray rayTwo = new Ray(upperBound, Vector3.down);
 
             return Physics.Raycast(rayOne, CameraConstants.Instance.RAYCAST_DISTANCE, LayerMasks.Instance.RESOURCE) &&
-                   Physics.Raycast(rayTwo, CameraConstants.Instance.RAYCAST_DISTANCE, LayerMasks.Instance.RESOURCE);
+                   Physics.Raycast(rayTwo, CameraConstants.Instance.RAYCAST_DISTANCE, LayerMasks.Instance.RESOURCE) &&
+                   !Physics.CheckBox(TemplateStructure.GetComponent<Collider>().bounds.center, TemplateStructure.GetComponent<Collider>().bounds.extents,
+                   TemplateStructure.transform.rotation, LayerMasks.Instance.ATTACKABLE)
+                   ;
         }
         else
             return !Physics.CheckBox(TemplateStructure.GetComponent<Collider>().bounds.center, TemplateStructure.GetComponent<Collider>().bounds.extents,
