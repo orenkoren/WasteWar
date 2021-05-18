@@ -10,6 +10,6 @@ public class Coal : Resource
 {
     public Coal()
     {
-        Count = Random.Range(1,10);
+        Count = RESOURCE_COUNT;
     }
 }

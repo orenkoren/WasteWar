@@ -7,7 +7,6 @@ public class PipeLogic : MonoBehaviour
     public PrefabTemplates templates;
     public GameObject pipelinesPrefab;
 
-    public List<GameObject> pipeList = new List<GameObject>();
     private List<Pipeline> pipelines;
     private Dictionary<Pipeline, Coroutine> coroutineDict = new Dictionary<Pipeline, Coroutine>();
 
@@ -16,88 +15,7 @@ public class PipeLogic : MonoBehaviour
         pipelines = pipelinesPrefab.GetComponent<PipelineStorage>().Pipelines;
         GameEvents.PipePlacedListeners += TraversePipeSegments;
         GameEvents.PipeDeletedListeners += DeletePipeline;
-        GameEvents.LeftClickUpListeners += ResetContinuousPipe;
     }
-
-    public GameObject ChooseNextPipe(GameObject currPipe, Vector3 mousePos)
-    {
-        pipeList.Add(currPipe);
-        if (pipeList.Count < 3)
-        {
-            return null;
-        }
-        else
-        {
-            bool isLeftRight;
-            bool isTopBottom;
-            GameObject previousPipe = pipeList[pipeList.Count - 2];
-            GameObject prevprevPipe = pipeList[pipeList.Count - 3];
-
-
-            Vector3 prevPos = previousPipe.GetComponent<Renderer>().bounds.min;
-            Vector3 prevprevPos = pipeList[pipeList.Count - 3].GetComponent<Renderer>().bounds.min;
-            Vector3 currPos = ObjectSnapper.SnapToGridCell(mousePos);
-
-            if (prevPos.x > prevprevPos.x)
-                isLeftRight = true;
-            else
-                isLeftRight = false;
-            if (prevPos.z > prevprevPos.z)
-                isTopBottom = false;
-            else
-                isTopBottom = true;
-
-
-            //top bottom
-            if (previousPipe.tag.Equals("PipeTB") && currPipe.tag.Equals("PipeLR"))
-            {
-                if (!isTopBottom)
-                {
-                    if (prevPos.x > currPos.x && prevPos.z == currPos.z)
-                        return templates.PipeBottomLeft;
-                    else if (prevPos.x < currPos.x && prevPos.z == currPos.z)
-                        return templates.PipeBottomRight;
-                }
-                else
-                {
-                    if (prevPos.x > currPos.x && prevPos.z == currPos.z)
-                        return templates.PipeTopLeft;
-                    else if (prevPos.x < currPos.x && prevPos.z == currPos.z)
-                        return templates.PipeTopRight;
-                }
-            }
-            //left right
-            else if (previousPipe.tag.Equals("PipeLR") && currPipe.tag.Equals("PipeTB"))
-            {
-                if (!isLeftRight)
-                {
-                    if (prevPos.z > currPos.z && prevPos.x == currPos.x)
-                        return templates.PipeBottomRight;
-                    else if (prevPos.z < currPos.z && prevPos.x == currPos.x)
-                        return templates.PipeTopRight;
-                }
-                else
-                {
-                    if (prevPos.z > currPos.z && prevPos.x == currPos.x)
-                        return templates.PipeBottomLeft;
-                    else if (prevPos.z < currPos.z && prevPos.x == currPos.x)
-                        return templates.PipeTopLeft;
-                }
-            }
-            else
-            {
-                return null;
-            }
-
-            return null;
-        }
-    }
-
-    private void ResetContinuousPipe(object sender, int i)
-    {
-        pipeList.Clear();
-    }
-
     //TODO Make this work incase the building is placed last, and not a pipe
     private void TraversePipeSegments(object sender, GameObject structure)
     {
@@ -139,13 +57,6 @@ public class PipeLogic : MonoBehaviour
         if (CheckIfStructuresSatisfyPipeline())
         {
             GeneratePipeline();
-
-            //DEBUGOUTPUT
-            //foreach (var pipe in pipeline.pipes)
-            //    pipe.GetComponent<MeshRenderer>().material.color = Color.yellow;
-            //foreach (var building in pipeline.buildings)
-            //    building.GetComponent<MeshRenderer>().material.color = Color.yellow;
-
             coroutineDict.Add(pipeline, StartCoroutine(StartResourceTransferFrom(pipeline)));
         }
 
@@ -216,20 +127,19 @@ public class PipeLogic : MonoBehaviour
             if (firstRun)
             {
                 pipes[pipes.Count - 1].GetComponent<PipeState>().Full = true;
-                pipes[pipes.Count - 1].GetComponent<MeshRenderer>().material.color = Color.grey;
+                pipes[pipes.Count - 1].GetComponent<PaintModel>().Paint("resourceTransmission");
                 giver.Storage--;
                 giver.CubeTextComponent.text = giver.Storage.ToString();
 
                 firstRun = false;
             }
-
             else
             {
 
                 if (pipes[0].GetComponent<PipeState>().Full == true)
                 {
                     pipes[0].GetComponent<PipeState>().Full = false;
-                    pipes[0].GetComponent<MeshRenderer>().material.color = Color.white;
+                    pipes[0].GetComponent<PaintModel>().Paint("resourceTransmission");
                     taker.Storage++;
                     taker.CubeTextComponent.text = taker.Storage.ToString();
                 }
@@ -241,13 +151,13 @@ public class PipeLogic : MonoBehaviour
                         pipes[i].GetComponent<PipeState>().Full = true;
                         pipes[i + 1].GetComponent<PipeState>().Full = false;
 
-                        pipes[i].GetComponent<MeshRenderer>().material.color = Color.grey;
-                        pipes[i + 1].GetComponent<MeshRenderer>().material.color = Color.white;
+                        pipes[i].GetComponent<PaintModel>().Paint("resourceTransmission");
+                        pipes[i + 1].GetComponent<PaintModel>().Paint("resourceTransmission");
                     }
                 }
 
                 pipes[pipes.Count - 1].GetComponent<PipeState>().Full = true;
-                pipes[pipes.Count - 1].GetComponent<MeshRenderer>().material.color = Color.grey;
+                pipes[pipes.Count - 1].GetComponent<PaintModel>().Paint("resourceTransmission");
                 giver.Storage--;
                 giver.CubeTextComponent.text = giver.Storage.ToString();
             }
@@ -260,7 +170,7 @@ public class PipeLogic : MonoBehaviour
             if (pipes[0].GetComponent<PipeState>().Full == true)
             {
                 pipes[0].GetComponent<PipeState>().Full = false;
-                pipes[0].GetComponent<MeshRenderer>().material.color = Color.white;
+                pipes[0].GetComponent<PaintModel>().Paint("resourceTransmission");
                 taker.Storage++;
                 taker.CubeTextComponent.text = taker.Storage.ToString();
             }
@@ -272,16 +182,19 @@ public class PipeLogic : MonoBehaviour
                     pipes[i].GetComponent<PipeState>().Full = true;
                     pipes[i + 1].GetComponent<PipeState>().Full = false;
 
-                    pipes[i].GetComponent<MeshRenderer>().material.color = Color.grey;
-                    pipes[i + 1].GetComponent<MeshRenderer>().material.color = Color.white;
+                    pipes[i].GetComponent<PaintModel>().Paint("resourceTransmission");
+                    pipes[i + 1].GetComponent<PaintModel>().Paint("resourceTransmission");
                 }
             }
             yield return new WaitForSeconds(giver.GetComponent<BuildingState>().YieldFrequency);
         }
     }
 
-    private GameObject NextPipeSegment(GameObject pipe, ref Vector3 dir, ref GameObject lastPipeBeforeBuilding)
+    private GameObject NextPipeSegment(GameObject pipeParent, ref Vector3 dir, ref GameObject lastPipeBeforeBuilding)
     {
+        var temp =pipeParent.layer;
+        pipeParent.layer = LayerMasks.Instance.IGNORE_RAYCAST;
+        Transform pipe = pipeParent.transform.GetChild(1);
         Vector3 pipeCenter = new Vector3(pipe.transform.position.x, pipe.transform.position.y, pipe.transform.position.z);
         RaycastHit hit;
         Ray ray = new Ray(pipeCenter, dir);
@@ -292,16 +205,20 @@ public class PipeLogic : MonoBehaviour
             if (hit.collider.gameObject.tag.Contains("Pipe"))
             {
                 dir = GetNextDirection(dir);
+                pipeParent.layer=temp;
                 return hit.collider.gameObject;
             }
             else if (hit.collider.gameObject.CompareTag("Building") || (hit.collider.gameObject.CompareTag("Base")))
             {
                 if (hit.collider.gameObject.CompareTag("Building"))
-                    lastPipeBeforeBuilding = pipe;
+                    lastPipeBeforeBuilding = pipeParent;
+                pipeParent.layer = temp;
                 return hit.collider.gameObject;
             }
+            pipeParent.layer = temp;
             return null;
         }
+        pipeParent.layer = temp;
         return null;
 
         Vector3 GetNextDirection(Vector3 dir)
@@ -341,6 +258,5 @@ public class PipeLogic : MonoBehaviour
     {
         GameEvents.PipePlacedListeners -= TraversePipeSegments;
         GameEvents.PipeDeletedListeners -= DeletePipeline;
-        GameEvents.LeftClickUpListeners -= ResetContinuousPipe;
     }
 }

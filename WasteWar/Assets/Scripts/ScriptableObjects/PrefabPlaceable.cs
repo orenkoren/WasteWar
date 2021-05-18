@@ -18,6 +18,8 @@ public class PrefabPlaceable : ScriptableObject
     {
         if (template.CompareTag("BuildingTemplate"))
             return Building;
+        else if (template.CompareTag("Turret0Template"))
+            return Turret;
         else if (template.CompareTag("WallTemplate"))
             return Wall;
         else if (template.CompareTag("PowerPoleTemplate"))
