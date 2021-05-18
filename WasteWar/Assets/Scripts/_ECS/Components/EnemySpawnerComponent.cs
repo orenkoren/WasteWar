@@ -14,5 +14,6 @@ public enum SpawnPattern
     Asterix,
     Circle,
     Zattack,
-    Square
+    Square,
+    Focused
 }

@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Building: {fileID: 5535472665153620221, guid: 04f4d7a830a3f7248b66defa9912805f,
     type: 3}
-  Turret: {fileID: 1221063325293802509, guid: 00874071ff0b09f4fa30e98f9d912ab1, type: 3}
+  Turret: {fileID: 9176441896630927025, guid: bc5844200efc4794c83431975f864bc2, type: 3}
   Wall: {fileID: 8396157017129060394, guid: 7f8fe723e5adebe47b62c44491cb3556, type: 3}
   PowerPole: {fileID: 8715518470838514847, guid: 70de765d5634d5c47a9b207e48a6c786,
     type: 3}

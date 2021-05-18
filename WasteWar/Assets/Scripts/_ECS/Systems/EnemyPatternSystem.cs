@@ -36,6 +36,8 @@ public class EnemyPatternSystem : SystemBase
             SpawnSquare(playerBasePosition, random);
         if (spawnerComponent.pattern == SpawnPattern.Asterix)
             SpawnAsterix(playerBasePosition, random);
+        if (spawnerComponent.pattern == SpawnPattern.Focused)
+            SpawnFocused(playerBasePosition, random);
         shouldSkipAFrame = true;
     }
 
@@ -103,6 +105,19 @@ public class EnemyPatternSystem : SystemBase
                       else
                           spawnLocation = new float3(980, 1, 20); // bottom right
 
+                      translation.Value = spawnLocation;
+                      rotation.Value = quaternion.LookRotation(
+                          new float3(playerBasePosition.Value.x, 0, playerBasePosition.Value.z) - spawnLocation, math.up());
+                  }).ScheduleParallel();
+    }
+
+    private void SpawnFocused(Translation playerBasePosition, Random random)
+    {
+        Entities
+                  .WithAll<AttackerComponent>()
+                  .ForEach((int entityInQueryIndex, ref Translation translation, ref Rotation rotation) =>
+                  {
+                      var spawnLocation = new float3(500, 1, 950);
                       translation.Value = spawnLocation;
                       rotation.Value = quaternion.LookRotation(
                           new float3(playerBasePosition.Value.x, 0, playerBasePosition.Value.z) - spawnLocation, math.up());
