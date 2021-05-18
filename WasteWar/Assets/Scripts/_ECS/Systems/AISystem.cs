@@ -2,6 +2,7 @@
 using Unity.Burst;
 using Unity.Entities;
 using Unity.Jobs;
+using Unity.Mathematics;
 using Unity.Transforms;
 
 public class AISystem : SystemBase
@@ -19,7 +20,7 @@ public class AISystem : SystemBase
                 {
                     float step = attacker.speed * deltaTime;
                     attackerPos.Value = MathUtilECS.MoveTowardsV2(attackerPos.Value,
-                                            playerBase.Value, step);
+                                            new float3(playerBase.Value.x , 1, playerBase.Value.z), step);
                 }
             )
             .ScheduleParallel();

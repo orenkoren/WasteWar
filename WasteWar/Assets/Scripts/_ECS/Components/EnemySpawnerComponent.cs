@@ -12,5 +12,8 @@ public struct EnemySpawnerComponent : IComponentData
 public enum SpawnPattern
 {
     Asterix,
-    Circle
+    Circle,
+    Zattack,
+    Square,
+    Focused
 }

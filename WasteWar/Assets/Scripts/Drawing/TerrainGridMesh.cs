@@ -4,7 +4,6 @@ using Constants;
 
 //https://gist.github.com/mdomrach/a66602ee85ce45f8860c36b2ad31ea14
 
-
 public class TerrainGridMesh : MonoBehaviour
 {
     public Terrain terrain;
