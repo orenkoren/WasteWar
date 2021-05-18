@@ -61,7 +61,10 @@ public class KeyClickManager : MonoBehaviour
             }
         }
         if (Input.GetKeyDown(KeyCode.R))
+        {
             GameEvents.FireBuildingRotation(this, isCurvedRotationModeOn);
+        }
+
         if (Input.GetKeyDown(KeyCode.M))
         {
             if (!isCurvedRotationModeOn)

@@ -19,6 +19,8 @@ public static class ObjectSnapper
 
         return new Vector3(x, y, z);
     }
+
+
     // https://gyazo.com/c82e819f59704c25345a5474f555ecca
     public static Vector3 SnapToGridCell(Vector3 currPos,float CellSize)
     {

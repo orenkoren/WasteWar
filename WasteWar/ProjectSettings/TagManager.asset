@@ -23,6 +23,9 @@ TagManager:
   - PipeTRTemplate
   - PowerPoleTemplate
   - WallTemplate
+  - Wall
+  - Turret0
+  - Turret0Template
   layers:
   - Default
   - TransparentFX

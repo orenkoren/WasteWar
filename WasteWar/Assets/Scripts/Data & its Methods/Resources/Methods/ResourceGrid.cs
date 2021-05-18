@@ -53,17 +53,25 @@ public class ResourceGrid : MonoBehaviour
 
         for (int i=0;i<nodeCount;i++)
         {
+            int loopLimit = 0;
             do
             {
                 x = Random.Range((int)scaledXOffset, (int)(scaledX - scaledXOffset)) * minimumDistance;
                 y = Random.Range((int)scaledYOffset, (int)(scaledY - scaledYOffset)) * minimumDistance;
+                loopLimit++;
+                if (loopLimit >= 100)
+                    break;
             }
             while (generatedPairs.Any(el => el.X == x && el.Y == y));
 
-            xyPair = new GridUtils.GridCoords(x, y);
-            generatedPairs.Add(xyPair);
 
-            Nodes.Add(x * GridConstants.Instance.CELL_COUNT + y, new Coal());
+            if (loopLimit < 100)
+            {
+                xyPair = new GridUtils.GridCoords(x, y);
+                generatedPairs.Add(xyPair);
+
+                Nodes.Add(x * GridConstants.Instance.CELL_COUNT + y, new Coal());
+            }
         }
         GameEvents.FireResourcesGenerated(this, Nodes);
     }
