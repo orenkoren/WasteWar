@@ -43,7 +43,7 @@ public class TurretSystem : SystemBase
                       //ecb.SetComponent(0, projectile, translation);
                       //ecb.SetComponent(0, projectile,
                       //    new MoveForwardComponent { speed = turret.projectileSpeed, destination = math.normalize(hits[0].Position) * 10000 });
-                      //entitiesToSpawnBeamsThisFrame.AddNoResize(e);
+                      entitiesToSpawnBeamsThisFrame.AddNoResize(e);
                   }
                   foreach (var hit in hits)
                   {

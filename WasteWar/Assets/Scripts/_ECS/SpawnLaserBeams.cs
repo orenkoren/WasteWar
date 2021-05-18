@@ -24,10 +24,10 @@ public class SpawnLaserBeams : MonoBehaviour
 
     public void SpawnBeam()
     {
-        GameObject beam = Instantiate(beamPrefab, spawnLocation);
+        //GameObject beam = Instantiate(beamPrefab, spawnLocation);
         if (soundSource)
             soundSource.Play();
-        StartCoroutine(DestroyBeam(beam));
+        //StartCoroutine(DestroyBeam(beam));
     }
 
     IEnumerator DestroyBeam(GameObject beam)
