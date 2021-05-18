@@ -32,9 +32,13 @@ public class PaintModel : MonoBehaviour
         foreach (var ren in renderers)
         {
             if (isSuccessful)
-                ren.material.SetColor("_Color", Color.green);
+            {
+                ren.material.color = Color.green;
+            }
             else
-                ren.material.SetColor("_Color", Color.red);
+            {
+                ren.material.color = Color.red;
+            }
         }
     }
     private void ResourceTransmission()
@@ -42,9 +46,9 @@ public class PaintModel : MonoBehaviour
         foreach (var ren in renderers)
         {
             if (GetComponent<PipeState>().Full)
-                ren.material.SetColor("_Color", Color.grey);
+                ren.material.color = Color.grey;
             else
-                ren.material.SetColor("_Color", Color.white);
+                ren.material.color = Color.white;
         }
     }
 }

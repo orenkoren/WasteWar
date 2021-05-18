@@ -2,8 +2,8 @@
 
 public class Move : MonoBehaviour
 {
-
     public bool shouldAllowMouseMovement = true;
+    [SerializeField]
     private Terrain terrain;
     [SerializeField]
     private Transform cam;
@@ -39,7 +39,7 @@ public class Move : MonoBehaviour
 
     private void TryToMoveForward()
     {
-        if (Input.GetKey(KeyCode.W) ||( Input.mousePosition.y >= ScreenAndMapValues.TOP_SCREEN_EDGE && shouldAllowMouseMovement))
+        if (Input.GetKey(KeyCode.W) || (Input.mousePosition.y >= ScreenAndMapValues.TOP_SCREEN_EDGE && shouldAllowMouseMovement))
             cam.position = MoveXZ(cam.position, cam.forward);
     }
 

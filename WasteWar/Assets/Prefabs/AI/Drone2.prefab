@@ -98,7 +98,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Damage: 1
-  speed: 7
+  speed: 70
 --- !u!114 &362285187493874194
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -180,7 +180,7 @@ MonoBehaviour:
     y: 0.17677665
     z: 0.00000023841858
   m_PrimitiveSize:
-    x: 3.5754952
+    x: 1.97
     y: 3.3034472
     z: 3.9624019
   m_PrimitiveOrientation:
@@ -191,12 +191,12 @@ MonoBehaviour:
     RotationOrder: 4
   m_Capsule:
     Height: 3.9624019
-    Radius: 1.7877476
+    Radius: 1.6517236
     Axis: 2
   m_Cylinder:
-    Height: 3.9624019
-    Radius: 1.7877476
-    Axis: 2
+    Height: 1.97
+    Radius: 1.9812009
+    Axis: 0
   m_CylinderSideCount: 20
   m_SphereRadius: 1.9812009
   m_MinimumSkinnedVertexWeight: 0.1
