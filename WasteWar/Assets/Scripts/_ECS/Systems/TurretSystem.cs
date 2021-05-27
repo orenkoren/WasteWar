@@ -88,40 +88,40 @@ public class TurretSystem : SystemBase
         var firstTargetAngle = ScanForTargets(turret, translation, rotation, pworld, rayInput);
         if (firstTargetAngle != -999)
         {
-            for (float hitAngle = firstTargetAngle; hitAngle <= firstTargetAngle + turret.hitWidth / 2; hitAngle++)
+            for (float hitAngle = firstTargetAngle; hitAngle < firstTargetAngle + turret.hitWidth / 2; hitAngle++)
             {
-                NativeList<RaycastHit> oneAngleHits = GetSingleAngleHits(turret, translation, rotation, ref pworld, ref rayInput, hitAngle);
-                UnityEngine.Debug.DrawLine(rayInput.Start, rayInput.End);
-                hits.AddRange(oneAngleHits);
-                var projectile = ecb.Instantiate(0, turret.projectile);
-                var projectileDestination = (rayInput.End - rayInput.Start) * 5000;
-                UnityEngine.Debug.DrawLine(translation.Value, projectileDestination);
-                ecb.SetComponent(0, projectile, translation);
-                ecb.SetComponent(0, projectile,
-                    new MoveForwardComponent
-                    {
-                        speed = turret.projectileSpeed,
-                        destination = projectileDestination
-                    });
+                AddSingleAngleHits(turret, translation, rotation, ref pworld, ref hits, ref rayInput, hitAngle);
+                SpawnProjectile(turret, translation, ref ecb, ref rayInput);
             }
 
             for (float hitAngle = firstTargetAngle; hitAngle >= firstTargetAngle - turret.hitWidth / 2; hitAngle--)
             {
-                NativeList<RaycastHit> oneAngleHits = GetSingleAngleHits(turret, translation, rotation, ref pworld, ref rayInput, hitAngle);
-                UnityEngine.Debug.DrawLine(rayInput.Start, rayInput.End);
-                hits.AddRange(oneAngleHits);
-                var projectile = ecb.Instantiate(0, turret.projectile);
-                var projectileDestination = (rayInput.End - rayInput.Start) * 5000;
-                UnityEngine.Debug.DrawLine(translation.Value, projectileDestination);
-                ecb.SetComponent(0, projectile, translation);
-                ecb.SetComponent(0, projectile,
-                    new MoveForwardComponent
-                    {
-                        speed = turret.projectileSpeed,
-                        destination = projectileDestination
-                    });
+                AddSingleAngleHits(turret, translation, rotation, ref pworld, ref hits, ref rayInput, hitAngle);
+                SpawnProjectile(turret, translation, ref ecb, ref rayInput);
             }
         }
+    }
+
+    private static void SpawnProjectile(TurretComponent turret, Translation translation, ref EntityCommandBuffer.ParallelWriter ecb, ref RaycastInput rayInput)
+    {
+        var projectile = ecb.Instantiate(0, turret.projectile);
+        var projectileDestination = (rayInput.End - rayInput.Start) * 5000;
+        Translation newTrans = new Translation { Value = translation.Value + turret.projectileSpawnLocation };
+        UnityEngine.Debug.DrawLine(newTrans.Value, projectileDestination);
+        ecb.SetComponent(0, projectile, newTrans);
+        ecb.SetComponent(0, projectile,
+            new MoveForwardComponent
+            {
+                speed = turret.projectileSpeed,
+                destination = projectileDestination
+            });
+    }
+
+    private static void AddSingleAngleHits(TurretComponent turret, Translation translation, Rotation rotation, ref CollisionWorld pworld, ref NativeList<RaycastHit> hits, ref RaycastInput rayInput, float hitAngle)
+    {
+        NativeList<RaycastHit> oneAngleHits = GetSingleAngleHits(turret, translation, rotation, ref pworld, ref rayInput, hitAngle);
+        UnityEngine.Debug.DrawLine(rayInput.Start, rayInput.End);
+        hits.AddRange(oneAngleHits);
     }
 
     private static NativeList<RaycastHit> GetSingleAngleHits(TurretComponent turret, Translation translation, Rotation rotation, ref CollisionWorld pworld, ref RaycastInput rayInput, float hitAngle)
