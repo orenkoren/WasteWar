@@ -275,13 +275,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d36c15d1c31159468bb896c4da8ea97, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  DetectionRadius: 400
+  DetectionRadius: 1000
   startRange: 5
   HostileMask:
     serializedVersion: 2
     m_Bits: 1024
   RechargeTime: 1
-  detectionConeSize: 30
+  detectionConeSize: 10
   hitWidth: 5
   projectile: {fileID: 4189189586707750369, guid: 1d58f909009800d4ca7af88ee7a241b8,
     type: 3}
@@ -424,6 +424,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   soundSource: {fileID: 8817716206375205309}
+  laserSounds:
+  - {fileID: 8300000, guid: 3923e95a5a4224d4db33529265c22ef5, type: 3}
+  - {fileID: 8300000, guid: 72443da1195b25946bcf468cfbb121d8, type: 3}
+  - {fileID: 8300000, guid: 77086de0981d13846a61408a9660ccc8, type: 3}
+  - {fileID: 8300000, guid: 549913c08386bca488b4a514452a7bbe, type: 3}
+  - {fileID: 8300000, guid: 0cebd206431f0524fafe589ac761ab64, type: 3}
+  - {fileID: 8300000, guid: cc313a59ddaf7dc4690e662d1cb0eee0, type: 3}
+  - {fileID: 8300000, guid: 26786639651df25478c96fb14f589ba0, type: 3}
+  - {fileID: 8300000, guid: 2648e250a49aa35499fc689188fc1f44, type: 3}
+  - {fileID: 8300000, guid: 039be23420e955b40afc797c3778edfc, type: 3}
+  - {fileID: 8300000, guid: e4f4568e8c0a1c746a2dc0ada8f69b1d, type: 3}
+  - {fileID: 8300000, guid: c875e00681543504dadd8ee186e217a8, type: 3}
 --- !u!65 &5841989776425190024
 BoxCollider:
   m_ObjectHideFlags: 0

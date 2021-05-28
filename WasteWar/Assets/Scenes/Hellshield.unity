@@ -433,7 +433,7 @@ PrefabInstance:
     - target: {fileID: 1569321865297948946, guid: b594382cf0122ec4ea8666b45b3ea9bc,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 522.5512
+      value: 412.8
       objectReference: {fileID: 0}
     - target: {fileID: 1569321865297948946, guid: b594382cf0122ec4ea8666b45b3ea9bc,
         type: 3}
@@ -474,6 +474,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: ThickTurret (2)
+      objectReference: {fileID: 0}
+    - target: {fileID: 2201285257622596520, guid: b594382cf0122ec4ea8666b45b3ea9bc,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b594382cf0122ec4ea8666b45b3ea9bc, type: 3}
@@ -586,7 +591,7 @@ PrefabInstance:
     - target: {fileID: 1569321865297948946, guid: b594382cf0122ec4ea8666b45b3ea9bc,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 522.5512
+      value: 412.8
       objectReference: {fileID: 0}
     - target: {fileID: 1569321865297948946, guid: b594382cf0122ec4ea8666b45b3ea9bc,
         type: 3}
@@ -627,6 +632,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: ThickTurret (3)
+      objectReference: {fileID: 0}
+    - target: {fileID: 2201285257622596520, guid: b594382cf0122ec4ea8666b45b3ea9bc,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b594382cf0122ec4ea8666b45b3ea9bc, type: 3}
@@ -819,7 +829,7 @@ PrefabInstance:
     - target: {fileID: 1569321865297948946, guid: b594382cf0122ec4ea8666b45b3ea9bc,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 522.5512
+      value: 412.8
       objectReference: {fileID: 0}
     - target: {fileID: 1569321865297948946, guid: b594382cf0122ec4ea8666b45b3ea9bc,
         type: 3}
@@ -861,6 +871,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: ThickTurret (4)
       objectReference: {fileID: 0}
+    - target: {fileID: 2201285257622596520, guid: b594382cf0122ec4ea8666b45b3ea9bc,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b594382cf0122ec4ea8666b45b3ea9bc, type: 3}
 --- !u!1001 &1858525169
@@ -888,7 +903,7 @@ PrefabInstance:
     - target: {fileID: 1569321865297948946, guid: b594382cf0122ec4ea8666b45b3ea9bc,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 522.5512
+      value: 412.8
       objectReference: {fileID: 0}
     - target: {fileID: 1569321865297948946, guid: b594382cf0122ec4ea8666b45b3ea9bc,
         type: 3}
@@ -929,6 +944,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: ThickTurret (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 2201285257622596520, guid: b594382cf0122ec4ea8666b45b3ea9bc,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b594382cf0122ec4ea8666b45b3ea9bc, type: 3}
@@ -1060,7 +1080,7 @@ PrefabInstance:
     - target: {fileID: 1569321865297948946, guid: b594382cf0122ec4ea8666b45b3ea9bc,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 522.5512
+      value: 412.8
       objectReference: {fileID: 0}
     - target: {fileID: 1569321865297948946, guid: b594382cf0122ec4ea8666b45b3ea9bc,
         type: 3}
@@ -1102,6 +1122,71 @@ PrefabInstance:
       propertyPath: m_Name
       value: ThickTurret
       objectReference: {fileID: 0}
+    - target: {fileID: 2201285257622596520, guid: b594382cf0122ec4ea8666b45b3ea9bc,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5182357751649638933, guid: b594382cf0122ec4ea8666b45b3ea9bc,
+        type: 3}
+      propertyPath: laserSounds.Array.size
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 5182357751649638933, guid: b594382cf0122ec4ea8666b45b3ea9bc,
+        type: 3}
+      propertyPath: laserSounds.Array.data[0]
+      value: 
+      objectReference: {fileID: 8300000, guid: 3923e95a5a4224d4db33529265c22ef5, type: 3}
+    - target: {fileID: 5182357751649638933, guid: b594382cf0122ec4ea8666b45b3ea9bc,
+        type: 3}
+      propertyPath: laserSounds.Array.data[1]
+      value: 
+      objectReference: {fileID: 8300000, guid: 72443da1195b25946bcf468cfbb121d8, type: 3}
+    - target: {fileID: 5182357751649638933, guid: b594382cf0122ec4ea8666b45b3ea9bc,
+        type: 3}
+      propertyPath: laserSounds.Array.data[2]
+      value: 
+      objectReference: {fileID: 8300000, guid: 77086de0981d13846a61408a9660ccc8, type: 3}
+    - target: {fileID: 5182357751649638933, guid: b594382cf0122ec4ea8666b45b3ea9bc,
+        type: 3}
+      propertyPath: laserSounds.Array.data[3]
+      value: 
+      objectReference: {fileID: 8300000, guid: 549913c08386bca488b4a514452a7bbe, type: 3}
+    - target: {fileID: 5182357751649638933, guid: b594382cf0122ec4ea8666b45b3ea9bc,
+        type: 3}
+      propertyPath: laserSounds.Array.data[4]
+      value: 
+      objectReference: {fileID: 8300000, guid: 0cebd206431f0524fafe589ac761ab64, type: 3}
+    - target: {fileID: 5182357751649638933, guid: b594382cf0122ec4ea8666b45b3ea9bc,
+        type: 3}
+      propertyPath: laserSounds.Array.data[5]
+      value: 
+      objectReference: {fileID: 8300000, guid: cc313a59ddaf7dc4690e662d1cb0eee0, type: 3}
+    - target: {fileID: 5182357751649638933, guid: b594382cf0122ec4ea8666b45b3ea9bc,
+        type: 3}
+      propertyPath: laserSounds.Array.data[6]
+      value: 
+      objectReference: {fileID: 8300000, guid: 26786639651df25478c96fb14f589ba0, type: 3}
+    - target: {fileID: 5182357751649638933, guid: b594382cf0122ec4ea8666b45b3ea9bc,
+        type: 3}
+      propertyPath: laserSounds.Array.data[7]
+      value: 
+      objectReference: {fileID: 8300000, guid: 2648e250a49aa35499fc689188fc1f44, type: 3}
+    - target: {fileID: 5182357751649638933, guid: b594382cf0122ec4ea8666b45b3ea9bc,
+        type: 3}
+      propertyPath: laserSounds.Array.data[8]
+      value: 
+      objectReference: {fileID: 8300000, guid: 039be23420e955b40afc797c3778edfc, type: 3}
+    - target: {fileID: 5182357751649638933, guid: b594382cf0122ec4ea8666b45b3ea9bc,
+        type: 3}
+      propertyPath: laserSounds.Array.data[9]
+      value: 
+      objectReference: {fileID: 8300000, guid: e4f4568e8c0a1c746a2dc0ada8f69b1d, type: 3}
+    - target: {fileID: 5182357751649638933, guid: b594382cf0122ec4ea8666b45b3ea9bc,
+        type: 3}
+      propertyPath: laserSounds.Array.data[10]
+      value: 
+      objectReference: {fileID: 8300000, guid: c875e00681543504dadd8ee186e217a8, type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b594382cf0122ec4ea8666b45b3ea9bc, type: 3}
 --- !u!1001 &4686937521507428329
@@ -1342,7 +1427,7 @@ PrefabInstance:
     - target: {fileID: 8157376283840655627, guid: fbbfa204943475747a74b5ef06f78d08,
         type: 3}
       propertyPath: spawnAmount
-      value: 30000
+      value: 3000
       objectReference: {fileID: 0}
     - target: {fileID: 8157376283840655628, guid: fbbfa204943475747a74b5ef06f78d08,
         type: 3}
@@ -1429,5 +1514,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 32b6bcc7330cf454cab6d4f26118f9aa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  SecondsInterval: 20
+  SecondsInterval: 10
   currentTime: 0
