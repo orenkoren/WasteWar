@@ -20,9 +20,10 @@ public class EnemySpawnerSystem : SystemBase
     {
         Entities
             .WithoutBurst()
-            .ForEach((ref EnemySpawnerComponent prefab) =>
+            .ForEach((EnemyAmountTracker amountTracker, ref EnemySpawnerComponent prefab ) =>
             {
                 spawner = prefab;
+                amountTracker.SetCurrentEnemyAmount(prefab.spawnAmount);
             }).Run();
     }
 
