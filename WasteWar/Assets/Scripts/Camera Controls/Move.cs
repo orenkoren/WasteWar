@@ -65,6 +65,7 @@ public class Move : MonoBehaviour
     {
         cam.position = new Vector3(terrainSize.x / 2, CameraConstants.Instance.DEFAULT_CAMERA_ALTITUDE, terrainSize.z / 2);
     }
+
     private Vector3 MoveXZ(Vector3 pos,Vector3 directionVec)
     {
         pos.x += directionVec.x * CameraConstants.Instance.MOVE_SPEED * Time.deltaTime;
