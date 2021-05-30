@@ -6,6 +6,7 @@ using UnityEngine;
 public struct TurretComponent : IComponentData
 {
     public int DetectionRadius;
+    public TurretBehavior behavior;
     public float startRange;
     public LayerMask HostileMask;
     public int RechargeTime;
@@ -16,4 +17,10 @@ public struct TurretComponent : IComponentData
     public float projectileSpeed;
     [HideInInspector]
     public float rechargeTimer;
+}
+
+public enum TurretBehavior
+{
+    ClosestTarget,
+    MostTargets
 }

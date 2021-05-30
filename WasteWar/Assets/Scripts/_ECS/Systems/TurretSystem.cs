@@ -135,6 +135,56 @@ public class TurretSystem : SystemBase
     private static float ScanForTargets(TurretComponent turret, Translation translation, Rotation rotation,
      CollisionWorld pworld, RaycastInput rayInput)
     {
+        if (turret.behavior == TurretBehavior.MostTargets)
+            return CalculateMostTargetsDirectionAngle(turret, translation, rotation, pworld, ref rayInput);
+        else
+            return CalculateClosestTargetAngle(turret, translation, rotation, pworld, ref rayInput);
+
+    }
+
+    private static float CalculateClosestTargetAngle(TurretComponent turret, Translation translation, Rotation rotation,
+                                                    CollisionWorld pworld, ref RaycastInput rayInput)
+    {
+        float closestDistance = 5000;
+        float closestDistanceAngle = -999;
+
+        NativeList<RaycastHit> oneAngleHits = new NativeList<RaycastHit>(Allocator.Temp);
+
+        for (float angle = 0; angle >= -turret.detectionConeSize; angle--)
+        {
+            rayInput = ChangeRayDirection(turret, translation, rotation, rayInput, angle);
+            pworld.CastRay(rayInput, ref oneAngleHits);
+            foreach (var hit in oneAngleHits)
+            {
+                float currDistance = math.distance(hit.Position, translation.Value);
+                if (currDistance < closestDistance)
+                {
+                    closestDistance = currDistance;
+                    closestDistanceAngle = angle;
+                }
+            }
+        }
+        for (float angle = 0; angle <= turret.detectionConeSize; angle++)
+        {
+            rayInput = ChangeRayDirection(turret, translation, rotation, rayInput, angle);
+            pworld.CastRay(rayInput, ref oneAngleHits);
+            foreach (var hit in oneAngleHits)
+            {
+                float currDistance = math.distance(hit.Position, translation.Value);
+                if (currDistance < closestDistance)
+                {
+                    closestDistance = currDistance;
+                    closestDistanceAngle = angle;
+                }
+            }
+        }
+
+        return closestDistanceAngle;
+    }
+
+    private static float CalculateMostTargetsDirectionAngle(TurretComponent turret, Translation translation,
+                                                    Rotation rotation, CollisionWorld pworld, ref RaycastInput rayInput)
+    {
         int mostTargetsHit = 0;
         float mostTargetsAngle = -999;
         NativeList<RaycastHit> oneAngleHits = new NativeList<RaycastHit>(Allocator.Temp);
@@ -148,7 +198,6 @@ public class TurretSystem : SystemBase
                 mostTargetsHit = oneAngleHits.Length;
                 mostTargetsAngle = angle;
             }
-            //if (pworld.CastRay(rayInput)) return angle;
         }
         for (float angle = 0; angle <= turret.detectionConeSize; angle++)
         {
@@ -159,7 +208,6 @@ public class TurretSystem : SystemBase
                 mostTargetsHit = oneAngleHits.Length;
                 mostTargetsAngle = angle;
             }
-            //if (pworld.CastRay(rayInput)) return angle;
         }
         return mostTargetsAngle;
     }
