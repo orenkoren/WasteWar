@@ -19,6 +19,8 @@ GameObject:
   - component: {fileID: 1005809198048388400}
   - component: {fileID: 5182357751649638933}
   - component: {fileID: 5841989776425190024}
+  - component: {fileID: 187857190}
+  - component: {fileID: 799273521}
   m_Layer: 0
   m_Name: ThickTurret
   m_TagString: Untagged
@@ -282,7 +284,8 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 1024
   RechargeTime: 2
-  detectionConeSize: 30
+  RotationTime: 1
+  detectionConeSize: 180
   hitWidth: 5
   projectile: {fileID: 4189189586707750369, guid: 1d58f909009800d4ca7af88ee7a241b8,
     type: 3}
@@ -292,6 +295,7 @@ MonoBehaviour:
     z: 9.56
   projectileSpeed: 400
   rechargeTimer: 0
+  rotationCooldown: 0
 --- !u!82 &8817716206375205309
 AudioSource:
   m_ObjectHideFlags: 0
@@ -450,6 +454,33 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 2.99, y: 3, z: 2.96}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &187857190
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2201285257622596520}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3432c9862d8752c46b75edfe4ac7e184, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetAngle: 0
+  rotationTime: 0.5
+--- !u!114 &799273521
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2201285257622596520}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 073f996202d3c2242b72093f49687c83, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  customTargetSync: {fileID: 7611436702272939387}
 --- !u!1 &2468306585964609989
 GameObject:
   m_ObjectHideFlags: 0
@@ -586,7 +617,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7635868058025710421}
-  m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []

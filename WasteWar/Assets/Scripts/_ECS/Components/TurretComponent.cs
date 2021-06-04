@@ -10,6 +10,7 @@ public struct TurretComponent : IComponentData
     public float startRange;
     public LayerMask HostileMask;
     public int RechargeTime;
+    public int RotationTime;
     public int detectionConeSize;
     public int hitWidth;
     public Entity projectile;
@@ -17,6 +18,8 @@ public struct TurretComponent : IComponentData
     public float projectileSpeed;
     [HideInInspector]
     public float rechargeTimer;
+    [HideInInspector]
+    public float rotationCooldown;
 }
 
 public enum TurretBehavior

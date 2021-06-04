@@ -7,7 +7,7 @@ public class DisabledComponentConversionSystem : GameObjectConversionSystem
 {
     protected override void OnUpdate()
     {
-        Entities.ForEach((HybridEntitySync syncComp) =>
+        Entities.ForEach((HybridDestructionSync syncComp) =>
         {
             AddHybridComponent(syncComp);
         });

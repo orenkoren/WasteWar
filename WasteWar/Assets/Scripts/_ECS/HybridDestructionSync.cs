@@ -1,6 +1,7 @@
+using System.Collections;
 using UnityEngine;
 
-public class HybridEntitySync : MonoBehaviour
+public class HybridDestructionSync : MonoBehaviour
 {
     public void DestroyHybrid()
     {

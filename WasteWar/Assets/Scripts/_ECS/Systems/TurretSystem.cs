@@ -29,36 +29,24 @@ public class TurretSystem : SystemBase
           .WithBurst()
           .WithAll<TurretComponent>()
           .WithReadOnly(pworld)
-          .ForEach((ref TurretComponent turret, ref Entity e, in Translation translation, in Rotation rotation) =>
+          .ForEach((ref TurretComponent turret, ref Entity e, ref RotationComponent rotComp,
+                    in Translation translation, in Rotation rotation) =>
           {
               turret.rechargeTimer += deltaTime;
+              turret.rotationCooldown += deltaTime;
+              if (turret.rotationCooldown >= turret.RotationTime)
+              {
+                  SendRotationCommand(ref turret, ref rotComp, pworld, translation, rotation);
+                  turret.rotationCooldown = 0;
+              }
               if (turret.rechargeTimer >= turret.RechargeTime)
               {
                   turret.rechargeTimer = 0;
                   NativeList<RaycastHit> hits = new NativeList<RaycastHit>(Allocator.Temp);
-                  PerformRaycast(ref turret, translation, rotation, pworld, ref hits, ecb);
+                  PerformRaycast(ref turret, ref rotComp, translation, rotation, pworld, ref hits, ecb);
                   if (hits.Length > 0)
                   {
-                      //var projectile = ecb.Instantiate(0, turret.projectile);
-                      //ecb.SetComponent(0, projectile, translation);
-                      //ecb.SetComponent(0, projectile,
-                      //    new MoveForwardComponent { speed = turret.projectileSpeed, destination = math.normalize(hits[0].Position) * 10000 });
                       entitiesToSpawnBeamsThisFrame.AddNoResize(e);
-                  }
-                  foreach (var hit in hits)
-                  {
-                      //var projectile = ecb.Instantiate(0, turret.projectile);
-                      //var projectileDestination = (hit.Position - translation.Value) * 5000;
-                      //UnityEngine.Debug.DrawLine(translation.Value, projectileDestination);
-                      //ecb.SetComponent(0, projectile, translation);
-                      //ecb.SetComponent(0, projectile,
-                      //    new MoveForwardComponent
-                      //    {
-                      //        speed = turret.projectileSpeed,
-                      //        destination = projectileDestination
-                      //    });
-                      // add to a native list and consume in different job?
-                      //ecb.AddComponent<Disabled>(0, hit.Entity);
                   }
               }
           }).ScheduleParallel(Dependency);
@@ -66,24 +54,19 @@ public class TurretSystem : SystemBase
         m_ecbSystem.AddJobHandleForProducer(Dependency);
     }
 
-    private static void PerformRaycast(ref TurretComponent turret,
+    private static void SendRotationCommand(ref TurretComponent turret, ref RotationComponent rotComp,
+                                    CollisionWorld pworld, Translation translation, Rotation rotation)
+    {
+        RaycastInput rayInput = CreateRayInput(turret, translation, rotation);
+        var firstTargetAngle = ScanForTargets(turret, translation, rotation, pworld, rayInput);
+        rotComp.targetAngle = firstTargetAngle;
+    }
+
+    private static void PerformRaycast(ref TurretComponent turret, ref RotationComponent rotComp,
                         Translation translation, Rotation rotation, CollisionWorld pworld,
                         ref NativeList<RaycastHit> hits, EntityCommandBuffer.ParallelWriter ecb)
     {
-        var collisionFilter = new CollisionFilter()
-        {
-            BelongsTo = ~0u,
-            CollidesWith = 1 << 24,
-            GroupIndex = 0
-        };
-
-        var rayInput = new RaycastInput
-        {
-            // TODO: turret destroys itself if start value is too close.. collisionfilter or change the start value
-            Start = translation.Value + (math.forward(rotation.Value) * turret.startRange),
-            End = translation.Value + (math.forward(rotation.Value) * turret.DetectionRadius),
-            Filter = collisionFilter
-        };
+        RaycastInput rayInput = CreateRayInput(turret, translation, rotation);
 
         var firstTargetAngle = ScanForTargets(turret, translation, rotation, pworld, rayInput);
         if (firstTargetAngle != -999)
@@ -100,6 +83,24 @@ public class TurretSystem : SystemBase
                 SpawnProjectile(turret, translation, ref ecb, ref rayInput);
             }
         }
+    }
+
+    private static RaycastInput CreateRayInput(TurretComponent turret, Translation translation, Rotation rotation)
+    {
+        var collisionFilter = new CollisionFilter()
+        {
+            BelongsTo = ~0u,
+            CollidesWith = 1 << 24,
+            GroupIndex = 0
+        };
+
+        var rayInput = new RaycastInput
+        {
+            Start = translation.Value + (math.forward(rotation.Value) * turret.startRange),
+            End = translation.Value + (math.forward(rotation.Value) * turret.DetectionRadius),
+            Filter = collisionFilter
+        };
+        return rayInput;
     }
 
     private static void SpawnProjectile(TurretComponent turret, Translation translation, ref EntityCommandBuffer.ParallelWriter ecb, ref RaycastInput rayInput)
