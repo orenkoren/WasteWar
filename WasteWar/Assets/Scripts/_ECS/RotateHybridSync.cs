@@ -1,11 +1,14 @@
+using System;
 using System.Collections;
 using UnityEngine;
 
 public class RotateHybridSync : MonoBehaviour
 {
     public Transform customTargetSync;
+    public LerpBehavior rotationBehavior;
 
     private bool isReady = true;
+    private delegate float LerpFunction(float t);
 
     public void RotateHybrid(float yAngle, float overTime)
     {
@@ -21,11 +24,13 @@ public class RotateHybridSync : MonoBehaviour
     IEnumerator RotateOverTime(Quaternion start, Quaternion end, float dur)
     {
         float t = 0f;
+        LerpFunction lerpFunc = (LerpFunction)Delegate.CreateDelegate(typeof(LerpFunction), this,
+                                                GetType().GetMethod(rotationBehavior.ToString()));
         while (t < dur)
         {
             customTargetSync.rotation = Quaternion.Slerp(start,
                                                     end,
-                                                    EaseInOut(t / dur));
+                                                    lerpFunc(t / dur));
             yield return null;
             t += Time.deltaTime;
         }
@@ -33,31 +38,40 @@ public class RotateHybridSync : MonoBehaviour
         isReady = true;
     }
 
-    float EaseIn(float t)
+    public float EaseIn(float t)
     {
         return t * t;
     }
 
-    float Flip(float x)
+    public float Flip(float x)
     {
         return 1 - x;
     }
 
-    float EaseOut(float t)
+    public float EaseOut(float t)
     {
         return Flip(Mathf.Sqrt(Flip(t)));
     }
 
-    float EaseInOut(float t)
+    public float EaseInOut(float t)
     {
         return Mathf.Lerp(EaseIn(t), EaseOut(t), t);
     }
 
-    float Spike(float t)
+    public float Spike(float t)
     {
         if (t <= .5f)
             return EaseIn(t / .5f);
 
         return EaseIn(Flip(t) / .5f);
     }
+}
+
+public enum LerpBehavior
+{
+    EaseIn,
+    EaseOut,
+    EaseInOut,
+    Flip,
+    Spike
 }

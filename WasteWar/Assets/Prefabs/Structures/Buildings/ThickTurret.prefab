@@ -481,6 +481,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   customTargetSync: {fileID: 7611436702272939387}
+  rotationBehavior: 2
 --- !u!1 &2468306585964609989
 GameObject:
   m_ObjectHideFlags: 0
