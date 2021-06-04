@@ -34,7 +34,7 @@ public class TurretSystem : SystemBase
           {
               turret.rechargeTimer += deltaTime;
               turret.rotationCooldown += deltaTime;
-              if (turret.rotationCooldown >= turret.RotationTime)
+              if (turret.rotationCooldown >= turret.RotationCommandInterval)
               {
                   SendRotationCommand(ref turret, ref rotComp, pworld, translation, rotation);
                   turret.rotationCooldown = 0;
