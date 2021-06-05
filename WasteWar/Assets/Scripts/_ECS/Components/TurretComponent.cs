@@ -9,9 +9,9 @@ public struct TurretComponent : IComponentData
     public TurretBehavior behavior;
     public float startRange;
     public LayerMask HostileMask;
-    public int RechargeTime;
+    public float RechargeTime;
     [Tooltip("The interval in which rotation command will be sent, thus beginning the rotation")]
-    public int RotationCommandInterval;
+    public float RotationCommandInterval;
     public int detectionConeSize;
     public int hitWidth;
     public Entity projectile;

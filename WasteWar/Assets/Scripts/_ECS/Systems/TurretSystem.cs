@@ -74,13 +74,13 @@ public class TurretSystem : SystemBase
             for (float hitAngle = firstTargetAngle; hitAngle < firstTargetAngle + turret.hitWidth / 2; hitAngle++)
             {
                 AddSingleAngleHits(turret, translation, rotation, ref pworld, ref hits, ref rayInput, hitAngle);
-                SpawnProjectile(turret, translation, ref ecb, ref rayInput);
+                SpawnProjectile(turret, translation, ref ecb, ref rayInput, rotComp.targetAngle);
             }
 
             for (float hitAngle = firstTargetAngle; hitAngle >= firstTargetAngle - turret.hitWidth / 2; hitAngle--)
             {
                 AddSingleAngleHits(turret, translation, rotation, ref pworld, ref hits, ref rayInput, hitAngle);
-                SpawnProjectile(turret, translation, ref ecb, ref rayInput);
+                SpawnProjectile(turret, translation, ref ecb, ref rayInput, rotComp.targetAngle);
             }
         }
     }
@@ -103,12 +103,15 @@ public class TurretSystem : SystemBase
         return rayInput;
     }
 
-    private static void SpawnProjectile(TurretComponent turret, Translation translation, ref EntityCommandBuffer.ParallelWriter ecb, ref RaycastInput rayInput)
+    private static void SpawnProjectile(TurretComponent turret, Translation translation,
+                ref EntityCommandBuffer.ParallelWriter ecb, ref RaycastInput rayInput, float hitAngle)
     {
         var projectile = ecb.Instantiate(0, turret.projectile);
         var projectileDestination = (rayInput.End - rayInput.Start) * 5000;
-        Translation newTrans = new Translation { Value = translation.Value + turret.projectileSpawnLocation };
-        UnityEngine.Debug.DrawLine(newTrans.Value, projectileDestination);
+        float3 newOffset = math.mul(quaternion.RotateY(math.radians(hitAngle)),
+                                    turret.projectileSpawnLocation);
+        UnityEngine.Debug.DrawLine(translation.Value, newOffset);
+        Translation newTrans = new Translation { Value = translation.Value + newOffset };
         ecb.SetComponent(0, projectile, newTrans);
         ecb.SetComponent(0, projectile,
             new MoveForwardComponent
