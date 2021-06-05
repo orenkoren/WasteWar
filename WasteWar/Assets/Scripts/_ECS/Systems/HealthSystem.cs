@@ -19,15 +19,13 @@ public class HealthSystem : ComponentSystem
         if (entitiesToTakeDamage.IsEmpty)
             return;
 
-        var healthComps = GetComponentDataFromEntity<HealthComponent>();
-
         foreach (var entity in entitiesToTakeDamage)
         {
             if (EntityManager.HasComponent<HealthComponent>(entity))
             {
                 HealthComponent healthComp = EntityManager.GetComponentData<HealthComponent>(entity);
                 healthComp.Health--;
-                EntityManager.SetComponentData<HealthComponent>(entity, healthComp);
+                EntityManager.SetComponentData(entity, healthComp);
                 if (healthComp.Health <= 0)
                 {
                     HandleDeath(entity, healthComp.ShouldDestroyOnDeath);
