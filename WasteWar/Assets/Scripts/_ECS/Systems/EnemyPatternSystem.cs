@@ -48,7 +48,7 @@ public class EnemyPatternSystem : SystemBase
                   .WithAll<AttackerComponent>()
                   .ForEach((int entityInQueryIndex, ref Translation translation, ref Rotation rotation) =>
                   {
-                      var spawnLocation = new float3(random.NextFloat(0, 1000), 3, random.NextFloat(900, 1000));
+                      var spawnLocation = new float3(random.NextFloat(0, 1000), 5, random.NextFloat(900, 1000));
                       translation.Value = spawnLocation;
                       rotation.Value = quaternion.LookRotation(
                           new float3(playerBasePosition.Value.x, 0, playerBasePosition.Value.z) - spawnLocation, math.up());

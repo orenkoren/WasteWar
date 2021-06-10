@@ -1,17 +1,30 @@
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class HealthBar : MonoBehaviour
 {
     public Image foregroundImage;
-    public HealthComponent Health;
+    public HealthSync syncComp;
+    public Camera cam;
 
+    private void Awake()
+    {
+        if (!cam)
+            cam = Camera.main;
+    }
     void Start()
     {
-        foregroundImage.fillAmount = 0.5f;
+        syncComp.OnHealthChanged += ChangeFillAmount;
     }
-    void Update()
+
+    private void ChangeFillAmount(float percentage)
     {
-        print(GetComponentInParent<HealthComponent>().Health);
+        foregroundImage.fillAmount = percentage / 100;
+    }
+
+    private void LateUpdate()
+    {
+        transform.LookAt(cam.transform);
     }
 }

@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 3524777110686901653}
   m_Layer: 0
   m_Name: Camera
-  m_TagString: Untagged
+  m_TagString: MainCamera
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -162,8 +162,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7cbef11d462adb244bbe010e27ed4796, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  shouldAllowMouseMovement: 1
   terrain: {fileID: 0}
   cam: {fileID: 3827050943749171814}
+  runtimeGameObjRefs: {fileID: 0}
 --- !u!114 &3827050943749171813
 MonoBehaviour:
   m_ObjectHideFlags: 0
