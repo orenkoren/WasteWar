@@ -1,4 +1,5 @@
 using Constants;
+using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
@@ -7,10 +8,15 @@ using Unity.Transforms;
 public class EnemyPatternSystem : SystemBase
 {
     private bool shouldSkipAFrame = true;
+    private GridSystem gridSystem;
+    private NativeList<float3> positionsArray = new NativeList<float3>(Allocator.Persistent);
+
+
     protected override void OnCreate()
     {
         base.OnCreate();
         RequireSingletonForUpdate<EnemyPatternSystemEnabler>();
+        gridSystem = World.GetOrCreateSystem<GridSystem>();
     }
 
     protected override void OnUpdate()
@@ -31,7 +37,7 @@ public class EnemyPatternSystem : SystemBase
             }).Run();
         Random random = new Random(56);
         if (spawnerComponent.pattern == SpawnPattern.Zattack)
-            SpawnZAttack(playerBasePosition, random);
+            SpawnZAttack(playerBasePosition, random, gridSystem);
         if (spawnerComponent.pattern == SpawnPattern.Square)
             SpawnSquare(playerBasePosition, random);
         if (spawnerComponent.pattern == SpawnPattern.Asterix)
@@ -42,17 +48,29 @@ public class EnemyPatternSystem : SystemBase
     }
 
     // Another approach for the spawn algorithms is to use entityInQueryIndex in regards to spawnAmount ( index % spawnAmount is position)
-    private void SpawnZAttack(Translation playerBasePosition, Random random)
+    private void SpawnZAttack(Translation playerBasePosition, Random random, GridSystem grid)
     {
+        var posArray = positionsArray;
+        //TODO: implemnet function in GridSystem: GetAdjacentPositionsByAmount(int startPos, int amount)
         Entities
-                  .WithAll<AttackerComponent>()
-                  .ForEach((int entityInQueryIndex, ref Translation translation, ref Rotation rotation) =>
-                  {
-                      var spawnLocation = new float3(random.NextFloat(0, 1000), 5, random.NextFloat(900, 1000));
-                      translation.Value = spawnLocation;
-                      rotation.Value = quaternion.LookRotation(
-                          new float3(playerBasePosition.Value.x, 0, playerBasePosition.Value.z) - spawnLocation, math.up());
-                  }).ScheduleParallel();
+            .WithoutBurst()
+            .WithAll<AttackerComponent>()
+            .ForEach((int entityInQueryIndex) =>
+            {
+                UnityEngine.Debug.Log(entityInQueryIndex);
+                posArray.Add(grid.GetGridPosition(entityInQueryIndex, (int)random.NextFloat(900, 999)));
+            }).Run();
+
+        Entities
+            .WithAll<AttackerComponent>()
+            .ForEach((int entityInQueryIndex, ref Translation translation, ref Rotation rotation) =>
+            {
+                //var spawnLocation = new float3(random.NextFloat(0, 1000), 5, random.NextFloat(900, 1000));
+                float3 spawnLocation = posArray[entityInQueryIndex];
+                translation.Value = spawnLocation;
+                rotation.Value = quaternion.LookRotation(
+                    new float3(playerBasePosition.Value.x, 0, playerBasePosition.Value.z) - spawnLocation, math.up());
+            }).ScheduleParallel();
     }
 
     private void SpawnSquare(Translation playerBasePosition, Random random)
@@ -122,5 +140,11 @@ public class EnemyPatternSystem : SystemBase
                       rotation.Value = quaternion.LookRotation(
                           new float3(playerBasePosition.Value.x, 0, playerBasePosition.Value.z) - spawnLocation, math.up());
                   }).ScheduleParallel();
+    }
+
+    protected override void OnDestroy()
+    {
+        base.OnDestroy();
+        positionsArray.Dispose();
     }
 }
