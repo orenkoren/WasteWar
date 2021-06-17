@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 8846580050955084618}
   - component: {fileID: 9013817019503439289}
   - component: {fileID: 4442639991428235013}
+  - component: {fileID: 6694896756469433442}
   m_Layer: 0
   m_Name: ECSGrid
   m_TagString: Untagged
@@ -44,7 +45,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ea7d7495833204790ba1d3a8755397f8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ConversionMode: 0
+  ConversionMode: 1
 --- !u!114 &4442639991428235013
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -59,5 +60,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Width: 1000
   Height: 1000
-  CellSize: 3
+  CellSize: 20
   ShouldVisualize: 1
+--- !u!114 &6694896756469433442
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8025007454366445809}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 69cd2a84c7b0a92428910e92d2e7e752, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  displayBestCostField: 1

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
@@ -5,10 +6,12 @@ using Unity.Physics;
 using Unity.Physics.Systems;
 using UnityEngine;
 
+[assembly: RegisterGenericComponentType(typeof(List<>))]
 public class GridSystem : SystemBase
 {
-    public GridCellData[,] GridData = new GridCellData[0, 0];
+    public GridCell[,] GridData = new GridCell[0, 0];
     private BuildPhysicsWorld m_physicsWorld;
+    private GridCell destinationCell;
     private int cellSize;
 
     protected override void OnStartRunning()
@@ -17,6 +20,7 @@ public class GridSystem : SystemBase
         m_physicsWorld = World.GetExistingSystem<BuildPhysicsWorld>();
         CreateGrid();
         CreateCostField();
+        CreateIntegrationField(GridData[5, 5]);
     }
 
     protected override void OnUpdate()
@@ -56,24 +60,25 @@ public class GridSystem : SystemBase
         Entities
             .WithoutBurst()
             .WithAll<GridComponent>()
-            .ForEach((ref GridComponent grid) =>
+            .ForEach((ref GridComponent grid, in Entity e) =>
             {
-                GridData = new GridCellData[grid.Width / grid.CellSize + 1, grid.Height / grid.CellSize + 1];
+                GridData = new GridCell[grid.Width / grid.CellSize + 1, grid.Height / grid.CellSize + 1];
                 cellSize = grid.CellSize;
                 for (int x = 0; x < GridData.GetLength(0); x++)
                 {
                     for (int z = 0; z < GridData.GetLength(1); z++)
                     {
-                        GridData[x, z] = new GridCellData
+                        GridData[x, z] = new GridCell
                         {
                             bottomLeftPos = new float3(x * grid.CellSize, 0, z * grid.CellSize),
                             centerPos = new float3(x * grid.CellSize + (grid.CellSize / 2), 0,
                                                 z * grid.CellSize + (grid.CellSize / 2)),
-                            gridIndex = new float2(x, z),
+                            gridIndex = new int2(x, z),
                             cost = 1
                         };
                     }
                 }
+                EntityManager.GetComponentObject<ECSGridGUI>(e).grid = GridData;
             }).Run();
     }
 
@@ -97,14 +102,65 @@ public class GridSystem : SystemBase
             outHits.Dispose();
         }
     }
+
+    public void CreateIntegrationField(GridCell destination)
+    {
+        destinationCell = destination;
+        destinationCell.cost = 0;
+        destinationCell.bestCost = 0;
+
+        Queue<GridCell> cellsToCheck = new Queue<GridCell>();
+        cellsToCheck.Enqueue(destinationCell);
+
+        while (cellsToCheck.Count > 0)
+        {
+            GridCell currCell = cellsToCheck.Dequeue();
+            List<GridCell> curNeighbors = GetNeighborCells(currCell.gridIndex.x, currCell.gridIndex.y);
+            foreach (var curNeighbor in curNeighbors)
+            {
+                if (curNeighbor.cost == byte.MaxValue) { continue; }
+                if (curNeighbor.cost + currCell.bestCost < curNeighbor.bestCost)
+                {
+                    curNeighbor.bestCost = (ushort)(curNeighbor.cost + currCell.bestCost);
+                    cellsToCheck.Enqueue(curNeighbor);
+                }
+            }
+        }
+    }
+
+    private List<GridCell> GetNeighborCells(int xIndex, int zIndex)
+    {
+        var cellList = new List<GridCell>();
+        var xLength = GridData.GetLength(0);
+        var zLength = GridData.GetLength(1);
+        if (zIndex != zLength - 1)
+            cellList.Add(GridData[xIndex, zIndex + 1]); // north
+        if (xIndex != xLength - 1)
+            cellList.Add(GridData[xIndex + 1, zIndex]); // east
+        if (zIndex != 0)
+            cellList.Add(GridData[xIndex, zIndex - 1]); // south
+        if (xIndex != 0)
+            cellList.Add(GridData[xIndex - 1, zIndex]); // west
+        if (xIndex != xLength - 1 && zIndex != zLength - 1)
+            cellList.Add(GridData[xIndex + 1, zIndex + 1]);  //NE
+        if (xIndex != xLength - 1 && zIndex != 0)
+            cellList.Add(GridData[xIndex + 1, zIndex - 1]);  // SE
+        if (xIndex != 0 && zIndex != 0)
+            cellList.Add(GridData[xIndex - 1, zIndex - 1]);  //SW
+        if (xIndex != 0 && zIndex != zLength - 1)
+            cellList.Add(GridData[xIndex - 1, zIndex + 1]);  // NW
+
+        return cellList;
+    }
 }
 
-public class GridCellData
+public class GridCell
 {
     public float3 bottomLeftPos;
     public float3 centerPos;
-    public float2 gridIndex;
+    public int2 gridIndex;
     public byte cost;
+    public ushort bestCost = ushort.MaxValue;
 
     public void IncreaseCost(int amount)
     {

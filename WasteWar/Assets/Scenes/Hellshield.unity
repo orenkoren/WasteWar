@@ -9457,16 +9457,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 4442639991428235013, guid: b6107396196f0184188946631c6e5055,
-        type: 3}
-      propertyPath: CellSize
-      value: 20
-      objectReference: {fileID: 0}
-    - target: {fileID: 4442639991428235013, guid: b6107396196f0184188946631c6e5055,
-        type: 3}
-      propertyPath: ShouldVisualize
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 8025007454366445809, guid: b6107396196f0184188946631c6e5055,
         type: 3}
       propertyPath: m_Name
@@ -9565,6 +9555,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: UI
+      objectReference: {fileID: 0}
+    - target: {fileID: 4686937521825303704, guid: 3f0ca534e8302c5479852488ea7cbb90,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4686937521825303707, guid: 3f0ca534e8302c5479852488ea7cbb90,
         type: 3}
