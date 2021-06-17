@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 362285187493874194}
   - component: {fileID: 6657932336633031566}
   - component: {fileID: 7665220817282410300}
+  - component: {fileID: 7900039780179920929}
   m_Layer: 10
   m_Name: Drone2
   m_TagString: Untagged
@@ -98,7 +99,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Damage: 1
-  speed: 10
+  speed: 50
 --- !u!114 &362285187493874194
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -305,3 +306,23 @@ MonoBehaviour:
         Tag07: 0
     m_SerializedVersion: 1
   m_SerializedVersion: 1
+--- !u!114 &7900039780179920929
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1912410721622126574}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c89b2b939ff4f547bc41e738902f110, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentDestination:
+    x: 0
+    y: 0
+    z: 0
+  finalDestination:
+    x: 0
+    y: 0
+    z: 0

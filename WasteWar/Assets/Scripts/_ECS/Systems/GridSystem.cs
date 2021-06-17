@@ -4,6 +4,7 @@ using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Physics;
 using Unity.Physics.Systems;
+using Unity.Transforms;
 using UnityEngine;
 
 [assembly: RegisterGenericComponentType(typeof(List<>))]
@@ -20,39 +21,25 @@ public class GridSystem : SystemBase
         m_physicsWorld = World.GetExistingSystem<BuildPhysicsWorld>();
         CreateGrid();
         CreateCostField();
-        CreateIntegrationField(GridData[5, 5]);
+        CreateIntegrationField(GridData[25, 25]);
     }
 
     protected override void OnUpdate()
     {
         var gridLocations = GridData;
+        VisualizeGrid(gridLocations);
         Entities
-            .WithoutBurst()
-            .WithAll<GridComponent>()
-            .ForEach((ref GridComponent grid) =>
-            {
-                if (grid.ShouldVisualize)
-                {
-                    for (int x = 0; x < gridLocations.GetLength(0) - 1; x++)
-                    {
-                        for (int z = 0; z < gridLocations.GetLength(1) - 1; z++)
-                        {
-                            if (gridLocations[x, z].cost == 255)
-                            {
-                                Debug.DrawLine(gridLocations[x, z].bottomLeftPos, gridLocations[x + 1, z].bottomLeftPos);
-                                Debug.DrawLine(gridLocations[x, z].bottomLeftPos, gridLocations[x, z + 1].bottomLeftPos);
-                                Debug.DrawLine(gridLocations[x + 1, z].bottomLeftPos, gridLocations[x + 1, z + 1].bottomLeftPos);
-                                Debug.DrawLine(gridLocations[x, z + 1].bottomLeftPos, gridLocations[x + 1, z + 1].bottomLeftPos);
-                            }
-                        }
-                    }
-                }
-            }).Run();
-    }
-
-    public float3 GetGridPosition(int x, int z)
-    {
-        return GridData[x, z].bottomLeftPos;
+           .WithoutBurst()
+           .WithAll<FlowFieldAgentComponent>()
+           .WithReadOnly(gridLocations)
+           .ForEach(
+               (ref FlowFieldAgentComponent agent, ref Translation translation) =>
+               {
+                   agent.currentDestination = GetNextCellDestination(translation.Value,
+                       agent.finalDestination);
+               }
+           )
+           .Run();
     }
 
     private void CreateGrid()
@@ -115,7 +102,7 @@ public class GridSystem : SystemBase
         while (cellsToCheck.Count > 0)
         {
             GridCell currCell = cellsToCheck.Dequeue();
-            List<GridCell> curNeighbors = GetNeighborCells(currCell.gridIndex.x, currCell.gridIndex.y);
+            List<GridCell> curNeighbors = GetNeighborCells(currCell.gridIndex.x, currCell.gridIndex.y, false);
             foreach (var curNeighbor in curNeighbors)
             {
                 if (curNeighbor.cost == byte.MaxValue) { continue; }
@@ -128,7 +115,34 @@ public class GridSystem : SystemBase
         }
     }
 
-    private List<GridCell> GetNeighborCells(int xIndex, int zIndex)
+    public float3 GetNextCellDestination(float3 origin, float3 finalDestination)
+    {
+        float lowestDistanceFromGrid = 50000;
+        GridCell closestToGrid = GridData[0, 0];
+        foreach (var cell in GridData)
+        {
+            float currDistance = math.length(cell.centerPos - origin);
+            if (currDistance < lowestDistanceFromGrid)
+            {
+                lowestDistanceFromGrid = currDistance;
+                closestToGrid = cell;
+            }
+        }
+        float lowestNeighborCost = ushort.MaxValue;
+        GridCell closestNeighbor = GridData[0, 0];
+        var neighbors = GetNeighborCells(closestToGrid.gridIndex.x, closestToGrid.gridIndex.y, true);
+        foreach (var neighbor in neighbors)
+        {
+            if(neighbor.bestCost < lowestNeighborCost)
+            {
+                lowestNeighborCost = neighbor.bestCost;
+                closestNeighbor = neighbor;
+            }
+        }
+        return closestNeighbor.centerPos;
+    }
+
+    private List<GridCell> GetNeighborCells(int xIndex, int zIndex, bool shouldCheckDiagonals)
     {
         var cellList = new List<GridCell>();
         var xLength = GridData.GetLength(0);
@@ -141,16 +155,42 @@ public class GridSystem : SystemBase
             cellList.Add(GridData[xIndex, zIndex - 1]); // south
         if (xIndex != 0)
             cellList.Add(GridData[xIndex - 1, zIndex]); // west
-        if (xIndex != xLength - 1 && zIndex != zLength - 1)
+        if (xIndex != xLength - 1 && zIndex != zLength - 1 && shouldCheckDiagonals)
             cellList.Add(GridData[xIndex + 1, zIndex + 1]);  //NE
-        if (xIndex != xLength - 1 && zIndex != 0)
+        if (xIndex != xLength - 1 && zIndex != 0 && shouldCheckDiagonals)
             cellList.Add(GridData[xIndex + 1, zIndex - 1]);  // SE
-        if (xIndex != 0 && zIndex != 0)
+        if (xIndex != 0 && zIndex != 0 && shouldCheckDiagonals)
             cellList.Add(GridData[xIndex - 1, zIndex - 1]);  //SW
-        if (xIndex != 0 && zIndex != zLength - 1)
+        if (xIndex != 0 && zIndex != zLength - 1 && shouldCheckDiagonals)
             cellList.Add(GridData[xIndex - 1, zIndex + 1]);  // NW
 
         return cellList;
+    }
+
+    private void VisualizeGrid(GridCell[,] gridLocations)
+    {
+        Entities
+            .WithoutBurst()
+            .WithAll<GridComponent>()
+            .ForEach((ref GridComponent grid) =>
+            {
+                if (grid.ShouldVisualize)
+                {
+                    for (int x = 0; x < gridLocations.GetLength(0) - 1; x++)
+                    {
+                        for (int z = 0; z < gridLocations.GetLength(1) - 1; z++)
+                        {
+                            if (gridLocations[x, z].cost == 255)
+                            {
+                                Debug.DrawLine(gridLocations[x, z].bottomLeftPos, gridLocations[x + 1, z].bottomLeftPos);
+                                Debug.DrawLine(gridLocations[x, z].bottomLeftPos, gridLocations[x, z + 1].bottomLeftPos);
+                                Debug.DrawLine(gridLocations[x + 1, z].bottomLeftPos, gridLocations[x + 1, z + 1].bottomLeftPos);
+                                Debug.DrawLine(gridLocations[x, z + 1].bottomLeftPos, gridLocations[x + 1, z + 1].bottomLeftPos);
+                            }
+                        }
+                    }
+                }
+            }).Run();
     }
 }
 
