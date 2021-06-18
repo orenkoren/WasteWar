@@ -20,13 +20,13 @@ public class ECSGridGUI : MonoBehaviour
                 Vector3 bottomLeftPos = XZPlane(grid[x, z].bottomLeftPos);
                 if (displayGrid)
                 {
-                    if (grid[x, z].cost == 255)
-                    {
+                    //if (grid[x, z].cost == 255)
+                    //{
                         Debug.DrawLine(bottomLeftPos, XZPlane(grid[x + 1, z].bottomLeftPos));
                         Debug.DrawLine(bottomLeftPos, XZPlane(grid[x, z + 1].bottomLeftPos));
                         Debug.DrawLine(XZPlane(grid[x + 1, z].bottomLeftPos), XZPlane(grid[x + 1, z + 1].bottomLeftPos));
                         Debug.DrawLine(XZPlane(grid[x, z + 1].bottomLeftPos), XZPlane(grid[x + 1, z + 1].bottomLeftPos));
-                    }
+                    //}
                 }
 
                 if (displayBestCostField)

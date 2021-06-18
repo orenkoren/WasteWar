@@ -34,6 +34,7 @@ public class GridSystem : SystemBase
         var gridLocs = gridLocations;
         var gridBest = gridBestCosts;
         var gridWidth = GridData.GetLength(0);
+        var cellS = cellSize;
         Entities
            .WithAll<FlowFieldAgentComponent>()
            .WithReadOnly(gridLocs)
@@ -42,7 +43,7 @@ public class GridSystem : SystemBase
                (ref FlowFieldAgentComponent agent, ref Translation translation) =>
                {
                    agent.currentDestination = GetNextCellDestination(new float2(translation.Value.x, translation.Value.z),
-                       gridLocs,gridBest, gridWidth);
+                       gridLocs,gridBest, gridWidth, cellS);
                }
            )
            .ScheduleParallel();
@@ -132,22 +133,9 @@ public class GridSystem : SystemBase
     }
 
     public static float3 GetNextCellDestination(float2 origin, NativeList<float2> gridCellPositions,
-        NativeList<ushort> bestCosts, int gridWidth)
+        NativeList<ushort> bestCosts, int gridWidth, int cellSize)
     {
-        float lowestDistanceFromGrid = 50000;
-        int closestIndex = 0;
-        for (int i = 0; i < gridCellPositions.Length; i++)
-        {
-            if (gridCellPositions[i].x - origin.x < 1 && gridCellPositions[i].y - origin.y < 1)
-            {
-                float currDistance = math.distance(gridCellPositions[i], origin);
-                if (currDistance < lowestDistanceFromGrid)
-                {
-                    lowestDistanceFromGrid = currDistance;
-                    closestIndex = i;
-                }
-            }
-        }
+        int closestIndex = ((int)origin.x / cellSize * gridWidth) + ((int)origin.y / cellSize);
 
         float lowestNeighborCost = ushort.MaxValue;
 
