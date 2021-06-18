@@ -11,6 +11,9 @@ using UnityEngine;
 public class GridSystem : SystemBase
 {
     public GridCell[,] GridData = new GridCell[0, 0];
+
+    private NativeList<float3> gridLocations = new NativeList<float3>(Allocator.Persistent);
+    private NativeList<ushort> gridBestCosts = new NativeList<ushort>(Allocator.Persistent);
     private BuildPhysicsWorld m_physicsWorld;
     private GridCell destinationCell;
     private int cellSize;
@@ -22,24 +25,26 @@ public class GridSystem : SystemBase
         CreateGrid();
         CreateCostField();
         CreateIntegrationField(GridData[25, 25]);
+        CreateBestCostList();
     }
 
     protected override void OnUpdate()
     {
-        var gridLocations = GridData;
-        VisualizeGrid(gridLocations);
+        var gridLocs = gridLocations;
+        var gridBest = gridBestCosts;
+        var gridWidth = GridData.GetLength(0);
         Entities
-           .WithoutBurst()
            .WithAll<FlowFieldAgentComponent>()
-           .WithReadOnly(gridLocations)
+           .WithReadOnly(gridLocs)
+           .WithReadOnly(gridBest)
            .ForEach(
                (ref FlowFieldAgentComponent agent, ref Translation translation) =>
                {
-                   agent.currentDestination = GetNextCellDestination(translation.Value,
-                       agent.finalDestination);
+                   agent.currentDestination = GetNextCellDestination(translation.Value, gridLocs,
+                                    gridBest, gridWidth);
                }
            )
-           .Run();
+           .ScheduleParallel();
     }
 
     private void CreateGrid()
@@ -63,6 +68,7 @@ public class GridSystem : SystemBase
                             gridIndex = new int2(x, z),
                             cost = 1
                         };
+                        gridLocations.Add(GridData[x, z].centerPos);
                     }
                 }
                 EntityManager.GetComponentObject<ECSGridGUI>(e).grid = GridData;
@@ -102,7 +108,7 @@ public class GridSystem : SystemBase
         while (cellsToCheck.Count > 0)
         {
             GridCell currCell = cellsToCheck.Dequeue();
-            List<GridCell> curNeighbors = GetNeighborCells(currCell.gridIndex.x, currCell.gridIndex.y, false);
+            List<GridCell> curNeighbors = GetNeighborCells(currCell.gridIndex.x, currCell.gridIndex.y,false);
             foreach (var curNeighbor in curNeighbors)
             {
                 if (curNeighbor.cost == byte.MaxValue) { continue; }
@@ -115,31 +121,89 @@ public class GridSystem : SystemBase
         }
     }
 
-    public float3 GetNextCellDestination(float3 origin, float3 finalDestination)
+    public void CreateBestCostList()
     {
-        float lowestDistanceFromGrid = 50000;
-        GridCell closestToGrid = GridData[0, 0];
         foreach (var cell in GridData)
         {
-            float currDistance = math.length(cell.centerPos - origin);
+            gridBestCosts.Add(cell.bestCost);
+        }
+    }
+
+    public static float3 GetNextCellDestination(float3 origin, NativeList<float3> gridCellPositions,
+        NativeList<ushort> bestCosts, int gridWidth)
+    {
+        float lowestDistanceFromGrid = 50000;
+        int closestIndex = 0;
+        for (int i = 0; i < gridCellPositions.Length; i++)
+        {
+            float currDistance = math.length(gridCellPositions[i] - origin);
             if (currDistance < lowestDistanceFromGrid)
             {
                 lowestDistanceFromGrid = currDistance;
-                closestToGrid = cell;
+                closestIndex = i;
             }
         }
+
         float lowestNeighborCost = ushort.MaxValue;
-        GridCell closestNeighbor = GridData[0, 0];
-        var neighbors = GetNeighborCells(closestToGrid.gridIndex.x, closestToGrid.gridIndex.y, true);
-        foreach (var neighbor in neighbors)
+        float3 closestNeighbor = gridCellPositions[0];
+        ushort currentBestCost = bestCosts[closestIndex];
+
+        int indexToCheck = closestIndex + 1;
+        if (indexToCheck < bestCosts.Length  - 1 && bestCosts[indexToCheck] < lowestNeighborCost)
         {
-            if(neighbor.bestCost < lowestNeighborCost)
-            {
-                lowestNeighborCost = neighbor.bestCost;
-                closestNeighbor = neighbor;
-            }
+            closestNeighbor = gridCellPositions[indexToCheck]; // EAST
+            lowestNeighborCost = bestCosts[indexToCheck];
         }
-        return closestNeighbor.centerPos;
+        indexToCheck = closestIndex - 1;
+        if (indexToCheck >= 0 && bestCosts[indexToCheck] < lowestNeighborCost)
+        {
+            closestNeighbor = gridCellPositions[indexToCheck]; // WEST
+            lowestNeighborCost = bestCosts[indexToCheck];
+        }
+        indexToCheck = closestIndex + gridWidth;
+        if (indexToCheck < bestCosts.Length - 1 && bestCosts[indexToCheck] < lowestNeighborCost)
+        {
+            closestNeighbor = gridCellPositions[indexToCheck]; // NORTH
+            lowestNeighborCost = bestCosts[indexToCheck];
+        }
+        indexToCheck = closestIndex - gridWidth;
+        if (indexToCheck >= 0 && bestCosts[indexToCheck] < lowestNeighborCost)
+        {
+            closestNeighbor = gridCellPositions[indexToCheck]; // SOUTH
+            lowestNeighborCost = bestCosts[indexToCheck];
+        }
+        indexToCheck = closestIndex + gridWidth + 1;
+        if (indexToCheck < bestCosts.Length - 1 &&
+                bestCosts[indexToCheck] < lowestNeighborCost)
+        {
+            closestNeighbor = gridCellPositions[indexToCheck]; // NE
+            lowestNeighborCost = bestCosts[indexToCheck];
+
+        }
+        indexToCheck = closestIndex + gridWidth - 1;
+        if (indexToCheck < bestCosts.Length - 1 &&
+                bestCosts[indexToCheck] < lowestNeighborCost)
+        {
+            closestNeighbor = gridCellPositions[indexToCheck]; // NW
+            lowestNeighborCost = bestCosts[indexToCheck];
+
+        }
+        indexToCheck = closestIndex - gridWidth  + 1;
+
+        if (indexToCheck >= 0 && bestCosts[indexToCheck] < lowestNeighborCost)
+        {
+            closestNeighbor = gridCellPositions[indexToCheck]; // SE
+            lowestNeighborCost = bestCosts[indexToCheck];
+
+        }
+        indexToCheck = closestIndex - gridWidth - 1;
+
+        if (indexToCheck >= 0 && bestCosts[indexToCheck] < lowestNeighborCost)
+        {
+            closestNeighbor = gridCellPositions[indexToCheck]; // SW
+            lowestNeighborCost = bestCosts[indexToCheck];
+        }
+        return closestNeighbor;
     }
 
     private List<GridCell> GetNeighborCells(int xIndex, int zIndex, bool shouldCheckDiagonals)
@@ -166,31 +230,11 @@ public class GridSystem : SystemBase
 
         return cellList;
     }
-
-    private void VisualizeGrid(GridCell[,] gridLocations)
+    protected override void OnDestroy()
     {
-        Entities
-            .WithoutBurst()
-            .WithAll<GridComponent>()
-            .ForEach((ref GridComponent grid) =>
-            {
-                if (grid.ShouldVisualize)
-                {
-                    for (int x = 0; x < gridLocations.GetLength(0) - 1; x++)
-                    {
-                        for (int z = 0; z < gridLocations.GetLength(1) - 1; z++)
-                        {
-                            if (gridLocations[x, z].cost == 255)
-                            {
-                                Debug.DrawLine(gridLocations[x, z].bottomLeftPos, gridLocations[x + 1, z].bottomLeftPos);
-                                Debug.DrawLine(gridLocations[x, z].bottomLeftPos, gridLocations[x, z + 1].bottomLeftPos);
-                                Debug.DrawLine(gridLocations[x + 1, z].bottomLeftPos, gridLocations[x + 1, z + 1].bottomLeftPos);
-                                Debug.DrawLine(gridLocations[x, z + 1].bottomLeftPos, gridLocations[x + 1, z + 1].bottomLeftPos);
-                            }
-                        }
-                    }
-                }
-            }).Run();
+        base.OnDestroy();
+        gridLocations.Dispose();
+        gridBestCosts.Dispose();
     }
 }
 

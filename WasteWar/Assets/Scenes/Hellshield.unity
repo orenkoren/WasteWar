@@ -9459,6 +9459,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 6694896756469433442, guid: b6107396196f0184188946631c6e5055,
         type: 3}
+      propertyPath: displayGrid
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6694896756469433442, guid: b6107396196f0184188946631c6e5055,
+        type: 3}
       propertyPath: displayIndicies
       value: 0
       objectReference: {fileID: 0}
@@ -9784,6 +9789,16 @@ PrefabInstance:
       propertyPath: m_Name
       value: BaseEntity
       objectReference: {fileID: 0}
+    - target: {fileID: 5339804620391328704, guid: 5d9a083c198eb754daa15c80ee0b970b,
+        type: 3}
+      propertyPath: MaxHealth
+      value: 50000
+      objectReference: {fileID: 0}
+    - target: {fileID: 5339804620391328704, guid: 5d9a083c198eb754daa15c80ee0b970b,
+        type: 3}
+      propertyPath: CurrentHealth
+      value: 50000
+      objectReference: {fileID: 0}
     - target: {fileID: 7150298415921119841, guid: 5d9a083c198eb754daa15c80ee0b970b,
         type: 3}
       propertyPath: m_RootOrder
@@ -9851,7 +9866,7 @@ PrefabInstance:
     - target: {fileID: 8157376283840655627, guid: fbbfa204943475747a74b5ef06f78d08,
         type: 3}
       propertyPath: spawnAmount
-      value: 100
+      value: 10000
       objectReference: {fileID: 0}
     - target: {fileID: 8157376283840655628, guid: fbbfa204943475747a74b5ef06f78d08,
         type: 3}
