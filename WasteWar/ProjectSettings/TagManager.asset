@@ -26,6 +26,8 @@ TagManager:
   - Wall
   - Turret0
   - Turret0Template
+  - Camera With Normal Zoom
+  - Camera With FoV Zoom
   layers:
   - Default
   - TransparentFX

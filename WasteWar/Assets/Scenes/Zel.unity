@@ -123,12 +123,6 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!20 &21086383 stripped
-Camera:
-  m_CorrespondingSourceObject: {fileID: 8319511433108928805, guid: d460303dd73f3b44fb5fde87a121973d,
-    type: 3}
-  m_PrefabInstance: {fileID: 8459859427431891040}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &74437303
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -136,6 +130,16 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 3139353389990836417, guid: cae28d4f55bdaa9498d1a7230f8eec30,
+        type: 3}
+      propertyPath: SHAKE_DURATION_ATTACK
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3139353389990836417, guid: cae28d4f55bdaa9498d1a7230f8eec30,
+        type: 3}
+      propertyPath: SHAKE_DURATION_PLACEMENT
+      value: 0.66
+      objectReference: {fileID: 0}
     - target: {fileID: 3139353389990836421, guid: cae28d4f55bdaa9498d1a7230f8eec30,
         type: 3}
       propertyPath: m_RootOrder
@@ -205,6 +209,23 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 5953220787626883584, guid: b5bbecf3a312c1c4d9d7ff9b1645ad64,
+        type: 3}
+      propertyPath: m_TerrainData
+      value: 
+      objectReference: {fileID: 15600000, guid: 84c1246a5642c8346976e1a8e9c476a0,
+        type: 2}
+    - target: {fileID: 5953220787626883585, guid: b5bbecf3a312c1c4d9d7ff9b1645ad64,
+        type: 3}
+      propertyPath: m_TerrainData
+      value: 
+      objectReference: {fileID: 15600000, guid: 12c23ab697d36ef47bf6d0d10955e192,
+        type: 2}
+    - target: {fileID: 5953220787626883585, guid: b5bbecf3a312c1c4d9d7ff9b1645ad64,
+        type: 3}
+      propertyPath: m_MaterialTemplate
+      value: 
+      objectReference: {fileID: 2100000, guid: 594ea882c5a793440b60ff72d896021e, type: 2}
     - target: {fileID: 5953220787626883586, guid: b5bbecf3a312c1c4d9d7ff9b1645ad64,
         type: 3}
       propertyPath: m_RootOrder
@@ -272,6 +293,12 @@ Terrain:
   m_CorrespondingSourceObject: {fileID: 5953220787626883585, guid: b5bbecf3a312c1c4d9d7ff9b1645ad64,
     type: 3}
   m_PrefabInstance: {fileID: 134378280}
+  m_PrefabAsset: {fileID: 0}
+--- !u!20 &504657083 stripped
+Camera:
+  m_CorrespondingSourceObject: {fileID: 391461102453068424, guid: d460303dd73f3b44fb5fde87a121973d,
+    type: 3}
+  m_PrefabInstance: {fileID: 8459859427431891040}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &613579905
 PrefabInstance:
@@ -342,6 +369,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5d9a083c198eb754daa15c80ee0b970b, type: 3}
+--- !u!1 &1600856488 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8459859427578807364, guid: d460303dd73f3b44fb5fde87a121973d,
+    type: 3}
+  m_PrefabInstance: {fileID: 8459859427431891040}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &5035339239263798065
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -478,12 +511,18 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5828568733788310613, guid: d460303dd73f3b44fb5fde87a121973d,
+        type: 3}
+      propertyPath: camParent
+      value: 
+      objectReference: {fileID: 1600856488}
     - target: {fileID: 6120766615312655516, guid: d460303dd73f3b44fb5fde87a121973d,
         type: 3}
       propertyPath: m_Name
       value: Core
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 6402356433340477241, guid: d460303dd73f3b44fb5fde87a121973d, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: d460303dd73f3b44fb5fde87a121973d, type: 3}
 --- !u!1001 &8460824764232383862
 PrefabInstance:
@@ -496,12 +535,32 @@ PrefabInstance:
         type: 3}
       propertyPath: cam
       value: 
-      objectReference: {fileID: 21086383}
+      objectReference: {fileID: 504657083}
+    - target: {fileID: 7838203742187533557, guid: e381dc8b855589a40b2a57665100794b,
+        type: 3}
+      propertyPath: camParent
+      value: 
+      objectReference: {fileID: 1600856488}
+    - target: {fileID: 7838203742187533557, guid: e381dc8b855589a40b2a57665100794b,
+        type: 3}
+      propertyPath: cameraParent
+      value: 
+      objectReference: {fileID: 1600856488}
     - target: {fileID: 7838203742187533559, guid: e381dc8b855589a40b2a57665100794b,
         type: 3}
       propertyPath: cam
       value: 
-      objectReference: {fileID: 21086383}
+      objectReference: {fileID: 504657083}
+    - target: {fileID: 7838203742187533559, guid: e381dc8b855589a40b2a57665100794b,
+        type: 3}
+      propertyPath: camParent
+      value: 
+      objectReference: {fileID: 1600856488}
+    - target: {fileID: 7838203742187533559, guid: e381dc8b855589a40b2a57665100794b,
+        type: 3}
+      propertyPath: cameraParent
+      value: 
+      objectReference: {fileID: 1600856488}
     - target: {fileID: 8460824764228317852, guid: e381dc8b855589a40b2a57665100794b,
         type: 3}
       propertyPath: m_Name

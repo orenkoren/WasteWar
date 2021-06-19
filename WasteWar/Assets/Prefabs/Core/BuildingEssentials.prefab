@@ -45,7 +45,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   minimumDistance: 4
   nodeCountMinMax: {x: 5, y: 10}
-  distanceFromMapEdgeInPercentile: 0.266
+  distanceFromMapEdgeInPercentile: 0.1
   runtimeGameObjRefs: {fileID: 11400000, guid: c9ed2ca021f60cf4d9cdf92da6c15cdf, type: 2}
 --- !u!114 &541141948
 MonoBehaviour:

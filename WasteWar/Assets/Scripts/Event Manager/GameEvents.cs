@@ -16,7 +16,9 @@ public static class GameEvents
     public static event EventHandler<int> LeftClickUpListeners;
     public static event EventHandler<TemplateData> ContinuousLeftClickPressListeners;
     public static event EventHandler<RaycastHit> RightClickPressedListeners;
+    public static event EventHandler<int> MiddleMouseClickPressedListeners;
     public static event EventHandler<Vector3> MouseOverListeners;
+    public static event EventHandler<Vector3> MouseMovListeners;
 
     public static event EventHandler<int> NodeUsedUpListeners;
     public static event EventHandler<int> EraseResourceGameObjectListeners;
@@ -42,6 +44,8 @@ public static class GameEvents
                                             RightClickPressedListeners?.Invoke(sender, data);
     public static void FireContinuousLeftClickPress(object sender, TemplateData data) =>
                                              ContinuousLeftClickPressListeners?.Invoke(sender, data);
+    public static void FireMiddleMouseClickPressed(object sender, int data) =>
+                                             MiddleMouseClickPressedListeners?.Invoke(sender, data);
     public static void FireMouseOver(object sender, Vector3 hitPoint) =>
                                             MouseOverListeners?.Invoke(sender, hitPoint);
     public static void FireNodeUsedUp(object sender, int locationKey) =>
@@ -50,6 +54,8 @@ public static class GameEvents
                                             EraseResourceGameObjectListeners?.Invoke(sender, locationKey);
     public static void FireResourcesGenerated(object sender, Dictionary<int, Resource> resources) =>
                                             ResourcesGeneratedListeners?.Invoke(sender, resources);
+    public static void FireMouseMov(object sender, Vector3 data) =>
+                                            MouseMovListeners?.Invoke(sender, data);
 
 }
 

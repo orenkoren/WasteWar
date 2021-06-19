@@ -126,6 +126,18 @@ Light:
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
   m_ShadowAngle: 0
+--- !u!114 &6402356433340477241
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8459859427578807364}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c10576e7a3ccc2747bfbdd9347b97e1c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &4646342475582877219
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -133,6 +145,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 4006935786392198982}
     m_Modifications:
+    - target: {fileID: 2756378886374259442, guid: cea69143681596441bb7681d57708275,
+        type: 3}
+      propertyPath: m_TagString
+      value: Camera With Normal Zoom
+      objectReference: {fileID: 0}
     - target: {fileID: 3827050943749171812, guid: cea69143681596441bb7681d57708275,
         type: 3}
       propertyPath: terrain
@@ -209,17 +226,62 @@ PrefabInstance:
       propertyPath: m_Name
       value: Camera Parent
       objectReference: {fileID: 0}
+    - target: {fileID: 4919890943879818846, guid: cea69143681596441bb7681d57708275,
+        type: 3}
+      propertyPath: m_TagString
+      value: Camera With FoV Zoom
+      objectReference: {fileID: 0}
+    - target: {fileID: 8514365193911303265, guid: cea69143681596441bb7681d57708275,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 8514365193911303265, guid: cea69143681596441bb7681d57708275,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 8514365193911303265, guid: cea69143681596441bb7681d57708275,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8514365193911303265, guid: cea69143681596441bb7681d57708275,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8514365193911303265, guid: cea69143681596441bb7681d57708275,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 90
+      objectReference: {fileID: 0}
+    - target: {fileID: 8815687437528155272, guid: cea69143681596441bb7681d57708275,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 8815687437528155272, guid: cea69143681596441bb7681d57708275,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 8815687437528155272, guid: cea69143681596441bb7681d57708275,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 90
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: cea69143681596441bb7681d57708275, type: 3}
---- !u!4 &8459859427578807365 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 3827050943749171814, guid: cea69143681596441bb7681d57708275,
+--- !u!1 &8459859427578807364 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3827050943749171815, guid: cea69143681596441bb7681d57708275,
     type: 3}
   m_PrefabInstance: {fileID: 4646342475582877219}
   m_PrefabAsset: {fileID: 0}
---- !u!20 &8319511433108928805 stripped
-Camera:
-  m_CorrespondingSourceObject: {fileID: 3679379653131179782, guid: cea69143681596441bb7681d57708275,
+--- !u!4 &8459859427578807365 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 3827050943749171814, guid: cea69143681596441bb7681d57708275,
     type: 3}
   m_PrefabInstance: {fileID: 4646342475582877219}
   m_PrefabAsset: {fileID: 0}
@@ -239,7 +301,12 @@ PrefabInstance:
         type: 3}
       propertyPath: cam
       value: 
-      objectReference: {fileID: 8319511433108928805}
+      objectReference: {fileID: 0}
+    - target: {fileID: 2703366156014014718, guid: 6da8982367c9d0543aace75a27ccf1a3,
+        type: 3}
+      propertyPath: cameraParent
+      value: 
+      objectReference: {fileID: 8459859427578807364}
     - target: {fileID: 2703366156014014718, guid: 6da8982367c9d0543aace75a27ccf1a3,
         type: 3}
       propertyPath: runtimeGameObjRefs
@@ -305,7 +372,12 @@ PrefabInstance:
         type: 3}
       propertyPath: cam
       value: 
-      objectReference: {fileID: 8319511433108928805}
+      objectReference: {fileID: 0}
+    - target: {fileID: 8982036096107485974, guid: 6da8982367c9d0543aace75a27ccf1a3,
+        type: 3}
+      propertyPath: cameraParent
+      value: 
+      objectReference: {fileID: 8459859427578807364}
     - target: {fileID: 8982036096107485974, guid: 6da8982367c9d0543aace75a27ccf1a3,
         type: 3}
       propertyPath: runtimeGameObjRefs

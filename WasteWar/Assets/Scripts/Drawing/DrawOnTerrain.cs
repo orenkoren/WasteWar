@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class DrawOnTerrain : MonoBehaviour
@@ -7,25 +6,19 @@ public class DrawOnTerrain : MonoBehaviour
     [SerializeField]
     private PrefabPlaceable placeablePrefabs;
     [SerializeField]
-    private Camera cam;
+    private GameObject camParent;
     [SerializeField]
     private GameObject pipeMethods;
-    [SerializeField]
-    RuntimeGameObjRefs runtimeGameObjRefs;
 
     public GameObject TemplateStructure { get; set; }
     public Vector3 TemplateStructureSize { get; private set; }
 
-    private Terrain terrain;
-    private RaycastHit hit;
-    private Ray ray;    
     private List<GameObject> structures = new List<GameObject>();
     private int rotationState = 0;
 
     private void Start()
     {
-        terrain = runtimeGameObjRefs.terrain;
-
+        GameEvents.MouseMovListeners += DrawTemplateStructureAt;
         GameEvents.BuildingRotationListeners += RotateTemplate;
         GameEvents.TemplateSelectedListeners += DestroyOldAndCreateNewTemplate;
         GameEvents.LeftClickPressedListeners += DrawStructure;
@@ -33,15 +26,7 @@ public class DrawOnTerrain : MonoBehaviour
         GameEvents.RightClickPressedListeners += DeleteStructure;
     }
 
-    private void Update()
-    {
-        ray = cam.ScreenPointToRay(Input.mousePosition);
-        if (Physics.Raycast(ray, out hit, CameraConstants.Instance.RAYCAST_DISTANCE, LayerMasks.Instance.GROUND)
-            && TemplateStructure != null && MathUtils.CursorIsWithinBounds(hit.point, terrain.terrainData.size))
-            DrawTemplateStructureAt(hit.point);
-    }
-
-    public void DrawTemplateStructureAt(Vector3 loc)
+    private void DrawTemplateStructureAt(object sender,Vector3 loc)
     {
         if (CheckIfLocationIsFree())
             TemplateStructure.GetComponent<PaintModel>().Paint("placement", true);
@@ -62,8 +47,9 @@ public class DrawOnTerrain : MonoBehaviour
             structures.Add(Structure);
         }
         else if(data.TemplateStructure != null && !CheckIfLocationIsFree())
-            StartCoroutine(ShakeTemplateForXSec());
+            StartCoroutine(TemplateStructure.GetComponent<StructureShake>().ShakeTemplateForXSec());
     }
+
     private void DrawStructuresConsecutively(object sender, TemplateData data)
     {
         if (data.TemplateStructure != null && data.TemplateStructure.tag.Contains("Pipe") && CheckIfLocationIsFree())
@@ -112,6 +98,7 @@ public class DrawOnTerrain : MonoBehaviour
                            ObjectSnapper.SnapToGridCell(mousePos, template.GetComponent<BoxCollider>().size),
                            template.transform.rotation);
     }
+
     private GameObject PlaceablePrefabInstantiator(GameObject template, Vector3 mousePos, Quaternion rotation)
     {
 
@@ -120,15 +107,6 @@ public class DrawOnTerrain : MonoBehaviour
         return Instantiate(template,
                            ObjectSnapper.SnapToGridCell(mousePos, template.GetComponent<BoxCollider>().size),
                            rotation);
-    }
-
-    private GameObject PlaceablePrefabInstantiatorWithKnownPos(GameObject template, Vector3 pos)
-    {
-        template.layer = LayerMasks.Instance.ATTACKABLE_LAYER;
-
-        return Instantiate(template,
-                           pos,
-                           template.transform.rotation);
     }
 
     private void RotateTemplate(object sender, bool isCurvedModeOn)
@@ -201,35 +179,9 @@ public class DrawOnTerrain : MonoBehaviour
                 TemplateStructure.transform.rotation, LayerMasks.Instance.ATTACKABLE);
     }
 
-    private IEnumerator ShakeTemplateForXSec()
-    {
-        float countdown = 0.66f;
-        Vector3 tempPos = new Vector3(TemplateStructure.transform.position.x, TemplateStructure.transform.position.y, TemplateStructure.transform.position.z);
-        float time = 0;
-
-        while (countdown >= 0)
-        {
-            ShakeTemplate();
-            countdown -= Time.deltaTime;
-            yield return null;
-        }
-        TemplateStructure.transform.position = tempPos;
-
-        void ShakeTemplate()
-        {
-             float speed = 50f;
-             float amount = 0.1f;
-
-            TemplateStructure.transform.position = new Vector3(TemplateStructure.transform.position.x + Mathf.Sin(time * speed) * amount,
-                                                               TemplateStructure.transform.position.y,
-                                                               TemplateStructure.transform.position.z + Mathf.Sin(time * speed) * amount
-                                                               );
-            time += Time.deltaTime;
-        }
-    }
-
     private void OnDestroy()
     {
+        GameEvents.MouseMovListeners -= DrawTemplateStructureAt;
         GameEvents.BuildingRotationListeners -= RotateTemplate;
         GameEvents.TemplateSelectedListeners -= DestroyOldAndCreateNewTemplate;
         GameEvents.LeftClickPressedListeners -= DrawStructure;

@@ -3,11 +3,11 @@ using UnityEngine;
 public class MouseOverManager : MonoBehaviour
 {
     [SerializeField]
-    private Camera cam;
+    private GameObject cameraParent;
     [SerializeField]
-    RuntimeGameObjRefs runtimeGameObjRefs;
+    private RuntimeGameObjRefs runtimeGameObjRefs;
 
-
+    private Camera cam;
     private Terrain terrain;
     private RaycastHit hit;
     private Ray ray;
@@ -15,6 +15,7 @@ public class MouseOverManager : MonoBehaviour
 
     private void Start()
     {
+        cam = cameraParent.GetComponent<Zoom>().Cam;
         terrain = runtimeGameObjRefs.terrain;
         terrainSize = terrain.terrainData.size;
     }
