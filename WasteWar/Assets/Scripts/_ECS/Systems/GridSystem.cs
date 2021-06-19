@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Jobs;
@@ -8,7 +7,6 @@ using Unity.Physics;
 using Unity.Physics.Systems;
 using Unity.Transforms;
 
-[assembly: RegisterGenericComponentType(typeof(List<>))]
 public class GridSystem : SystemBase
 {
     public GridCell[,] GridData = new GridCell[0, 0];
@@ -40,10 +38,10 @@ public class GridSystem : SystemBase
            .WithReadOnly(gridLocs)
            .WithReadOnly(gridBest)
            .ForEach(
-               (ref FlowFieldAgentComponent agent, ref Translation translation) =>
+               (ref FlowFieldAgentComponent agent, in Translation translation) =>
                {
-                   agent.currentDestination = GetNextCellDestination(new float2(translation.Value.x, translation.Value.z),
-                       gridLocs,gridBest, gridWidth, cellS);
+                   agent.currentDestination = GetNextCellDestination(MathUtilECS.ToXZPlane(translation.Value),
+                       gridLocs, gridBest, gridWidth, cellS);
                }
            )
            .ScheduleParallel();

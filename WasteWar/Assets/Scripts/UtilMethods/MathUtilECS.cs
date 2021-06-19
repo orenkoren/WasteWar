@@ -1,5 +1,6 @@
 using System;
 using Unity.Mathematics;
+using UnityEngine;
 
 public static class MathUtilECS
 {
@@ -27,5 +28,20 @@ public static class MathUtilECS
             return target;
         float num5 = (float)Math.Sqrt(num4);
         return new float3(current.x + num1 / num5 * maxDistanceDelta, current.y + num2 / num5 * maxDistanceDelta, current.z + num3 / num5 * maxDistanceDelta);
+    }
+
+    public static Vector3 FromXZPlane(Vector2 vec)
+    {
+        return new Vector3 { x = vec.x, y = 0, z = vec.y };
+    }
+
+    public static float3 FromXZPlane(float2 vec)
+    {
+        return new float3 { x = vec.x, y = 0, z = vec.y };
+    }
+
+    public static float2 ToXZPlane(float3 vec)
+    {
+        return new float2 { x = vec.x, y = vec.z };
     }
 }
