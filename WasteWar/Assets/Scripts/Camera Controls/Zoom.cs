@@ -8,16 +8,14 @@ public class Zoom : MonoBehaviour
     [SerializeField]
     private Transform route;
     [SerializeField]
-    private Camera cam1;
-    [SerializeField]
-    private Camera cam2;
-    [SerializeField]
     private Transform rotationRoute;
+
+    private ActiveCamera cameraManager;
 
     public float tRot = 0;
     public float tPos = 0;
 
-    public Camera Cam { get; set; }
+    private Camera cam { get; set; }
     private int zoomInTicks = ZOOM_TICKS_PER_FRAME;
     private int zoomOutTicks = ZOOM_TICKS_PER_FRAME;
     private Vector3 p1;
@@ -27,15 +25,12 @@ public class Zoom : MonoBehaviour
 
     private void Awake()
     {
-        Cam = cam1;
-        Cam.GetComponent<AudioListener>().enabled = true;
-        cam1.enabled = true;
-        cam2.enabled = false;
+        cameraManager = GetComponent<ActiveCamera>();
+        cam = cameraManager.defaultCamera;
     }
 
     private void Start()
     {
-        GameEvents.MiddleMouseClickPressedListeners += SetCamera;
         GetBezierCurvePointPositions();
         InitializeCameraTiltAndPosition();
     }
@@ -43,34 +38,14 @@ public class Zoom : MonoBehaviour
     private void Update()
     {
         //the curve moves as the player moves, so we need to get new point positions
-        if (Cam == cam1)
+        if (cameraManager.activeCam == cameraManager.defaultCamera)
         {
             GetBezierCurvePointPositions();
             TiltAndMoveAlongCurvePerTick();
         }
-        else if (Cam == cam2)
+        else if (cameraManager.activeCam == cameraManager.alternativeCamera)
         {
             FoVZoom();
-        }
-    }
-
-    public void SetCamera(object sender, int data)
-    {
-        if (Cam == cam1)
-        {
-            Cam.GetComponent<AudioListener>().enabled = false;
-            cam1.enabled = false;
-            cam2.enabled = true;
-            Cam = cam2;
-            Cam.GetComponent<AudioListener>().enabled = true;
-        }
-        else
-        {
-            Cam.GetComponent<AudioListener>().enabled = false;
-            cam1.enabled = true;
-            cam2.enabled = false;
-            Cam = cam1;
-            Cam.GetComponent<AudioListener>().enabled = true;
         }
     }
 
@@ -84,12 +59,12 @@ public class Zoom : MonoBehaviour
 
     private void InitializeCameraTiltAndPosition()
     {
-        while (Cam.transform.rotation.eulerAngles.x > CameraConstants.Instance.INITIAL_ZOOM_ANGLE_X_AXIS)
+        while (cam.transform.rotation.eulerAngles.x > CameraConstants.Instance.INITIAL_ZOOM_ANGLE_X_AXIS)
         {
             tPos = AdjustParameter(CameraConstants.Instance.INCREMENT_T, tPos, CameraConstants.TRANSLATION);
-            Cam.transform.position = MathUtils.CalcCurrPosAlongTheCurve(tPos, p1, p2, p3, p4);
+            cam.transform.position = MathUtils.CalcCurrPosAlongTheCurve(tPos, p1, p2, p3, p4);
             tRot = AdjustParameter(CameraConstants.Instance.INCREMENT_T, tRot, CameraConstants.TILT);
-            Cam.transform.rotation = MathUtils.CalcRotationChangeAlongTheCurve(tRot, rotationRoute.GetChild(0), rotationRoute.GetChild(1));
+            cam.transform.rotation = MathUtils.CalcRotationChangeAlongTheCurve(tRot, rotationRoute.GetChild(0), rotationRoute.GetChild(1));
         }
     }
 
@@ -115,9 +90,9 @@ public class Zoom : MonoBehaviour
     private void TiltAndMoveAlongCurve(bool isToBeInCremented)
     {
         tPos = AdjustParameter(isToBeInCremented, tPos, CameraConstants.TRANSLATION);
-        Cam.transform.position = MathUtils.CalcCurrPosAlongTheCurve(tPos, p1, p2, p3, p4);
+        cam.transform.position = MathUtils.CalcCurrPosAlongTheCurve(tPos, p1, p2, p3, p4);
         tRot = AdjustParameter(isToBeInCremented, tRot, CameraConstants.TILT);
-        Cam.transform.rotation = MathUtils.CalcRotationChangeAlongTheCurve(tRot, rotationRoute.GetChild(0), rotationRoute.GetChild(1));
+        cam.transform.rotation = MathUtils.CalcRotationChangeAlongTheCurve(tRot, rotationRoute.GetChild(0), rotationRoute.GetChild(1));
     }
 
     private void TiltAndMoveAlongCurvePerTick()
@@ -142,14 +117,9 @@ public class Zoom : MonoBehaviour
     }
     private void FoVZoom()
     {
-        if (Input.GetAxis("Mouse ScrollWheel") < 0 && Cam.fieldOfView < 140f)
-            Cam.fieldOfView += FovZoomSpeed;
-        else if (Input.GetAxis("Mouse ScrollWheel") > 0 && Cam.fieldOfView > 30f)
-            Cam.fieldOfView -= FovZoomSpeed;
-    }
-
-    private void OnDestroy()
-    {
-        GameEvents.MiddleMouseClickPressedListeners -= SetCamera;
+        if (Input.GetAxis("Mouse ScrollWheel") < 0 && cam.fieldOfView < 140f)
+            cam.fieldOfView += FovZoomSpeed;
+        else if (Input.GetAxis("Mouse ScrollWheel") > 0 && cam.fieldOfView > 30f)
+            cam.fieldOfView -= FovZoomSpeed;
     }
 }

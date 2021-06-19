@@ -6,13 +6,8 @@ public class HealthBar : MonoBehaviour
 {
     public Image foregroundImage;
     public HealthSync syncComp;
-    public Camera cam;
+    public ActiveCamera cameraManager;
 
-    private void Awake()
-    {
-        if (!cam)
-            cam = Camera.main;
-    }
     void Start()
     {
         syncComp.OnHealthChanged += ChangeFillAmount;
@@ -25,6 +20,6 @@ public class HealthBar : MonoBehaviour
 
     private void LateUpdate()
     {
-        transform.LookAt(cam.transform);
+        transform.LookAt(cameraManager.activeCam.transform);
     }
 }

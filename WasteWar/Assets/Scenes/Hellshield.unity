@@ -615,22 +615,37 @@ PrefabInstance:
         type: 3}
       propertyPath: cam
       value: 
-      objectReference: {fileID: 1167094596}
+      objectReference: {fileID: 0}
     - target: {fileID: 7838203742187533557, guid: e381dc8b855589a40b2a57665100794b,
         type: 3}
       propertyPath: terrain
       value: 
       objectReference: {fileID: 533001598}
+    - target: {fileID: 7838203742187533557, guid: e381dc8b855589a40b2a57665100794b,
+        type: 3}
+      propertyPath: camParent
+      value: 
+      objectReference: {fileID: 1732679364}
     - target: {fileID: 7838203742187533559, guid: e381dc8b855589a40b2a57665100794b,
         type: 3}
       propertyPath: cam
       value: 
-      objectReference: {fileID: 1167094596}
+      objectReference: {fileID: 0}
     - target: {fileID: 7838203742187533559, guid: e381dc8b855589a40b2a57665100794b,
         type: 3}
       propertyPath: terrain
       value: 
       objectReference: {fileID: 533001598}
+    - target: {fileID: 7838203742187533559, guid: e381dc8b855589a40b2a57665100794b,
+        type: 3}
+      propertyPath: camParent
+      value: 
+      objectReference: {fileID: 1732679364}
+    - target: {fileID: 7838203742187533559, guid: e381dc8b855589a40b2a57665100794b,
+        type: 3}
+      propertyPath: cameraManager
+      value: 
+      objectReference: {fileID: 1732679365}
     - target: {fileID: 8460824764228317852, guid: e381dc8b855589a40b2a57665100794b,
         type: 3}
       propertyPath: m_Name
@@ -4708,6 +4723,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ConversionMode: 0
+--- !u!20 &648858633 stripped
+Camera:
+  m_CorrespondingSourceObject: {fileID: 7441825047500991466, guid: d460303dd73f3b44fb5fde87a121973d,
+    type: 3}
+  m_PrefabInstance: {fileID: 1167094595}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &656486020
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -7506,6 +7527,21 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 305656957156655229, guid: d460303dd73f3b44fb5fde87a121973d,
+        type: 3}
+      propertyPath: m_TagString
+      value: MainCamera
+      objectReference: {fileID: 0}
+    - target: {fileID: 703106274339375037, guid: d460303dd73f3b44fb5fde87a121973d,
+        type: 3}
+      propertyPath: cameraManager
+      value: 
+      objectReference: {fileID: 1732679365}
+    - target: {fileID: 3803441046312007943, guid: d460303dd73f3b44fb5fde87a121973d,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4006935786392198982, guid: d460303dd73f3b44fb5fde87a121973d,
         type: 3}
       propertyPath: m_RootOrder
@@ -7561,6 +7597,16 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5828568733788310613, guid: d460303dd73f3b44fb5fde87a121973d,
+        type: 3}
+      propertyPath: camParent
+      value: 
+      objectReference: {fileID: 1732679364}
+    - target: {fileID: 5828568733788310613, guid: d460303dd73f3b44fb5fde87a121973d,
+        type: 3}
+      propertyPath: cameraManager
+      value: 
+      objectReference: {fileID: 1732679365}
     - target: {fileID: 6120766615312655516, guid: d460303dd73f3b44fb5fde87a121973d,
         type: 3}
       propertyPath: m_Name
@@ -7571,14 +7617,9 @@ PrefabInstance:
       propertyPath: terrain
       value: 
       objectReference: {fileID: 533001598}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 6402356433340477241, guid: d460303dd73f3b44fb5fde87a121973d, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: d460303dd73f3b44fb5fde87a121973d, type: 3}
---- !u!20 &1167094596 stripped
-Camera:
-  m_CorrespondingSourceObject: {fileID: 8319511433108928805, guid: d460303dd73f3b44fb5fde87a121973d,
-    type: 3}
-  m_PrefabInstance: {fileID: 1167094595}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1196414930
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -10513,6 +10554,24 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1727392141}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1732679364 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8459859427578807364, guid: d460303dd73f3b44fb5fde87a121973d,
+    type: 3}
+  m_PrefabInstance: {fileID: 1167094595}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1732679365 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7904035917211973360, guid: d460303dd73f3b44fb5fde87a121973d,
+    type: 3}
+  m_PrefabInstance: {fileID: 1167094595}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1732679364}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ecfaace232e3619458595e7650f2fa8e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1735659248
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -11833,44 +11892,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 13
   m_LocalEulerAnglesHint: {x: 0, y: 51.278, z: 0}
---- !u!1 &1954916684 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 7091608253785218720, guid: d460303dd73f3b44fb5fde87a121973d,
-    type: 3}
-  m_PrefabInstance: {fileID: 1167094595}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1954916687
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1954916684}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a79441f348de89743a2939f4d699eac1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_RenderShadows: 1
-  m_RequiresDepthTextureOption: 2
-  m_RequiresOpaqueTextureOption: 2
-  m_CameraType: 0
-  m_Cameras: []
-  m_RendererIndex: -1
-  m_VolumeLayerMask:
-    serializedVersion: 2
-    m_Bits: 1
-  m_VolumeTrigger: {fileID: 0}
-  m_RenderPostProcessing: 0
-  m_Antialiasing: 0
-  m_AntialiasingQuality: 2
-  m_StopNaN: 0
-  m_Dithering: 0
-  m_ClearDepth: 1
-  m_AllowXRRendering: 1
-  m_RequiresDepthTexture: 0
-  m_RequiresColorTexture: 0
-  m_Version: 2
 --- !u!1 &1975306358
 GameObject:
   m_ObjectHideFlags: 0
@@ -12727,11 +12748,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 334040249}
     m_Modifications:
-    - target: {fileID: 705365934623028232, guid: b594382cf0122ec4ea8666b45b3ea9bc,
-        type: 3}
-      propertyPath: cam
-      value: 
-      objectReference: {fileID: 1167094596}
     - target: {fileID: 1569321865297948946, guid: b594382cf0122ec4ea8666b45b3ea9bc,
         type: 3}
       propertyPath: m_RootOrder
@@ -13118,7 +13134,7 @@ PrefabInstance:
         type: 3}
       propertyPath: cam
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 648858633}
     - target: {fileID: 8396157017129060394, guid: 7f8fe723e5adebe47b62c44491cb3556,
         type: 3}
       propertyPath: m_Name

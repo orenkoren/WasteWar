@@ -159,6 +159,7 @@ GameObject:
   - component: {fileID: 3827050943749171813}
   - component: {fileID: 3827050943749171819}
   - component: {fileID: -4694566521825927981}
+  - component: {fileID: 3299969845469386963}
   m_Layer: 0
   m_Name: CameraParent
   m_TagString: Untagged
@@ -243,11 +244,24 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   FovZoomSpeed: 1
   route: {fileID: 3827050945761870696}
-  cam1: {fileID: 4978060959260359851}
-  cam2: {fileID: 2827613705209611721}
   rotationRoute: {fileID: 3827050944911381738}
   tRot: 0
   tPos: 0
+--- !u!114 &3299969845469386963
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3827050943749171815}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ecfaace232e3619458595e7650f2fa8e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  defaultCamera: {fileID: 4978060959260359851}
+  alternativeCamera: {fileID: 2827613705209611721}
+  activeCam: {fileID: 4978060959260359851}
 --- !u!1 &3827050943825874321
 GameObject:
   m_ObjectHideFlags: 0
