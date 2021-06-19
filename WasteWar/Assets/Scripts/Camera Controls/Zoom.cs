@@ -1,10 +1,13 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 public class Zoom : MonoBehaviour
 {
     private const int ZOOM_TICKS_PER_FRAME = 10;
 
     [SerializeField]
-    private float FovZoomSpeed;
+    private float ZoomAmountPerTick;
+    [SerializeField]
+    private float zoomSpeed;
     [SerializeField]
     private Transform route;
     [SerializeField]
@@ -15,18 +18,17 @@ public class Zoom : MonoBehaviour
     public float tRot = 0;
     public float tPos = 0;
 
-    private Camera cam { get; set; }
     private int zoomInTicks = ZOOM_TICKS_PER_FRAME;
     private int zoomOutTicks = ZOOM_TICKS_PER_FRAME;
     private Vector3 p1;
     private Vector3 p2;
     private Vector3 p3;
     private Vector3 p4;
+    private float targetZoom;
 
     private void Awake()
     {
         cameraManager = GetComponent<ActiveCamera>();
-        cam = cameraManager.defaultCamera;
     }
 
     private void Start()
@@ -59,16 +61,17 @@ public class Zoom : MonoBehaviour
 
     private void InitializeCameraTiltAndPosition()
     {
-        while (cam.transform.rotation.eulerAngles.x > CameraConstants.Instance.INITIAL_ZOOM_ANGLE_X_AXIS)
+        while (cameraManager.activeCam.transform.rotation.eulerAngles.x >
+                CameraConstants.Instance.INITIAL_ZOOM_ANGLE_X_AXIS)
         {
             tPos = AdjustParameter(CameraConstants.Instance.INCREMENT_T, tPos, CameraConstants.TRANSLATION);
-            cam.transform.position = MathUtils.CalcCurrPosAlongTheCurve(tPos, p1, p2, p3, p4);
+            cameraManager.activeCam.transform.position = MathUtils.CalcCurrPosAlongTheCurve(tPos, p1, p2, p3, p4);
             tRot = AdjustParameter(CameraConstants.Instance.INCREMENT_T, tRot, CameraConstants.TILT);
-            cam.transform.rotation = MathUtils.CalcRotationChangeAlongTheCurve(tRot, rotationRoute.GetChild(0), rotationRoute.GetChild(1));
+            cameraManager.activeCam.transform.rotation = MathUtils.CalcRotationChangeAlongTheCurve(tRot, rotationRoute.GetChild(0), rotationRoute.GetChild(1));
         }
     }
 
-    private float AdjustParameter(bool isToBeIncremented,float inputParameter, string paramType)
+    private float AdjustParameter(bool isToBeIncremented, float inputParameter, string paramType)
     {
         float tParam = inputParameter;
 
@@ -86,13 +89,13 @@ public class Zoom : MonoBehaviour
             return tParam;
         }
     }
-    
+
     private void TiltAndMoveAlongCurve(bool isToBeInCremented)
     {
         tPos = AdjustParameter(isToBeInCremented, tPos, CameraConstants.TRANSLATION);
-        cam.transform.position = MathUtils.CalcCurrPosAlongTheCurve(tPos, p1, p2, p3, p4);
+        cameraManager.activeCam.transform.position = MathUtils.CalcCurrPosAlongTheCurve(tPos, p1, p2, p3, p4);
         tRot = AdjustParameter(isToBeInCremented, tRot, CameraConstants.TILT);
-        cam.transform.rotation = MathUtils.CalcRotationChangeAlongTheCurve(tRot, rotationRoute.GetChild(0), rotationRoute.GetChild(1));
+        cameraManager.activeCam.transform.rotation = MathUtils.CalcRotationChangeAlongTheCurve(tRot, rotationRoute.GetChild(0), rotationRoute.GetChild(1));
     }
 
     private void TiltAndMoveAlongCurvePerTick()
@@ -117,9 +120,33 @@ public class Zoom : MonoBehaviour
     }
     private void FoVZoom()
     {
-        if (Input.GetAxis("Mouse ScrollWheel") < 0 && cam.fieldOfView < 140f)
-            cam.fieldOfView += FovZoomSpeed;
-        else if (Input.GetAxis("Mouse ScrollWheel") > 0 && cam.fieldOfView > 30f)
-            cam.fieldOfView -= FovZoomSpeed;
+        if (Input.GetAxis("Mouse ScrollWheel") < 0 && cameraManager.activeCam.fieldOfView < 140f)
+        {
+            targetZoom = cameraManager.activeCam.transform.position.y + ZoomAmountPerTick;
+            StartCoroutine(LerpZoom());
+        }
+        else if (Input.GetAxis("Mouse ScrollWheel") > 0 && cameraManager.activeCam.fieldOfView > 30f)
+        {
+            targetZoom = cameraManager.activeCam.transform.position.y - ZoomAmountPerTick;
+            StartCoroutine(LerpZoom());
+        }
+    }
+
+    private IEnumerator LerpZoom()
+    {
+        float currentTimer = 0;
+        while (currentTimer < zoomSpeed)
+        {
+            currentTimer += Time.deltaTime;
+
+            cameraManager.activeCam.transform.position =
+                new Vector3
+                {
+                    x = cameraManager.activeCam.transform.position.x,
+                    y = Mathf.Lerp(cameraManager.activeCam.transform.position.y, targetZoom, currentTimer / zoomSpeed),
+                    z = cameraManager.activeCam.transform.position.z
+                };
+            yield return null;
+        }
     }
 }
