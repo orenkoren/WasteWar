@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 5301554789375039074}
   - component: {fileID: -7318659106107137695}
   - component: {fileID: -5638895943185167762}
+  - component: {fileID: 5597622271926002768}
   m_Layer: 0
   m_Name: WallTemplate
   m_TagString: WallTemplate
@@ -58,6 +59,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7f34aacadeea5934ca55a91d016b3094, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &5597622271926002768
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8462921255549495720}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 502727f8a785fe149ae94435d0e36ad1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  duration: 0.66
+  speed: 50
+  intensity: 0.1
 --- !u!1001 &786857772874147340
 PrefabInstance:
   m_ObjectHideFlags: 0
