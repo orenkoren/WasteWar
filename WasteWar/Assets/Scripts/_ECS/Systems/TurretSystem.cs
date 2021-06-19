@@ -29,36 +29,24 @@ public class TurretSystem : SystemBase
           .WithBurst()
           .WithAll<TurretComponent>()
           .WithReadOnly(pworld)
-          .ForEach((ref TurretComponent turret, ref Entity e, in Translation translation, in Rotation rotation) =>
+          .ForEach((ref TurretComponent turret, ref Entity e, ref RotationComponent rotComp,
+                    in Translation translation, in Rotation rotation) =>
           {
               turret.rechargeTimer += deltaTime;
+              turret.rotationCooldown += deltaTime;
+              if (turret.rotationCooldown >= turret.RotationCommandInterval)
+              {
+                  SendRotationCommand(ref turret, ref rotComp, pworld, translation, rotation);
+                  turret.rotationCooldown = 0;
+              }
               if (turret.rechargeTimer >= turret.RechargeTime)
               {
                   turret.rechargeTimer = 0;
                   NativeList<RaycastHit> hits = new NativeList<RaycastHit>(Allocator.Temp);
-                  PerformRaycast(ref turret, translation, rotation, pworld, ref hits, ecb);
+                  PerformRaycast(ref turret, ref rotComp, translation, rotation, pworld, ref hits, ecb);
                   if (hits.Length > 0)
                   {
-                      //var projectile = ecb.Instantiate(0, turret.projectile);
-                      //ecb.SetComponent(0, projectile, translation);
-                      //ecb.SetComponent(0, projectile,
-                      //    new MoveForwardComponent { speed = turret.projectileSpeed, destination = math.normalize(hits[0].Position) * 10000 });
                       entitiesToSpawnBeamsThisFrame.AddNoResize(e);
-                  }
-                  foreach (var hit in hits)
-                  {
-                      //var projectile = ecb.Instantiate(0, turret.projectile);
-                      //var projectileDestination = (hit.Position - translation.Value) * 5000;
-                      //UnityEngine.Debug.DrawLine(translation.Value, projectileDestination);
-                      //ecb.SetComponent(0, projectile, translation);
-                      //ecb.SetComponent(0, projectile,
-                      //    new MoveForwardComponent
-                      //    {
-                      //        speed = turret.projectileSpeed,
-                      //        destination = projectileDestination
-                      //    });
-                      // add to a native list and consume in different job?
-                      //ecb.AddComponent<Disabled>(0, hit.Entity);
                   }
               }
           }).ScheduleParallel(Dependency);
@@ -66,9 +54,38 @@ public class TurretSystem : SystemBase
         m_ecbSystem.AddJobHandleForProducer(Dependency);
     }
 
-    private static void PerformRaycast(ref TurretComponent turret,
+    private static void SendRotationCommand(ref TurretComponent turret, ref RotationComponent rotComp,
+                                    CollisionWorld pworld, Translation translation, Rotation rotation)
+    {
+        RaycastInput rayInput = CreateRayInput(turret, translation, rotation);
+        var firstTargetAngle = ScanForTargets(turret, translation, rotation, pworld, rayInput);
+        rotComp.targetAngle = firstTargetAngle;
+    }
+
+    private static void PerformRaycast(ref TurretComponent turret, ref RotationComponent rotComp,
                         Translation translation, Rotation rotation, CollisionWorld pworld,
                         ref NativeList<RaycastHit> hits, EntityCommandBuffer.ParallelWriter ecb)
+    {
+        RaycastInput rayInput = CreateRayInput(turret, translation, rotation);
+
+        var firstTargetAngle = ScanForTargets(turret, translation, rotation, pworld, rayInput);
+        if (firstTargetAngle != -999)
+        {
+            for (float hitAngle = firstTargetAngle; hitAngle < firstTargetAngle + turret.hitWidth / 2; hitAngle++)
+            {
+                AddSingleAngleHits(turret, translation, rotation, ref pworld, ref hits, ref rayInput, hitAngle);
+                SpawnProjectile(turret, translation, ref ecb, ref rayInput, rotComp.targetAngle);
+            }
+
+            for (float hitAngle = firstTargetAngle; hitAngle >= firstTargetAngle - turret.hitWidth / 2; hitAngle--)
+            {
+                AddSingleAngleHits(turret, translation, rotation, ref pworld, ref hits, ref rayInput, hitAngle);
+                SpawnProjectile(turret, translation, ref ecb, ref rayInput, rotComp.targetAngle);
+            }
+        }
+    }
+
+    private static RaycastInput CreateRayInput(TurretComponent turret, Translation translation, Rotation rotation)
     {
         var collisionFilter = new CollisionFilter()
         {
@@ -79,49 +96,36 @@ public class TurretSystem : SystemBase
 
         var rayInput = new RaycastInput
         {
-            // TODO: turret destroys itself if start value is too close.. collisionfilter or change the start value
             Start = translation.Value + (math.forward(rotation.Value) * turret.startRange),
             End = translation.Value + (math.forward(rotation.Value) * turret.DetectionRadius),
             Filter = collisionFilter
         };
+        return rayInput;
+    }
 
-        var firstTargetAngle = ScanForTargets(turret, translation, rotation, pworld, rayInput);
-        if (firstTargetAngle != -999)
-        {
-            for (float hitAngle = firstTargetAngle; hitAngle <= firstTargetAngle + turret.hitWidth / 2; hitAngle++)
+    private static void SpawnProjectile(TurretComponent turret, Translation translation,
+                ref EntityCommandBuffer.ParallelWriter ecb, ref RaycastInput rayInput, float hitAngle)
+    {
+        var projectile = ecb.Instantiate(0, turret.projectile);
+        var projectileDestination = (rayInput.End - rayInput.Start) * 5000;
+        float3 newOffset = math.mul(quaternion.RotateY(math.radians(hitAngle)),
+                                    turret.projectileSpawnLocation);
+        UnityEngine.Debug.DrawLine(translation.Value, newOffset);
+        Translation newTrans = new Translation { Value = translation.Value + newOffset };
+        ecb.SetComponent(0, projectile, newTrans);
+        ecb.SetComponent(0, projectile,
+            new MoveForwardComponent
             {
-                NativeList<RaycastHit> oneAngleHits = GetSingleAngleHits(turret, translation, rotation, ref pworld, ref rayInput, hitAngle);
-                UnityEngine.Debug.DrawLine(rayInput.Start, rayInput.End);
-                hits.AddRange(oneAngleHits);
-                var projectile = ecb.Instantiate(0, turret.projectile);
-                var projectileDestination = (rayInput.End - rayInput.Start) * 5000;
-                UnityEngine.Debug.DrawLine(translation.Value, projectileDestination);
-                ecb.SetComponent(0, projectile, translation);
-                ecb.SetComponent(0, projectile,
-                    new MoveForwardComponent
-                    {
-                        speed = turret.projectileSpeed,
-                        destination = projectileDestination
-                    });
-            }
+                speed = turret.projectileSpeed,
+                destination = projectileDestination
+            });
+    }
 
-            for (float hitAngle = firstTargetAngle; hitAngle >= firstTargetAngle - turret.hitWidth / 2; hitAngle--)
-            {
-                NativeList<RaycastHit> oneAngleHits = GetSingleAngleHits(turret, translation, rotation, ref pworld, ref rayInput, hitAngle);
-                UnityEngine.Debug.DrawLine(rayInput.Start, rayInput.End);
-                hits.AddRange(oneAngleHits);
-                var projectile = ecb.Instantiate(0, turret.projectile);
-                var projectileDestination = (rayInput.End - rayInput.Start) * 5000;
-                UnityEngine.Debug.DrawLine(translation.Value, projectileDestination);
-                ecb.SetComponent(0, projectile, translation);
-                ecb.SetComponent(0, projectile,
-                    new MoveForwardComponent
-                    {
-                        speed = turret.projectileSpeed,
-                        destination = projectileDestination
-                    });
-            }
-        }
+    private static void AddSingleAngleHits(TurretComponent turret, Translation translation, Rotation rotation, ref CollisionWorld pworld, ref NativeList<RaycastHit> hits, ref RaycastInput rayInput, float hitAngle)
+    {
+        NativeList<RaycastHit> oneAngleHits = GetSingleAngleHits(turret, translation, rotation, ref pworld, ref rayInput, hitAngle);
+        UnityEngine.Debug.DrawLine(rayInput.Start, rayInput.End);
+        hits.AddRange(oneAngleHits);
     }
 
     private static NativeList<RaycastHit> GetSingleAngleHits(TurretComponent turret, Translation translation, Rotation rotation, ref CollisionWorld pworld, ref RaycastInput rayInput, float hitAngle)
@@ -134,6 +138,51 @@ public class TurretSystem : SystemBase
 
     private static float ScanForTargets(TurretComponent turret, Translation translation, Rotation rotation,
      CollisionWorld pworld, RaycastInput rayInput)
+    {
+        if (turret.behavior == TurretBehavior.MostTargets)
+            return CalculateMostTargetsDirectionAngle(turret, translation, rotation, pworld, ref rayInput);
+        else
+            return CalculateClosestTargetAngle(turret, translation, rotation, pworld, ref rayInput);
+
+    }
+
+    private static float CalculateClosestTargetAngle(TurretComponent turret, Translation translation, Rotation rotation,
+                                                    CollisionWorld pworld, ref RaycastInput rayInput)
+    {
+        float closestDistance = 5000;
+        float closestDistanceAngle = -999;
+
+        RaycastHit hit;
+
+        for (int angle = 0; angle >= -turret.detectionConeSize; angle--)
+        {
+            UpdateClosestDistance(ref rayInput, angle);
+        }
+        for (int angle = 0; angle <= turret.detectionConeSize; angle++)
+        {
+            UpdateClosestDistance(ref rayInput, angle);
+        }
+        return closestDistanceAngle;
+
+            void UpdateClosestDistance(ref RaycastInput rayInput, int angle)
+            {
+                rayInput = ChangeRayDirection(turret, translation, rotation, rayInput, angle);
+                pworld.CastRay(rayInput, out hit);
+                if (hit.Entity != Entity.Null)
+                {
+                    float currDistance = math.distance(MathUtilECS.ToXZPlane(hit.Position),
+                                                        MathUtilECS.ToXZPlane(translation.Value));
+                    if (currDistance < closestDistance)
+                    {
+                        closestDistance = currDistance;
+                        closestDistanceAngle = angle;
+                    }
+                }
+            }
+    }
+
+    private static float CalculateMostTargetsDirectionAngle(TurretComponent turret, Translation translation,
+                                                    Rotation rotation, CollisionWorld pworld, ref RaycastInput rayInput)
     {
         int mostTargetsHit = 0;
         float mostTargetsAngle = -999;
@@ -148,7 +197,6 @@ public class TurretSystem : SystemBase
                 mostTargetsHit = oneAngleHits.Length;
                 mostTargetsAngle = angle;
             }
-            //if (pworld.CastRay(rayInput)) return angle;
         }
         for (float angle = 0; angle <= turret.detectionConeSize; angle++)
         {
@@ -159,7 +207,6 @@ public class TurretSystem : SystemBase
                 mostTargetsHit = oneAngleHits.Length;
                 mostTargetsAngle = angle;
             }
-            //if (pworld.CastRay(rayInput)) return angle;
         }
         return mostTargetsAngle;
     }

@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 362285187493874194}
   - component: {fileID: 6657932336633031566}
   - component: {fileID: 7665220817282410300}
+  - component: {fileID: 7900039780179920929}
   m_Layer: 10
   m_Name: Drone2
   m_TagString: Untagged
@@ -31,7 +32,7 @@ Transform:
   m_GameObject: {fileID: 1912410721622126574}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -0.019337926, y: 0.89829594, z: 0.1748007}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 3, y: 3, z: 3}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -98,7 +99,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Damage: 1
-  speed: 70
+  speed: 60
 --- !u!114 &362285187493874194
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -180,7 +181,7 @@ MonoBehaviour:
     y: 0.17677665
     z: 0.00000023841858
   m_PrimitiveSize:
-    x: 1.97
+    x: 4.05
     y: 3.3034472
     z: 3.9624019
   m_PrimitiveOrientation:
@@ -190,15 +191,15 @@ MonoBehaviour:
       z: 0
     RotationOrder: 4
   m_Capsule:
-    Height: 3.9624019
-    Radius: 1.6517236
-    Axis: 2
-  m_Cylinder:
-    Height: 1.97
+    Height: 4.05
     Radius: 1.9812009
     Axis: 0
+  m_Cylinder:
+    Height: 3.3034472
+    Radius: 2.025
+    Axis: 1
   m_CylinderSideCount: 20
-  m_SphereRadius: 1.9812009
+  m_SphereRadius: 2.025
   m_MinimumSkinnedVertexWeight: 0.1
   m_ConvexHullGenerationParameters:
     m_SimplificationTolerance: 0.059436023
@@ -305,3 +306,24 @@ MonoBehaviour:
         Tag07: 0
     m_SerializedVersion: 1
   m_SerializedVersion: 1
+--- !u!114 &7900039780179920929
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1912410721622126574}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c89b2b939ff4f547bc41e738902f110, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentDestination:
+    x: 0
+    y: 0
+    z: 0
+  finalDestination:
+    x: 0
+    y: 0
+    z: 0
+  currentGridIndex: 0

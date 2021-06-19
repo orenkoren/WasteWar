@@ -6,13 +6,13 @@ public class KeyClickManager : MonoBehaviour
     [SerializeField]
     private PrefabTemplates templates;
     [SerializeField]
-    private GameObject camParent;
+    private ActiveCamera cameraManager;
     [SerializeField]
     RuntimeGameObjRefs runtimeGameObjRefs;
 
     private bool areKeybindsActive = true;
     private bool isCurvedRotationModeOn = false;
-    private Zoom camScript;
+    private Camera cam;
     private Terrain terrain;
     private GameObject prefabPipe;
     private RaycastHit hit;
@@ -20,7 +20,7 @@ public class KeyClickManager : MonoBehaviour
 
     private void Start()
     {
-        camScript = camParent.GetComponent<Zoom>();
+        cam = cameraManager.activeCam;
         terrain = runtimeGameObjRefs.terrain;
         GameEvents.PipePlaced2Listeners += SetPipePrefab;
         prefabPipe = templates.PipeTopBottom;
@@ -34,7 +34,7 @@ public class KeyClickManager : MonoBehaviour
             {
                 if (Input.GetKeyDown(key))
                 {
-                    ray = camScript.Cam.ScreenPointToRay(Input.mousePosition);
+                    ray = cam.ScreenPointToRay(Input.mousePosition);
                     // if mouse on the ground/ and cursor within bounds
                     if (Physics.Raycast(ray, out hit, CameraConstants.Instance.RAYCAST_DISTANCE, LayerMasks.Instance.GROUND)
                         && MathUtils.CursorIsWithinBounds(hit.point, terrain.terrainData.size))

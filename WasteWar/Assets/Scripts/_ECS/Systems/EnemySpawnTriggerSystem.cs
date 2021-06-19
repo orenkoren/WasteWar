@@ -20,7 +20,7 @@ public class EnemySpawnTriggerSystem : SystemBase
     }
     protected override void OnUpdate()
     {
-        if (spawnTimer.currentTime <= 0)
+        if (spawnTimer.currentTime <= 0 && spawnTimer.currentWave < spawnTimer.waveCount)
         {
             EntityManager.CreateEntity(typeof(EnemySpawnerSystemEnabler));
             spawnTimer.ResetTimer();

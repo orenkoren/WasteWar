@@ -18,7 +18,7 @@ public class GameObjectSpawnSystem : SystemBase
         foreach (var entity in entitiesToSpawnLaserBeams)
         {
             if (EntityManager.HasComponent<SpawnLaserBeams>(entity))
-                EntityManager.GetComponentObject<SpawnLaserBeams>(entity).SpawnBeam();
+                EntityManager.GetComponentObject<SpawnLaserBeams>(entity).PlayBeamSound();
 
         }
         entitiesToSpawnLaserBeams.Clear();

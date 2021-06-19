@@ -3,6 +3,7 @@ using Unity.Entities;
 [GenerateAuthoringComponent]
 public struct HealthComponent : IComponentData
 {
-    public int Health;
+    public float MaxHealth;
+    public float CurrentHealth;
     public bool ShouldDestroyOnDeath;
 }

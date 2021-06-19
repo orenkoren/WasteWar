@@ -35,8 +35,8 @@ MonoBehaviour:
   - 
   - 
   - 
-  - 
-  - 
+  - Impassable
+  - Ground
   - Enemies
   - Buildings
   - 

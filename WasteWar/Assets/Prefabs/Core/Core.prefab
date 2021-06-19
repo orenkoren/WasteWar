@@ -9,6 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4006935786392198982}
+  - component: {fileID: 1990732188}
   m_Layer: 0
   m_Name: Core
   m_TagString: Untagged
@@ -33,6 +34,19 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1990732188
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6120766615312655516}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: effe6a85453015642b5c7812b8c657ce, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetFps: 60
 --- !u!1 &8459859427575822299
 GameObject:
   m_ObjectHideFlags: 0
@@ -174,17 +188,17 @@ PrefabInstance:
     - target: {fileID: 3827050943749171814, guid: cea69143681596441bb7681d57708275,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -2.2306137
+      value: -134
       objectReference: {fileID: 0}
     - target: {fileID: 3827050943749171814, guid: cea69143681596441bb7681d57708275,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -4.1226387
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 3827050943749171814, guid: cea69143681596441bb7681d57708275,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 15.446407
+      value: 479
       objectReference: {fileID: 0}
     - target: {fileID: 3827050943749171814, guid: cea69143681596441bb7681d57708275,
         type: 3}

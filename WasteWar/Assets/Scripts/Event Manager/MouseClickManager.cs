@@ -3,12 +3,12 @@
 public class MouseClickManager : MonoBehaviour
 {
     [SerializeField]
-    private GameObject camParent;
+    private ActiveCamera cameraManager;
     [SerializeField]
     RuntimeGameObjRefs runtimeGameObjRefs;
 
     private bool isCursorLocked = false;
-    private Zoom camScript;
+    private Camera cam;
     private Terrain terrain;
     private RaycastHit hit;
     private Ray ray;
@@ -17,7 +17,7 @@ public class MouseClickManager : MonoBehaviour
 
     private void Start()
     {
-        camScript = camParent.GetComponent<Zoom>();
+        cam = cameraManager.activeCam;
         terrain = runtimeGameObjRefs.terrain;
         templateData = new TemplateData();
         terrainSize = terrain.terrainData.size;
@@ -26,7 +26,7 @@ public class MouseClickManager : MonoBehaviour
 
     private void Update()
     {
-        ray = camScript.Cam.ScreenPointToRay(Input.mousePosition);
+        ray = cam.ScreenPointToRay(Input.mousePosition);
      
         if( 
 Physics.Raycast(ray, out hit, CameraConstants.Instance.RAYCAST_DISTANCE, LayerMasks.Instance.GROUND)

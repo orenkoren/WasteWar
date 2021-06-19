@@ -11,6 +11,8 @@ GameObject:
   - component: {fileID: 8157376283840655628}
   - component: {fileID: 8157376283840655627}
   - component: {fileID: 8157376283840655626}
+  - component: {fileID: 8157376284810047769}
+  - component: {fileID: 8157376284810047770}
   m_Layer: 0
   m_Name: EnemySpawner
   m_TagString: Untagged
@@ -44,9 +46,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b57356614c43cc94e904621d7fd171a0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  prefabEnemy: {fileID: 2363916051410778117, guid: 9961613b6f23f8e4285260b25918bc76,
+  prefabEnemy: {fileID: 1912410721622126574, guid: c1f28981603ab7d4082ea3793c262a7f,
     type: 3}
-  spawnAmount: 40000
+  spawnAmount: 30000
+  pattern: 2
 --- !u!114 &8157376283840655626
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -59,4 +62,30 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ea7d7495833204790ba1d3a8755397f8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ConversionMode: 0
+  ConversionMode: 1
+--- !u!114 &8157376284810047769
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8157376283840655629}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 32b6bcc7330cf454cab6d4f26118f9aa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SecondsInterval: 10
+  currentTime: 0
+--- !u!114 &8157376284810047770
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8157376283840655629}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dd87104ce9139ae4d838c903c2b1652d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
