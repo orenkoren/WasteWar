@@ -120,5 +120,5 @@ ENDCG
 //Dependency "AddPassShader" = "Hidden/Moon/Terrain/Bumped Specular AddPass"
 //Dependency "BaseMapShader" = "Specular"
 
-FallBack "Legacy Shaders/Reflective/Bumped Specular"
+FallBack "Universal Render Pipeline/Simple Lit"
 }

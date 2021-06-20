@@ -11,4 +11,6 @@ public struct FlowFieldAgentComponent : IComponentData
     public float3 finalDestination;
     [HideInInspector]
     public int currentGridIndex;
+    [HideInInspector]
+    public int previousGridIndex;
 }

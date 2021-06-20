@@ -7,6 +7,7 @@ public class ECSGridGUI : MonoBehaviour
     public bool displayGrid;
     public bool displayBestCostField;
     public bool displayIndicies;
+    public bool displayBaseCosts;
     [HideInInspector]
     public GridCell[,] grid = new GridCell[0, 0];
 
@@ -32,7 +33,7 @@ public class ECSGridGUI : MonoBehaviour
 
                 if (displayBestCostField)
                     Handles.Label(centerPos, grid[x, z].bestCost.ToString());
-                else
+                else if(displayBaseCosts)
                     Handles.Label(centerPos, grid[x, z].cost.ToString());
                 if (displayIndicies)
                     Handles.Label(bottomLeftPos, x.ToString() + "," + z.ToString());

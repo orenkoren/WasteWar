@@ -5,17 +5,18 @@ using Unity.Mathematics;
 using Unity.Transforms;
 
 [UpdateAfter(typeof(EnemySpawnerSystem))]
+[UpdateAfter(typeof(GridSystem))]
 public class EnemyPatternSystem : SystemBase
 {
     private bool shouldSkipAFrame = true;
     private GridSystem gridSystem;
     private NativeList<float3> positionsArray = new NativeList<float3>(Allocator.Persistent);
 
-
     protected override void OnCreate()
     {
         base.OnCreate();
         RequireSingletonForUpdate<EnemyPatternSystemEnabler>();
+        RequireSingletonForUpdate<GridSystemFinishedBuilding>();
         gridSystem = World.GetOrCreateSystem<GridSystem>();
     }
 
@@ -26,7 +27,12 @@ public class EnemyPatternSystem : SystemBase
             shouldSkipAFrame = false;
             return;
         }
+
+        var gridWidth = gridSystem.GridData.GetLength(0);
+        var cellSize = gridSystem.cellSize;
+        var gridBestCosts = gridSystem.gridBestCosts;
         EntityManager.DestroyEntity(GetSingletonEntity<EnemyPatternSystemEnabler>());
+        EntityManager.DestroyEntity(GetSingletonEntity<GridSystemFinishedBuilding>());
         var playerBasePosition = GameConstants.Instance.PlayerBasePosition;
         EnemySpawnerComponent spawnerComponent = new EnemySpawnerComponent();
         Entities
@@ -37,7 +43,7 @@ public class EnemyPatternSystem : SystemBase
             }).Run();
         Random random = new Random(56);
         if (spawnerComponent.pattern == SpawnPattern.Zattack)
-            SpawnZAttack(playerBasePosition, random);
+            SpawnZAttack(playerBasePosition, random, gridBestCosts, gridWidth, cellSize);
         if (spawnerComponent.pattern == SpawnPattern.Square)
             SpawnSquare(playerBasePosition, random);
         if (spawnerComponent.pattern == SpawnPattern.Asterix)
@@ -48,25 +54,18 @@ public class EnemyPatternSystem : SystemBase
     }
 
     // Another approach for the spawn algorithms is to use entityInQueryIndex in regards to spawnAmount ( index % spawnAmount is position)
-    private void SpawnZAttack(Translation playerBasePosition, Random random)
+    private void SpawnZAttack(Translation playerBasePosition, Random random, NativeList<ushort> bestCosts, int gridWidth, int cellSize)
     {
-        //var posArray = positionsArray;
-        ////TODO: implemnet function in GridSystem: GetAdjacentPositionsByAmount(int startPos, int amount)
-        //Entities
-        //    .WithoutBurst()
-        //    .WithAll<AttackerComponent>()
-        //    .ForEach((int entityInQueryIndex) =>
-        //    {
-        //        UnityEngine.Debug.Log(entityInQueryIndex);
-        //        posArray.Add(grid.GetGridPosition(entityInQueryIndex, (int)random.NextFloat(900, 999)));
-        //    }).Run();
-
         Entities
             .WithAll<AttackerComponent>()
+            .WithReadOnly(bestCosts)
             .ForEach((int entityInQueryIndex, ref Translation translation, ref Rotation rotation) =>
             {
-                var spawnLocation = new float3(random.NextFloat(0, 1000), 5, random.NextFloat(900, 1000));
-                //float3 spawnLocation = posArray[entityInQueryIndex];
+                var spawnLocation = new float3(random.NextFloat(0, 1000), 20, random.NextFloat(800, 1000));
+                while (GridSystem.GetPositionCost(MathUtilECS.ToXZPlane(spawnLocation), bestCosts, gridWidth, cellSize) >= ushort.MaxValue)
+                {
+                    spawnLocation = new float3(random.NextFloat(0, 1000), 20, random.NextFloat(800, 1000));
+                }
                 translation.Value = spawnLocation;
                 rotation.Value = quaternion.LookRotation(
                     new float3(playerBasePosition.Value.x, 0, playerBasePosition.Value.z) - spawnLocation, math.up());

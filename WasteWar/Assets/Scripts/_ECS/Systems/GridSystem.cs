@@ -11,11 +11,11 @@ public class GridSystem : SystemBase
 {
     public GridCell[,] GridData = new GridCell[0, 0];
 
-    private NativeList<float2> gridLocations = new NativeList<float2>(Allocator.Persistent);
-    private NativeList<ushort> gridBestCosts = new NativeList<ushort>(Allocator.Persistent);
+    public NativeList<float2> gridLocations = new NativeList<float2>(Allocator.Persistent);
+    public NativeList<ushort> gridBestCosts = new NativeList<ushort>(Allocator.Persistent);
     private BuildPhysicsWorld m_physicsWorld;
     private GridCell destinationCell;
-    private int cellSize;
+    public int cellSize;
 
     protected override void OnStartRunning()
     {
@@ -23,8 +23,9 @@ public class GridSystem : SystemBase
         m_physicsWorld = World.GetExistingSystem<BuildPhysicsWorld>();
         CreateGrid();
         CreateCostField();
-        CreateIntegrationField(GridData[25, 25]);
+        CreateIntegrationField(GridData[GridData.GetLength(0) / 2, GridData.GetLength(1) / 2]);
         CreateBestCostList();
+        EntityManager.CreateEntity(typeof(GridSystemFinishedBuilding));
     }
 
     protected override void OnUpdate()
@@ -35,13 +36,13 @@ public class GridSystem : SystemBase
         var cellS = cellSize;
         Entities
            .WithAll<FlowFieldAgentComponent>()
-           .WithReadOnly(gridLocs)
            .WithReadOnly(gridBest)
+           .WithReadOnly(gridLocs)
            .ForEach(
                (ref FlowFieldAgentComponent agent, in Translation translation) =>
                {
-                   agent.currentDestination = GetNextCellDestination(MathUtilECS.ToXZPlane(translation.Value),
-                       gridLocs, gridBest, gridWidth, cellS);
+                   agent.currentDestination = GetNextCellDestination(agent,
+                       gridLocs, gridBest, gridWidth, cellS, MathUtilECS.ToXZPlane(translation.Value));
                }
            )
            .ScheduleParallel();
@@ -130,12 +131,12 @@ public class GridSystem : SystemBase
         }
     }
 
-    public static float3 GetNextCellDestination(float2 origin, NativeList<float2> gridCellPositions,
-        NativeList<ushort> bestCosts, int gridWidth, int cellSize)
+    public static float3 GetNextCellDestination(FlowFieldAgentComponent agent, NativeList<float2> gridCellPositions,
+        NativeList<ushort> bestCosts, int gridWidth, int cellSize, float2 origin)
     {
-        int closestIndex = ((int)origin.x / cellSize * gridWidth) + ((int)origin.y / cellSize);
-
         float lowestNeighborCost = ushort.MaxValue;
+        var closestIndex = ((int)origin.x / cellSize * gridWidth) + ((int)origin.y / cellSize);
+        agent.previousGridIndex = closestIndex;
 
         int bestIndex = 0;
         CheckIndex(closestIndex + 1); // E
@@ -159,7 +160,7 @@ public class GridSystem : SystemBase
                 }
             }
         }
-
+        agent.currentGridIndex = bestIndex;
         return new float3(gridCellPositions[bestIndex].x, 0, gridCellPositions[bestIndex].y);
     }
 
@@ -186,6 +187,12 @@ public class GridSystem : SystemBase
             cellList.Add(GridData[xIndex - 1, zIndex + 1]);  // NW
 
         return cellList;
+    }
+
+
+    public static ushort GetPositionCost(float2 pos, NativeList<ushort> bestCosts, int gridWidth, int cellSize)
+    {
+        return bestCosts[((int)pos.x / cellSize * gridWidth) + ((int)pos.y / cellSize)];
     }
     protected override void OnDestroy()
     {
