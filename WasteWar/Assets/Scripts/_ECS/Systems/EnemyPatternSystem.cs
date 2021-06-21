@@ -43,7 +43,7 @@ public class EnemyPatternSystem : SystemBase
             }).Run();
         Random random = new Random(56);
         if (spawnerComponent.pattern == SpawnPattern.Zattack)
-            SpawnZAttack(playerBasePosition, random, gridBestCosts, gridWidth, cellSize);
+            SpawnZAttack(playerBasePosition);
         if (spawnerComponent.pattern == SpawnPattern.Square)
             SpawnSquare(playerBasePosition, random);
         if (spawnerComponent.pattern == SpawnPattern.Asterix)
@@ -54,18 +54,19 @@ public class EnemyPatternSystem : SystemBase
     }
 
     // Another approach for the spawn algorithms is to use entityInQueryIndex in regards to spawnAmount ( index % spawnAmount is position)
-    private void SpawnZAttack(Translation playerBasePosition, Random random, NativeList<ushort> bestCosts, int gridWidth, int cellSize)
+    private void SpawnZAttack(Translation playerBasePosition)
     {
+        float xSpacing = 10;
+        float zSpacing = 30;
+        float spawnHeight = 150;
+        float startZPos = 2000;
+
         Entities
             .WithAll<AttackerComponent>()
-            .WithReadOnly(bestCosts)
             .ForEach((int entityInQueryIndex, ref Translation translation, ref Rotation rotation) =>
             {
-                var spawnLocation = new float3(random.NextFloat(0, 1000), 20, random.NextFloat(800, 1000));
-                while (GridSystem.GetPositionCost(MathUtilECS.ToXZPlane(spawnLocation), bestCosts, gridWidth, cellSize) >= ushort.MaxValue)
-                {
-                    spawnLocation = new float3(random.NextFloat(0, 1000), 20, random.NextFloat(800, 1000));
-                }
+                var spawnLocation = new float3(entityInQueryIndex % 100 * xSpacing, spawnHeight,
+                                        startZPos - entityInQueryIndex % startZPos / 100 * zSpacing);
                 translation.Value = spawnLocation;
                 rotation.Value = quaternion.LookRotation(
                     new float3(playerBasePosition.Value.x, 0, playerBasePosition.Value.z) - spawnLocation, math.up());

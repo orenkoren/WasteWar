@@ -21,7 +21,7 @@ public class GridSystem : SystemBase
     private GridCell destinationCell;
     private float resetTimer = 1f;
     private float currentTimer = 0f;
-   
+
 
     protected override void OnStartRunning()
     {
@@ -55,34 +55,34 @@ public class GridSystem : SystemBase
            )
            .ScheduleParallel();
 
-        Entities
-           .WithoutBurst()
-           .WithAll<FlowFieldAgentComponent>()
-           .ForEach(
-               (ref FlowFieldAgentComponent agent) =>
-               {
-                   var currIndex = agent.currentGridIndex;
-                   var prevIndex = agent.previousGridIndex;
-                   if (currIndex != prevIndex)
-                   {
-                       gridBestCosts[currIndex] = 1000;
-                       gridBestCosts[prevIndex] = originalCosts[prevIndex];
-                   }
-               }
-           )
-           .Run();
-        currentTimer += Time.DeltaTime;
-        if (currentTimer > resetTimer)
-        {
-            currentTimer = 0;
-            for (int i = gridBestCosts.Length /2 - gridWidth * 3; i < gridBestCosts.Length / 2 + gridWidth * 3; i++)
-            {
-                gridBestCosts[i] = originalCosts[i];
-            }
-        }
+        //Entities
+        //   .WithoutBurst()
+        //   .WithAll<FlowFieldAgentComponent>()
+        //   .ForEach(
+        //       (ref FlowFieldAgentComponent agent) =>
+        //       {
+        //           var currIndex = agent.currentGridIndex;
+        //           var prevIndex = agent.previousGridIndex;
+        //           if (currIndex != prevIndex)
+        //           {
+        //               gridBestCosts[currIndex] = 1000;
+        //               gridBestCosts[prevIndex] = originalCosts[prevIndex];
+        //           }
+        //       }
+        //   )
+        //   .Run();
+        //currentTimer += Time.DeltaTime;
+        //if (currentTimer > resetTimer)
+        //{
+        //    currentTimer = 0;
+        //    for (int i = 0; i < gridBestCosts.Length; i++)
+        //    {
+        //        gridBestCosts[i] = originalCosts[i];
+        //    }
+        //}
 
-        increases.Clear();
-        restores.Clear();
+        //increases.Clear();
+        //restores.Clear();
     }
 
     private void CreateGrid()
@@ -149,7 +149,7 @@ public class GridSystem : SystemBase
         while (cellsToCheck.Count > 0)
         {
             GridCell currCell = cellsToCheck.Dequeue();
-            List<GridCell> curNeighbors = GetNeighborCells(currCell.gridIndex.x, currCell.gridIndex.y, false);
+            List<GridCell> curNeighbors = GetNeighborCells(currCell.gridIndex.x, currCell.gridIndex.y, false, true);
             foreach (var curNeighbor in curNeighbors)
             {
                 if (curNeighbor.cost == byte.MaxValue) { continue; }
@@ -183,21 +183,21 @@ public class GridSystem : SystemBase
         }
 
         int bestIndex = 0;
-        CheckIndex(closestIndex + 1); // E
-        CheckIndex(closestIndex - 1); // W
-        CheckIndex(closestIndex + gridWidth);  // N
-        CheckIndex(closestIndex - gridWidth); // S
-        CheckIndex(closestIndex + gridWidth + 1); // NE
-        CheckIndex(closestIndex + gridWidth - 1); // NW
-        CheckIndex(closestIndex - gridWidth + 1); // SE
-        CheckIndex(closestIndex - gridWidth - 1); // SW
+        CheckIndex(closestIndex + 1); // N
+        CheckIndex(closestIndex - 1); // S
+        CheckIndex(closestIndex + gridWidth);  // E
+        CheckIndex(closestIndex - gridWidth); // W
+        //CheckIndex(closestIndex + gridWidth + 1); // NE
+        //CheckIndex(closestIndex + gridWidth - 1); // NW
+        //CheckIndex(closestIndex - gridWidth + 1); // SE
+        //CheckIndex(closestIndex - gridWidth - 1); // SW
 
         void CheckIndex(int indexToCheck)
         {
             if (indexToCheck < bestCosts.Length - 1 && indexToCheck >= 0)
             {
                 var bestCost = bestCosts[indexToCheck];
-                if (bestCost < lowestNeighborCost)
+                if (bestCost  < lowestNeighborCost)
                 {
                     lowestNeighborCost = bestCost;
                     bestIndex = indexToCheck;
@@ -208,18 +208,18 @@ public class GridSystem : SystemBase
         return new float3(gridCellPositions[bestIndex].x, 0, gridCellPositions[bestIndex].y);
     }
 
-    private List<GridCell> GetNeighborCells(int xIndex, int zIndex, bool shouldCheckDiagonals)
+    private List<GridCell> GetNeighborCells(int xIndex, int zIndex, bool shouldCheckDiagonals, bool shouldCheckHorizontal)
     {
         var cellList = new List<GridCell>();
         var xLength = GridData.GetLength(0);
         var zLength = GridData.GetLength(1);
         if (zIndex != zLength - 1)
             cellList.Add(GridData[xIndex, zIndex + 1]); // north
-        if (xIndex != xLength - 1)
+        if (xIndex != xLength - 1 && shouldCheckHorizontal)
             cellList.Add(GridData[xIndex + 1, zIndex]); // east
         if (zIndex != 0)
             cellList.Add(GridData[xIndex, zIndex - 1]); // south
-        if (xIndex != 0)
+        if (xIndex != 0 && shouldCheckHorizontal)
             cellList.Add(GridData[xIndex - 1, zIndex]); // west
         if (xIndex != xLength - 1 && zIndex != zLength - 1 && shouldCheckDiagonals)
             cellList.Add(GridData[xIndex + 1, zIndex + 1]);  //NE
