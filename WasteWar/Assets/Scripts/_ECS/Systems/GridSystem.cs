@@ -55,34 +55,35 @@ public class GridSystem : SystemBase
            )
            .ScheduleParallel();
 
-        //Entities
-        //   .WithoutBurst()
-        //   .WithAll<FlowFieldAgentComponent>()
-        //   .ForEach(
-        //       (ref FlowFieldAgentComponent agent) =>
-        //       {
-        //           var currIndex = agent.currentGridIndex;
-        //           var prevIndex = agent.previousGridIndex;
-        //           if (currIndex != prevIndex)
-        //           {
-        //               gridBestCosts[currIndex] = 1000;
-        //               gridBestCosts[prevIndex] = originalCosts[prevIndex];
-        //           }
-        //       }
-        //   )
-        //   .Run();
-        //currentTimer += Time.DeltaTime;
-        //if (currentTimer > resetTimer)
-        //{
-        //    currentTimer = 0;
-        //    for (int i = 0; i < gridBestCosts.Length; i++)
-        //    {
-        //        gridBestCosts[i] = originalCosts[i];
-        //    }
-        //}
+        Entities
+           .WithoutBurst()
+           .WithAll<FlowFieldAgentComponent>()
+           .ForEach(
+               (ref FlowFieldAgentComponent agent) =>
+               {
+                   var currIndex = agent.currentGridIndex;
+                   var prevIndex = agent.previousGridIndex;
+                   if (currIndex != prevIndex)
+                   {
+                       if (originalCosts[currIndex] != ushort.MaxValue)
+                           gridBestCosts[currIndex] = 1000;
+                       gridBestCosts[prevIndex] = originalCosts[prevIndex];
+                   }
+               }
+           )
+           .Run();
+        currentTimer += Time.DeltaTime;
+        if (currentTimer > resetTimer)
+        {
+            currentTimer = 0;
+            for (int i = 0; i < gridBestCosts.Length; i++)
+            {
+                gridBestCosts[i] = originalCosts[i];
+            }
+        }
 
-        //increases.Clear();
-        //restores.Clear();
+        increases.Clear();
+        restores.Clear();
     }
 
     private void CreateGrid()
@@ -187,17 +188,17 @@ public class GridSystem : SystemBase
         CheckIndex(closestIndex - 1); // S
         CheckIndex(closestIndex + gridWidth);  // E
         CheckIndex(closestIndex - gridWidth); // W
-        //CheckIndex(closestIndex + gridWidth + 1); // NE
-        //CheckIndex(closestIndex + gridWidth - 1); // NW
-        //CheckIndex(closestIndex - gridWidth + 1); // SE
-        //CheckIndex(closestIndex - gridWidth - 1); // SW
+        CheckIndex(closestIndex + gridWidth + 1); // NE
+        CheckIndex(closestIndex + gridWidth - 1); // NW
+        CheckIndex(closestIndex - gridWidth + 1); // SE
+        CheckIndex(closestIndex - gridWidth - 1); // SW
 
         void CheckIndex(int indexToCheck)
         {
             if (indexToCheck < bestCosts.Length - 1 && indexToCheck >= 0)
             {
                 var bestCost = bestCosts[indexToCheck];
-                if (bestCost  < lowestNeighborCost)
+                if (bestCost < lowestNeighborCost)
                 {
                     lowestNeighborCost = bestCost;
                     bestIndex = indexToCheck;
