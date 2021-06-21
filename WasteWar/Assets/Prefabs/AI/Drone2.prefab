@@ -99,7 +99,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Damage: 1
-  speed: 20
+  speed: 40
 --- !u!114 &362285187493874194
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -326,4 +326,6 @@ MonoBehaviour:
     x: 0
     y: 0
     z: 0
+  nextGridIndex: 0
   currentGridIndex: 0
+  previousGridIndex: 0

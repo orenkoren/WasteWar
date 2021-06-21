@@ -14892,7 +14892,7 @@ PrefabInstance:
     - target: {fileID: 4442639991428235013, guid: b6107396196f0184188946631c6e5055,
         type: 3}
       propertyPath: CellSize
-      value: 2
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 6694896756469433442, guid: b6107396196f0184188946631c6e5055,
         type: 3}
@@ -14902,12 +14902,12 @@ PrefabInstance:
     - target: {fileID: 6694896756469433442, guid: b6107396196f0184188946631c6e5055,
         type: 3}
       propertyPath: displayIndicies
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6694896756469433442, guid: b6107396196f0184188946631c6e5055,
         type: 3}
       propertyPath: displayBestCostField
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8025007454366445809, guid: b6107396196f0184188946631c6e5055,
         type: 3}
@@ -15259,7 +15259,7 @@ PrefabInstance:
     - target: {fileID: 8157376283840655627, guid: fbbfa204943475747a74b5ef06f78d08,
         type: 3}
       propertyPath: spawnAmount
-      value: 100
+      value: 1000
       objectReference: {fileID: 0}
     - target: {fileID: 8157376283840655628, guid: fbbfa204943475747a74b5ef06f78d08,
         type: 3}
