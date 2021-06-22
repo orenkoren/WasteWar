@@ -10,11 +10,13 @@ public class ECSGridGUI : MonoBehaviour
     public bool displayBestCostField;
     public bool displayIndicies;
     public bool displayBaseCosts;
+    public bool displayTaken;
     [HideInInspector]
     public GridCell[,] grid = new GridCell[0, 0];
     [HideInInspector]
     public NativeList<float2> gridPositions;
     public NativeList<ushort> bestCosts;
+    public NativeList<bool> takenCells;
 
 #if UNITY_EDITOR
     private void OnDrawGizmos()
@@ -27,6 +29,8 @@ public class ECSGridGUI : MonoBehaviour
                     Handles.Label(new Vector3(gridPositions[i].x, 0, gridPositions[i].y), bestCosts[i].ToString());
                 if (displayIndicies)
                     Handles.Label(new Vector3(gridPositions[i].x, 0, gridPositions[i].y), i.ToString());
+                if(displayTaken)
+                    Handles.Label(new Vector3(gridPositions[i].x, 0, gridPositions[i].y), takenCells[i].ToString());
             }
         }
 

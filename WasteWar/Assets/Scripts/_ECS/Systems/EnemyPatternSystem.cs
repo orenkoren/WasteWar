@@ -59,14 +59,14 @@ public class EnemyPatternSystem : SystemBase
         float xSpacing = 10;
         float zSpacing = 30;
         float spawnHeight = 150;
-        float startZPos = 2000;
+        float startZPos = 1500;
 
         Entities
             .WithAll<AttackerComponent>()
             .ForEach((int entityInQueryIndex, ref Translation translation, ref Rotation rotation) =>
             {
                 var spawnLocation = new float3(entityInQueryIndex % 100 * xSpacing, spawnHeight,
-                                        startZPos - entityInQueryIndex % startZPos / 100 * zSpacing);
+                                        startZPos + entityInQueryIndex / 100 * zSpacing);
                 translation.Value = spawnLocation;
                 rotation.Value = quaternion.LookRotation(
                     new float3(playerBasePosition.Value.x, 0, playerBasePosition.Value.z) - spawnLocation, math.up());

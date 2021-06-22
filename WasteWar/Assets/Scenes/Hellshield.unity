@@ -15302,13 +15302,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6694896756469433442, guid: b6107396196f0184188946631c6e5055,
         type: 3}
-      propertyPath: displayIndicies
+      propertyPath: displayTaken
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6694896756469433442, guid: b6107396196f0184188946631c6e5055,
         type: 3}
-      propertyPath: displayBestCostField
+      propertyPath: displayIndicies
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6694896756469433442, guid: b6107396196f0184188946631c6e5055,
+        type: 3}
+      propertyPath: displayBestCostField
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8025007454366445809, guid: b6107396196f0184188946631c6e5055,
         type: 3}
@@ -15661,7 +15666,7 @@ PrefabInstance:
         type: 3}
       propertyPath: prefabEnemy
       value: 
-      objectReference: {fileID: 7576430868646130765, guid: e1ce7ea8ddc0db842b7026b363757d6b,
+      objectReference: {fileID: 1912410721622126574, guid: c1f28981603ab7d4082ea3793c262a7f,
         type: 3}
     - target: {fileID: 8157376283840655627, guid: fbbfa204943475747a74b5ef06f78d08,
         type: 3}

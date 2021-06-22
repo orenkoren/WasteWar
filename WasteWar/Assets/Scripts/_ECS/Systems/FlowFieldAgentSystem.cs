@@ -21,9 +21,9 @@ public class FlowFieldAgentSystem : SystemBase
         Entities
             .WithAll<FlowFieldAgentComponent>()
             .ForEach(
-                (ref FlowFieldAgentComponent agent) =>
+                (ref FlowFieldAgentComponent agent, in Translation translation, in Rotation rot) =>
                 {
-                    agent.finalDestination = destination.Value;
+                    agent.currentDestination = new float3(translation.Value.x, 200, translation.Value.z - 5000);
                 }
             )
             .ScheduleParallel();
