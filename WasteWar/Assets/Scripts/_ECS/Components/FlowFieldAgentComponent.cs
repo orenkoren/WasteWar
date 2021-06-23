@@ -15,4 +15,12 @@ public struct FlowFieldAgentComponent : IComponentData
     public int currentGridIndex;
     [HideInInspector]
     public int previousGridIndex;
+    [HideInInspector]
+    public bool shouldFlank;
+    [HideInInspector]
+    public bool flankReached;
+    [HideInInspector]
+    public bool IsRook;
+    [HideInInspector]
+    public bool shouldAvoidCollisions;
 }

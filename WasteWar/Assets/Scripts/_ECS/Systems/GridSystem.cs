@@ -56,10 +56,6 @@ public class GridSystem : SystemBase
                        agent.currentDestination = GetNextCellDestination(ref agent,
                            gridLocs, gridBest, gridWidth, cellS, MathUtilECS.ToXZPlane(translation.Value), readCells);
                    }
-                   else
-                   {
-                       agent.currentDestination = new float3(translation.Value.x, 200, translation.Value.z - 5000);
-                   }
                }
            )
            .ScheduleParallel();
@@ -198,6 +194,15 @@ public class GridSystem : SystemBase
     public static float3 GetNextCellDestination(ref FlowFieldAgentComponent agent, NativeList<float2> gridCellPositions,
         NativeList<ushort> bestCosts, int gridWidth, int cellSize, float2 origin, NativeArray<bool>.ReadOnly readCells)
     {
+        if (agent.shouldFlank)
+        {
+            var dist = math.distance(origin, MathUtilECS.ToXZPlane(agent.finalDestination));
+            if (dist > 30 && !agent.flankReached)
+                return agent.finalDestination;
+            else
+                agent.flankReached = true;
+        }
+
         float lowestNeighborCost = ushort.MaxValue;
         var closestIndex = ((int)origin.x / cellSize * gridWidth) + ((int)origin.y / cellSize);
         if (closestIndex > readCells.Length)
@@ -210,21 +215,33 @@ public class GridSystem : SystemBase
         }
 
         int bestIndex = 0;
+        bool shouldAvoid = agent.shouldAvoidCollisions;
         CheckIndex(closestIndex + 1); // N
         CheckIndex(closestIndex - 1); // S
         CheckIndex(closestIndex + gridWidth);  // E
         CheckIndex(closestIndex - gridWidth); // W
-        CheckIndex(closestIndex + gridWidth + 1); // NE
-        CheckIndex(closestIndex + gridWidth - 1); // NW
-        CheckIndex(closestIndex - gridWidth + 1); // SE
-        CheckIndex(closestIndex - gridWidth - 1); // SW
+        if (!agent.IsRook)
+        {
+            CheckIndex(closestIndex + gridWidth + 1); // NE
+            CheckIndex(closestIndex + gridWidth - 1); // NW
+            CheckIndex(closestIndex - gridWidth + 1); // SE
+            CheckIndex(closestIndex - gridWidth - 1); // SW
+        }
 
         void CheckIndex(int indexToCheck)
         {
             if (indexToCheck < bestCosts.Length - 1 && indexToCheck >= 0)
             {
                 var bestCost = bestCosts[indexToCheck];
-                if (bestCost < lowestNeighborCost /*&& readCells[indexToCheck] == false*/)
+                if (shouldAvoid)
+                {
+                    if (bestCost < lowestNeighborCost && readCells[indexToCheck] == false)
+                    {
+                        lowestNeighborCost = bestCost;
+                        bestIndex = indexToCheck;
+                    }
+                }
+                else if (bestCost < lowestNeighborCost)
                 {
                     lowestNeighborCost = bestCost;
                     bestIndex = indexToCheck;

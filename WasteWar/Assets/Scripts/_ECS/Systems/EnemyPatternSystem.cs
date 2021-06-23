@@ -51,6 +51,7 @@ public class EnemyPatternSystem : SystemBase
         if (spawnerComponent.pattern == SpawnPattern.Focused)
             SpawnFocused(playerBasePosition, random);
         shouldSkipAFrame = true;
+        EntityManager.CreateEntity(typeof(EnemyPatternFinished));
     }
 
     // Another approach for the spawn algorithms is to use entityInQueryIndex in regards to spawnAmount ( index % spawnAmount is position)

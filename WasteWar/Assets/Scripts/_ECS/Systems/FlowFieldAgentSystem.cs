@@ -11,6 +11,12 @@ public class FlowFieldAgentSystem : SystemBase
     private EntityCommandBufferSystem m_ecbWorld;
     private GridSystem m_gridSystem;
 
+    protected override void OnCreate()
+    {
+        base.OnCreate();
+        RequireSingletonForUpdate<EnemyPatternFinished>();
+    }
+
     protected override void OnStartRunning()
     {
         m_ecbWorld = World.GetOrCreateSystem<EntityCommandBufferSystem>();
@@ -18,29 +24,59 @@ public class FlowFieldAgentSystem : SystemBase
         EntityCommandBuffer.ParallelWriter buffer = m_ecbWorld.CreateCommandBuffer().AsParallelWriter();
         var destination = GameConstants.Instance.PlayerBasePosition;
         base.OnStartRunning();
-        Entities
-            .WithAll<FlowFieldAgentComponent>()
-            .ForEach(
-                (ref FlowFieldAgentComponent agent, in Translation translation, in Rotation rot) =>
-                {
-                    agent.currentDestination = new float3(translation.Value.x, 200, translation.Value.z - 5000);
-                }
-            )
-            .ScheduleParallel();
+        //Entities
+        //    .WithAll<FlowFieldAgentComponent>()
+        //    .ForEach(
+        //        (ref FlowFieldAgentComponent agent, in Translation translation, in Rotation rot) =>
+        //        {
+        //            agent.currentDestination = new float3(translation.Value.x, 200, translation.Value.z - 5000);
+        //        }
+        //    )
+        //    .ScheduleParallel();
     }
 
     protected override void OnUpdate()
     {
-        //Func<float3, float3, float3> gridFunc = m_gridSystem.GetNextCellDestination;
-        //Entities
-        //    .WithAll<FlowFieldAgentComponent>()
-        //    .ForEach(
-        //        (ref FlowFieldAgentComponent agent, ref Translation translation) =>
-        //        {
-        //            agent.currentDestination = CalculateNextDestinationCell(agent, translation, gridFunc);
-        //        }
-        //    )
-        //    .ScheduleParallel();
+        Unity.Mathematics.Random random = new Unity.Mathematics.Random(56);
+        var destination = GameConstants.Instance.PlayerBasePosition;
+        int chanceToFlankInPercent = 3;
+        int chanceToRookPercent = 20;
+        int chanceToAvoidCollisions = 15;
+        Entities
+            .WithAll<FlowFieldAgentComponent>()
+            .ForEach(
+                (ref FlowFieldAgentComponent agent, in Translation translation) =>
+                {
+                    agent.currentDestination = new float3(translation.Value.x, 200, translation.Value.z - 5000);
+                   
+                    var rand = random.NextUInt(1, 100);
+                    if (rand <= chanceToFlankInPercent)
+                    {
+                        agent.shouldFlank = true;
+                        agent.shouldAvoidCollisions = true;
+                    }
+                    rand = random.NextUInt(1, 100);
+                    if (rand <= chanceToRookPercent)
+                    {
+                        agent.IsRook = true;
+                    }
+                    rand = random.NextUInt(1, 100);
+                    if (rand <= chanceToAvoidCollisions)
+                    {
+                        agent.shouldAvoidCollisions = true;
+                    }
+
+                    if (agent.shouldFlank)
+                    {
+                        agent.finalDestination = new float3(translation.Value.x, 3, random.NextFloat(350, 450));
+                    }
+                    else
+                        agent.finalDestination = destination.Value;
+                }
+            )
+            .ScheduleParallel();
+
+        EntityManager.DestroyEntity(GetSingletonEntity<EnemyPatternFinished>());
     }
 
     private static float3 CalculateNextDestinationCell(FlowFieldAgentComponent agent,
