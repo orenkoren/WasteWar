@@ -40,7 +40,7 @@ public class FlowFieldAgentSystem : SystemBase
         Unity.Mathematics.Random random = new Unity.Mathematics.Random(56);
         var destination = GameConstants.Instance.PlayerBasePosition;
         int chanceToFlankInPercent = 0;
-        int chanceToRookPercent = 0;
+        int chanceToRookPercent = 100;
         int chanceToAvoidCollisions = 0;
         Entities
             .WithAll<FlowFieldAgentComponent>()
