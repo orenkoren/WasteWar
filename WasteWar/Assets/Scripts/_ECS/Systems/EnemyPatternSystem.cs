@@ -1,4 +1,5 @@
 using Constants;
+using System.Collections.Generic;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
@@ -11,6 +12,7 @@ public class EnemyPatternSystem : SystemBase
     private bool shouldSkipAFrame = true;
     private GridSystem gridSystem;
     private NativeList<float3> positionsArray = new NativeList<float3>(Allocator.Persistent);
+    private NativeList<float3> verts = new NativeList<float3>(Allocator.Persistent);
 
     protected override void OnCreate()
     {
@@ -50,11 +52,41 @@ public class EnemyPatternSystem : SystemBase
             SpawnAsterix(playerBasePosition, random);
         if (spawnerComponent.pattern == SpawnPattern.Focused)
             SpawnFocused(playerBasePosition, random);
+        if (spawnerComponent.pattern == SpawnPattern.Sword)
+            SpawnSword(playerBasePosition, spawnerComponent.spawnAmount);
         shouldSkipAFrame = true;
         EntityManager.CreateEntity(typeof(EnemyPatternFinished));
     }
 
-    // Another approach for the spawn algorithms is to use entityInQueryIndex in regards to spawnAmount ( index % spawnAmount is position)
+    private void SpawnSword(Translation playerBasePosition, int totalAmount)
+    {
+        Entities
+            .WithoutBurst()
+            .WithAll<SwordComponent>()
+            .ForEach((in Entity e) =>
+            {
+                var vertList = EntityManager.GetComponentObject<GetVertices>(e).vertices;
+                foreach (var vert in vertList)
+                {
+                    verts.Add(vert);
+                }
+            }).Run();
+        var vertices = verts;
+        var skipAmount = 1;
+        if (vertices.Length > totalAmount)
+            skipAmount = vertices.Length / totalAmount;
+        Entities
+            .WithAll<AttackerComponent>()
+            .WithReadOnly(vertices)
+            .ForEach((int entityInQueryIndex, ref Translation translation, ref Rotation rotation) =>
+            {
+                float3 spawnLocation = vertices[entityInQueryIndex % vertices.Length * skipAmount];
+                translation.Value = spawnLocation;
+                rotation.Value = quaternion.LookRotation(
+                    new float3(playerBasePosition.Value.x, 0, playerBasePosition.Value.z) - spawnLocation, math.up());
+            }).ScheduleParallel();
+    }
+
     private void SpawnZAttack(Translation playerBasePosition)
     {
         float xSpacing = 10;
@@ -147,5 +179,6 @@ public class EnemyPatternSystem : SystemBase
     {
         base.OnDestroy();
         positionsArray.Dispose();
+        verts.Dispose();
     }
 }

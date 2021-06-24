@@ -49,7 +49,7 @@ MonoBehaviour:
   prefabEnemy: {fileID: 1912410721622126574, guid: c1f28981603ab7d4082ea3793c262a7f,
     type: 3}
   spawnAmount: 30000
-  pattern: 2
+  pattern: 5
 --- !u!114 &8157376283840655626
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -75,8 +75,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 32b6bcc7330cf454cab6d4f26118f9aa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  SecondsInterval: 10
+  SecondsInterval: 5
+  waveCount: 1
   currentTime: 0
+  currentWave: 0
 --- !u!114 &8157376284810047770
 MonoBehaviour:
   m_ObjectHideFlags: 0

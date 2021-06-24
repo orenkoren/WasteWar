@@ -15,5 +15,6 @@ public enum SpawnPattern
     Circle,
     Zattack,
     Square,
-    Focused
+    Focused,
+    Sword
 }
