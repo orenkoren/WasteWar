@@ -3,13 +3,13 @@ using Unity.Entities;
 
 public class GameObjectSpawnSystem : SystemBase
 {
-    private TurretSystem turretSystem;
+    private TurretProjectileSystem turretSystem;
     private NativeList<Entity> entitiesToSpawnLaserBeams;
 
     protected override void OnCreate()
     {
         base.OnCreate();
-        turretSystem = World.GetExistingSystem<TurretSystem>();
+        turretSystem = World.GetExistingSystem<TurretProjectileSystem>();
     }
 
     protected override void OnUpdate()

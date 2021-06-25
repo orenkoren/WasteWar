@@ -36,29 +36,29 @@ public class TurretSystem : SystemBase
               turret.rotationCooldown += deltaTime;
               if (turret.rotationCooldown >= turret.RotationCommandInterval)
               {
-                  SendRotationCommand(ref turret, ref rotComp, pworld, translation, rotation);
+                  UpdateTurretTarget(ref turret, ref rotComp, pworld, translation, rotation);
                   turret.rotationCooldown = 0;
               }
-              if (turret.rechargeTimer >= turret.RechargeTime)
-              {
-                  turret.rechargeTimer = 0;
-                  NativeList<RaycastHit> hits = new NativeList<RaycastHit>(Allocator.Temp);
-                  PerformRaycast(ref turret, ref rotComp, translation, rotation, pworld, ref hits, ecb);
-                  if (hits.Length > 0)
-                  {
-                      entitiesToSpawnBeamsThisFrame.AddNoResize(e);
-                  }
-              }
+              //if (turret.rechargeTimer >= turret.RechargeTime && rotComp.targetAngle != -999)
+              //{
+              //    turret.rechargeTimer = 0;
+              //    //NativeList<RaycastHit> hits = new NativeList<RaycastHit>(Allocator.Temp);
+              //    //PerformRaycast(ref turret, ref rotComp, translation, rotation, pworld, ref hits, ecb);
+              //    //if (hits.Length > 0)
+              //    //{
+              //    //    entitiesToSpawnBeamsThisFrame.AddNoResize(e);
+              //    //}
+              //}
           }).ScheduleParallel(Dependency);
 
         m_ecbSystem.AddJobHandleForProducer(Dependency);
     }
 
-    private static void SendRotationCommand(ref TurretComponent turret, ref RotationComponent rotComp,
+    private static void UpdateTurretTarget(ref TurretComponent turret, ref RotationComponent rotComp,
                                     CollisionWorld pworld, Translation translation, Rotation rotation)
     {
         RaycastInput rayInput = CreateRayInput(turret, translation, rotation);
-        var firstTargetAngle = ScanForTargets(turret, translation, rotation, pworld, rayInput);
+        var firstTargetAngle = ScanForTargets(ref turret, translation, rotation, pworld, rayInput);
         rotComp.targetAngle = firstTargetAngle;
     }
 
@@ -68,7 +68,7 @@ public class TurretSystem : SystemBase
     {
         RaycastInput rayInput = CreateRayInput(turret, translation, rotation);
 
-        var firstTargetAngle = ScanForTargets(turret, translation, rotation, pworld, rayInput);
+        var firstTargetAngle = ScanForTargets(ref turret, translation, rotation, pworld, rayInput);
         if (firstTargetAngle != -999)
         {
             for (float hitAngle = firstTargetAngle; hitAngle < firstTargetAngle + turret.hitWidth / 2; hitAngle++)
@@ -124,7 +124,6 @@ public class TurretSystem : SystemBase
     private static void AddSingleAngleHits(TurretComponent turret, Translation translation, Rotation rotation, ref CollisionWorld pworld, ref NativeList<RaycastHit> hits, ref RaycastInput rayInput, float hitAngle)
     {
         NativeList<RaycastHit> oneAngleHits = GetSingleAngleHits(turret, translation, rotation, ref pworld, ref rayInput, hitAngle);
-        UnityEngine.Debug.DrawLine(rayInput.Start, rayInput.End);
         hits.AddRange(oneAngleHits);
     }
 
@@ -136,49 +135,54 @@ public class TurretSystem : SystemBase
         return oneAngleHits;
     }
 
-    private static float ScanForTargets(TurretComponent turret, Translation translation, Rotation rotation,
+    private static float ScanForTargets(ref TurretComponent turret, Translation translation, Rotation rotation,
      CollisionWorld pworld, RaycastInput rayInput)
     {
         if (turret.behavior == TurretBehavior.MostTargets)
             return CalculateMostTargetsDirectionAngle(turret, translation, rotation, pworld, ref rayInput);
         else
-            return CalculateClosestTargetAngle(turret, translation, rotation, pworld, ref rayInput);
+            return CalculateClosestTargetAngle(ref turret, translation, rotation, pworld, ref rayInput);
 
     }
 
-    private static float CalculateClosestTargetAngle(TurretComponent turret, Translation translation, Rotation rotation,
+    private static float CalculateClosestTargetAngle(ref TurretComponent turret, Translation translation, Rotation rotation,
                                                     CollisionWorld pworld, ref RaycastInput rayInput)
     {
         float closestDistance = 5000;
+        float3 closestEnemyPosition = float3.zero;
         float closestDistanceAngle = -999;
+        turret.hasTarget = false;
 
         RaycastHit hit;
 
         for (int angle = 0; angle >= -turret.detectionConeSize; angle--)
         {
-            UpdateClosestDistance(ref rayInput, angle);
+            UpdateClosestDistance(ref rayInput, angle, ref turret);
         }
         for (int angle = 0; angle <= turret.detectionConeSize; angle++)
         {
-            UpdateClosestDistance(ref rayInput, angle);
+            UpdateClosestDistance(ref rayInput, angle, ref turret);
         }
+        turret.currentTargetLocation = closestEnemyPosition;
         return closestDistanceAngle;
 
-            void UpdateClosestDistance(ref RaycastInput rayInput, int angle)
+        void UpdateClosestDistance(ref RaycastInput rayInput, int angle, ref TurretComponent turret)
+        {
+            rayInput = ChangeRayDirection(turret, translation, rotation, rayInput, angle);
+            pworld.CastRay(rayInput, out hit);
+            if (hit.Entity != Entity.Null)
             {
-                rayInput = ChangeRayDirection(turret, translation, rotation, rayInput, angle);
-                pworld.CastRay(rayInput, out hit);
-                if (hit.Entity != Entity.Null)
+                turret.hasTarget = true;
+                float currDistance = math.distance(MathUtilECS.ToXZPlane(hit.Position),
+                                                    MathUtilECS.ToXZPlane(translation.Value));
+                if (currDistance < closestDistance)
                 {
-                    float currDistance = math.distance(MathUtilECS.ToXZPlane(hit.Position),
-                                                        MathUtilECS.ToXZPlane(translation.Value));
-                    if (currDistance < closestDistance)
-                    {
-                        closestDistance = currDistance;
-                        closestDistanceAngle = angle;
-                    }
+                    closestEnemyPosition = hit.Position;
+                    closestDistance = currDistance;
+                    closestDistanceAngle = angle;
                 }
             }
+        }
     }
 
     private static float CalculateMostTargetsDirectionAngle(TurretComponent turret, Translation translation,

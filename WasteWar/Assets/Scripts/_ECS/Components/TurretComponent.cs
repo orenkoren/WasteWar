@@ -21,6 +21,10 @@ public struct TurretComponent : IComponentData
     public float rechargeTimer;
     [HideInInspector]
     public float rotationCooldown;
+    [HideInInspector]
+    public float3 currentTargetLocation;
+    [HideInInspector]
+    public bool hasTarget;
 }
 
 public enum TurretBehavior

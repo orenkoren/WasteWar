@@ -10,4 +10,6 @@ public struct MoveForwardComponent : IComponentData
     public float speed;
     [HideInInspector]
     public float3 destination;
+    [HideInInspector]
+    public bool hasReached;
 }

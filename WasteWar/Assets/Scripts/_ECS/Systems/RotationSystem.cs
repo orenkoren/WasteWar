@@ -9,8 +9,10 @@ public class RotationSystem : SystemBase
             .ForEach((ref RotationComponent rotationComp, in Entity e) =>
              {
                  if (rotationComp.targetAngle != -999)
+                 {
                      EntityManager.GetComponentObject<RotateHybridSync>(e)
                                   .RotateHybrid(rotationComp.targetAngle, rotationComp.rotationTime);
+                 }
              }).Run();
     }
 }

@@ -11,7 +11,7 @@ public class MoveForwardSystem : SystemBase
         Entities
             .WithAll<MoveForwardComponent>()
             .ForEach(
-                (ref Translation translation, ref Rotation rotation, in MoveForwardComponent forwardComp) =>
+                (ref Translation translation, ref Rotation rotation, ref MoveForwardComponent forwardComp) =>
                 {
                     float step = forwardComp.speed * deltaTime;
                     translation.Value = MathUtilECS.MoveTowardsV2(translation.Value,
@@ -19,6 +19,9 @@ public class MoveForwardSystem : SystemBase
                     rotation.Value = quaternion.LookRotation(
                           new float3(forwardComp.destination.x, 0, forwardComp.destination.z)
                                     - translation.Value, math.up());
+
+                    if (math.distance(translation.Value, forwardComp.destination) < 5)
+                        forwardComp.hasReached = true;
                 }
             )
             .ScheduleParallel();
