@@ -299,6 +299,11 @@ MonoBehaviour:
   projectileSpeed: 400
   rechargeTimer: 0
   rotationCooldown: 0
+  currentTargetLocation:
+    x: 0
+    y: 0
+    z: 0
+  hasTarget: 0
 --- !u!82 &8817716206375205309
 AudioSource:
   m_ObjectHideFlags: 0
@@ -311,7 +316,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: 3923e95a5a4224d4db33529265c22ef5, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 1
+  m_Volume: 0.359
   m_Pitch: 1
   Loop: 0
   Mute: 0

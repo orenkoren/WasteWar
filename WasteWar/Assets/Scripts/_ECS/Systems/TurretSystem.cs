@@ -39,16 +39,6 @@ public class TurretSystem : SystemBase
                   UpdateTurretTarget(ref turret, ref rotComp, pworld, translation, rotation);
                   turret.rotationCooldown = 0;
               }
-              //if (turret.rechargeTimer >= turret.RechargeTime && rotComp.targetAngle != -999)
-              //{
-              //    turret.rechargeTimer = 0;
-              //    //NativeList<RaycastHit> hits = new NativeList<RaycastHit>(Allocator.Temp);
-              //    //PerformRaycast(ref turret, ref rotComp, translation, rotation, pworld, ref hits, ecb);
-              //    //if (hits.Length > 0)
-              //    //{
-              //    //    entitiesToSpawnBeamsThisFrame.AddNoResize(e);
-              //    //}
-              //}
           }).ScheduleParallel(Dependency);
 
         m_ecbSystem.AddJobHandleForProducer(Dependency);
@@ -60,30 +50,9 @@ public class TurretSystem : SystemBase
         RaycastInput rayInput = CreateRayInput(turret, translation, rotation);
         var firstTargetAngle = ScanForTargets(ref turret, translation, rotation, pworld, rayInput);
         rotComp.targetAngle = firstTargetAngle;
+        rotComp.targetLocation = turret.currentTargetLocation;
     }
 
-    private static void PerformRaycast(ref TurretComponent turret, ref RotationComponent rotComp,
-                        Translation translation, Rotation rotation, CollisionWorld pworld,
-                        ref NativeList<RaycastHit> hits, EntityCommandBuffer.ParallelWriter ecb)
-    {
-        RaycastInput rayInput = CreateRayInput(turret, translation, rotation);
-
-        var firstTargetAngle = ScanForTargets(ref turret, translation, rotation, pworld, rayInput);
-        if (firstTargetAngle != -999)
-        {
-            for (float hitAngle = firstTargetAngle; hitAngle < firstTargetAngle + turret.hitWidth / 2; hitAngle++)
-            {
-                AddSingleAngleHits(turret, translation, rotation, ref pworld, ref hits, ref rayInput, hitAngle);
-                SpawnProjectile(turret, translation, ref ecb, ref rayInput, rotComp.targetAngle);
-            }
-
-            for (float hitAngle = firstTargetAngle; hitAngle >= firstTargetAngle - turret.hitWidth / 2; hitAngle--)
-            {
-                AddSingleAngleHits(turret, translation, rotation, ref pworld, ref hits, ref rayInput, hitAngle);
-                SpawnProjectile(turret, translation, ref ecb, ref rayInput, rotComp.targetAngle);
-            }
-        }
-    }
 
     private static RaycastInput CreateRayInput(TurretComponent turret, Translation translation, Rotation rotation)
     {
@@ -101,38 +70,6 @@ public class TurretSystem : SystemBase
             Filter = collisionFilter
         };
         return rayInput;
-    }
-
-    private static void SpawnProjectile(TurretComponent turret, Translation translation,
-                ref EntityCommandBuffer.ParallelWriter ecb, ref RaycastInput rayInput, float hitAngle)
-    {
-        var projectile = ecb.Instantiate(0, turret.projectile);
-        var projectileDestination = (rayInput.End - rayInput.Start) * 5000;
-        float3 newOffset = math.mul(quaternion.RotateY(math.radians(hitAngle)),
-                                    turret.projectileSpawnLocation);
-        UnityEngine.Debug.DrawLine(translation.Value, newOffset);
-        Translation newTrans = new Translation { Value = translation.Value + newOffset };
-        ecb.SetComponent(0, projectile, newTrans);
-        ecb.SetComponent(0, projectile,
-            new MoveForwardComponent
-            {
-                speed = turret.projectileSpeed,
-                destination = projectileDestination
-            });
-    }
-
-    private static void AddSingleAngleHits(TurretComponent turret, Translation translation, Rotation rotation, ref CollisionWorld pworld, ref NativeList<RaycastHit> hits, ref RaycastInput rayInput, float hitAngle)
-    {
-        NativeList<RaycastHit> oneAngleHits = GetSingleAngleHits(turret, translation, rotation, ref pworld, ref rayInput, hitAngle);
-        hits.AddRange(oneAngleHits);
-    }
-
-    private static NativeList<RaycastHit> GetSingleAngleHits(TurretComponent turret, Translation translation, Rotation rotation, ref CollisionWorld pworld, ref RaycastInput rayInput, float hitAngle)
-    {
-        NativeList<RaycastHit> oneAngleHits = new NativeList<RaycastHit>(Allocator.Temp);
-        rayInput = ChangeRayDirection(turret, translation, rotation, rayInput, hitAngle);
-        pworld.CastRay(rayInput, ref oneAngleHits);
-        return oneAngleHits;
     }
 
     private static float ScanForTargets(ref TurretComponent turret, Translation translation, Rotation rotation,

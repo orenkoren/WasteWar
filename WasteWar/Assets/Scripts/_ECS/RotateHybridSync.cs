@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using Unity.Mathematics;
 using UnityEngine;
 
 public class RotateHybridSync : MonoBehaviour
@@ -10,11 +11,14 @@ public class RotateHybridSync : MonoBehaviour
     private bool isReady = true;
     private delegate float LerpFunction(float t);
 
-    public void RotateHybrid(float yAngle, float overTime)
+    public void RotateHybrid(float3 targetLocation, float overTime)
     {
-        if (!isReady) return;
-        var rot1 = Quaternion.Euler(0, customTargetSync.rotation.eulerAngles.y, 0);
-        var rot2 = Quaternion.Euler(0, yAngle, 0);
+        if (!isReady || Equals(targetLocation, float3.zero))
+            return;
+        var rot1 = customTargetSync.rotation;
+        Vector3 directionToLookAt = customTargetSync.position -
+                                    new Vector3(targetLocation.x, targetLocation.y, targetLocation.z);
+        var rot2 = Quaternion.LookRotation(-directionToLookAt);
         var a = Quaternion.Angle(rot1, rot2);
         if (a < 1) return;
         isReady = false;

@@ -11,7 +11,7 @@ public class RotationSystem : SystemBase
                  if (rotationComp.targetAngle != -999)
                  {
                      EntityManager.GetComponentObject<RotateHybridSync>(e)
-                                  .RotateHybrid(rotationComp.targetAngle, rotationComp.rotationTime);
+                                  .RotateHybrid(rotationComp.targetLocation, rotationComp.rotationTime);
                  }
              }).Run();
     }
