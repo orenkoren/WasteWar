@@ -29,15 +29,16 @@ public class TurretProjectileSystem : SystemBase
                     return;
 
                 turret.rechargeTimer = 0;
-                SpawnProjectile(turret, ref buffer, rot.targetAngle, translation);
+                SpawnProjectile(turret, ref buffer, rot.targetLocation, translation);
                 entitiesToSpawnBeamsThisFrame.AddNoResize(e);
 
                 void SpawnProjectile(TurretComponent turret, ref EntityCommandBuffer.ParallelWriter ecb,
-                                    float hitAngle, Translation translation)
+                                    float3 targetLocation, Translation translation)
                 {
                     var projectile = ecb.Instantiate(0, turret.projectile);
                     var projectileDestination = turret.currentTargetLocation;
-                    float3 newOffset = math.mul(quaternion.RotateY(math.radians(hitAngle)),
+                    float3 newOffset = math.mul(quaternion.LookRotation(targetLocation -translation.Value,
+                                                new float3(0, 1, 0)),
                                                 turret.projectileSpawnLocation);
                     UnityEngine.Debug.DrawLine(translation.Value, newOffset);
                     Translation newTrans = new Translation { Value = translation.Value + newOffset };
