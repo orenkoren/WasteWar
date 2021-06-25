@@ -1,5 +1,3 @@
-using Constants;
-using System.Collections.Generic;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
@@ -47,7 +45,7 @@ public class EnemyPatternSystem : SystemBase
         if (spawnerComponent.pattern == SpawnPattern.Zattack)
             SpawnZAttack(playerBasePosition);
         if (spawnerComponent.pattern == SpawnPattern.Square)
-            SpawnSquare(playerBasePosition, random);
+            SpawnSquare(playerBasePosition, random, spawnerComponent.spawnAmount);
         if (spawnerComponent.pattern == SpawnPattern.Asterix)
             SpawnAsterix(playerBasePosition, random);
         if (spawnerComponent.pattern == SpawnPattern.Focused)
@@ -106,27 +104,45 @@ public class EnemyPatternSystem : SystemBase
             }).ScheduleParallel();
     }
 
-    private void SpawnSquare(Translation playerBasePosition, Random random)
+    private void SpawnSquare(Translation playerBasePosition, Random random, int totalAmount)
     {
+        float startX = -1500;
+        float startZ = -1500;
+        float spawnHeight = 200;
+        float2 line1Start = new float2(startX, startZ);
+        float2 line1End = new float2(startX, -startZ);
+        float2 line2Start = line1End;
+        float2 line2End = new float2(-startX, -startZ);
+        float2 line3Start = line2End;
+        float2 line3End = new float2(-startX, startZ);
+        float2 line4Start = line3End;
+        float2 line4End = line1Start;
+        float spacing = 10;
         Entities
                   .WithAll<AttackerComponent>()
                   .ForEach((int entityInQueryIndex, ref Translation translation, ref Rotation rotation) =>
                   {
-                      float3 spawnLocation;
-                      var spawnPlace = random.NextFloat(0, 1);
-                      if (spawnPlace > 0.75f)
-                          spawnLocation = new float3(20, 3, random.NextFloat(20, 980));
-                      else if (spawnPlace > 0.5f)
-                          spawnLocation = new float3(980, 3, random.NextFloat(20, 980));
-                      else if (spawnPlace > 0.25f)
-                          spawnLocation = new float3(random.NextFloat(20, 980), 3, 980);
-                      else
-                          spawnLocation = new float3(random.NextFloat(20, 980), 3, 20);
+                      float2 spawnLocation = float2.zero;
+                      var determineRow = (float)entityInQueryIndex / totalAmount;
+                      if (determineRow <= 0.25f)
+                          spawnLocation = GetPosOnLine(entityInQueryIndex, line1Start, line1End, spacing);
+                      else if (determineRow <= 0.5f)
+                          spawnLocation = GetPosOnLine(entityInQueryIndex, line2Start, line2End, spacing);
+                      else if (determineRow <= 0.75f)
+                          spawnLocation = GetPosOnLine(entityInQueryIndex, line3Start, line3End, spacing);
+                      else if (determineRow <= 1f)
+                          spawnLocation = GetPosOnLine(entityInQueryIndex, line4Start, line4End, spacing);
 
-
-                      translation.Value = spawnLocation;
+                      float2 GetPosOnLine(int index, float2 start, float2 end, float spacing)
+                      {
+                          float2 direction = math.normalize(start - end);
+                          float distance = index * spacing;
+                          return direction * distance;
+                      }
+                      float3 spawnLocation3 = new float3(spawnLocation.x, spawnHeight, spawnLocation.y);
+                      translation.Value = spawnLocation3;
                       rotation.Value = quaternion.LookRotation(
-                          new float3(playerBasePosition.Value.x, 0, playerBasePosition.Value.z) - spawnLocation, math.up());
+                          new float3(playerBasePosition.Value.x, 0, playerBasePosition.Value.z) - spawnLocation3, math.up());
                   }).ScheduleParallel();
     }
 

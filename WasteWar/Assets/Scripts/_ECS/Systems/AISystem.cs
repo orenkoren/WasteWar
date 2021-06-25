@@ -24,6 +24,8 @@ public class AISystem : SystemBase
                         return;
                     }
                     float step = attacker.speed * deltaTime;
+                    if (attackerPos.Value.z > 1000)
+                        step *= 2;
                     attackerPos.Value = MathUtilECS.MoveTowardsV2(attackerPos.Value,
                                             new float3(agent.currentDestination.x, agent.currentDestination.y, agent.currentDestination.z), step);
                     rotation.Value = quaternion.LookRotation(

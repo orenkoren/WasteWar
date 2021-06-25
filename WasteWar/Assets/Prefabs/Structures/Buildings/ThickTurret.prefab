@@ -280,7 +280,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d36c15d1c31159468bb896c4da8ea97, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  DetectionRadius: 1000
+  DetectionRadius: 500
   behavior: 0
   startRange: 5
   HostileMask:
